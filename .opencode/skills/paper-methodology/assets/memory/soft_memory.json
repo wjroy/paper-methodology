@@ -1,0 +1,123 @@
+{
+  "_meta": {
+    "description": "Soft memory stores user preferences that influence writing style but are not hard constraints. These are learned patterns that can be overridden by explicit user instructions.",
+    "usage": "The AI reads this file during the RECALL step. Preferences here guide style choices but do not override explicit user instructions in the current session.",
+    "maintenance": "The AI updates this file when it observes consistent user preferences across sessions. Changes are additive; old preferences are kept but can be marked as deprecated.",
+    "last_updated": "initial-seed"
+  },
+
+  "paragraph_preferences": {
+    "target_word_count": {
+      "min": 100,
+      "max": 250,
+      "note": "Dense paragraphs, one core idea each. Extracted from 3 papers."
+    },
+    "opening_sentence_style": "topic_sentence",
+    "opening_sentence_note": "Each paragraph opens with a sentence stating its purpose, e.g., 'The [COMPONENT] module is designed to [PURPOSE].'",
+    "closing_sentence_style": "mixed",
+    "closing_sentence_note": "No single dominant pattern. Sometimes transition, sometimes summary, sometimes equation reference.",
+    "internal_flow": "motivation_then_formulation_then_definition",
+    "internal_flow_note": "1. WHY this is needed (1-2 sentences) -> 2. Equation/formulation -> 3. Variable definitions"
+  },
+
+  "voice_preferences": {
+    "active_passive_ratio": "60:40",
+    "first_person_en": {
+      "frequency": "moderate",
+      "count_per_section": "5-10 instances of 'we'",
+      "preferred_phrases": ["We design", "We propose", "We employ", "We adopt"]
+    },
+    "first_person_cn": {
+      "frequency": "rare",
+      "preferred_forms": ["本文", "本研究"],
+      "avoid": ["我们"]
+    }
+  },
+
+  "connector_preferences": {
+    "high_frequency": [
+      {"en": "Specifically", "cn": "具体而言"},
+      {"en": "To this end", "cn": "为此"},
+      {"en": "In particular", "cn": "特别地"},
+      {"en": "As illustrated in Figure X", "cn": "如图 X 所示"}
+    ],
+    "medium_frequency": [
+      {"en": "To be more specific", "cn": "更具体地"},
+      {"en": "Accordingly", "cn": "因此"},
+      {"en": "In this study", "cn": "本研究中"},
+      {"en": "In contrast", "cn": "相比之下"},
+      {"en": "Subsequently", "cn": "随后"},
+      {"en": "On this basis", "cn": "在此基础上"}
+    ],
+    "avoid": [
+      "It is worth noting that",
+      "Interestingly",
+      "First and foremost",
+      "In light of",
+      "It is imperative to note",
+      "Furthermore/Moreover stacking"
+    ]
+  },
+
+  "equation_preferences": {
+    "introduction_verb": "is formulated as",
+    "alternative_verbs": ["can be expressed as", "is defined as", "is computed as"],
+    "where_block_keyword": "where",
+    "where_block_not": "in which",
+    "variable_definition_verbs": ["denotes", "represents", "is defined as"],
+    "variable_ordering": "equation_appearance_order",
+    "post_where_interpretation": false,
+    "post_where_note": "Interpretation typically comes in the next paragraph, not immediately after the where block."
+  },
+
+  "cross_reference_preferences": {
+    "equation_format_en": "Equation (N)",
+    "equation_format_cn": "公式 (N)",
+    "section_format_en": "Section X.Y",
+    "section_format_cn": "第 X.Y 节",
+    "figure_format_en": "Figure X",
+    "figure_format_cn": "图 X",
+    "table_format_en": "Table X",
+    "table_format_cn": "表 X",
+    "preposition_en_equation": "as defined in",
+    "preposition_en_section": "as described in",
+    "preposition_en_figure": "as illustrated in",
+    "preposition_en_table": "as summarized in"
+  },
+
+  "section_ordering_preference": {
+    "pattern": "physics_first",
+    "typical_order": [
+      "Overall Framework",
+      "Physical/Mechanical Modeling",
+      "Data Generation/Processing",
+      "Model Architecture (with sub-subsections per component)",
+      "Loss Function and Training",
+      "Evaluation Metrics"
+    ],
+    "note": "Physics model always precedes neural architecture. This is the invariant pattern across all 3 papers."
+  },
+
+  "humanizer_preference": {
+    "default_ask": true,
+    "note": "Always ask before applying humanizer. User has not expressed a default preference yet."
+  },
+
+  "technical_verb_preferences": {
+    "introducing_method": ["propose", "present"],
+    "using_technique": ["employ", "adopt"],
+    "achieving_results": ["achieve"],
+    "designing_components": ["design"],
+    "processing_data": ["process"],
+    "extracting_features": ["extract"],
+    "avoid_verbs": ["utilize", "leverage", "put forward", "craft", "architect", "harvest", "glean", "garner", "attain"]
+  },
+
+  "cn_formatting": {
+    "punctuation": "full_width",
+    "spacing_cn_en": true,
+    "spacing_cn_number": true,
+    "register": "formal_academic",
+    "english_retention": ["GAN", "GCN", "LSTM", "Transformer", "RMSE", "MAE", "Adam", "ReLU", "sigmoid", "softmax", "embedding", "encoder", "decoder", "attention", "dropout", "fine-tuning", "pre-training", "tokenization", "prompt"]
+  }
+}

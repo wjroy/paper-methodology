@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ruff cache
+.ruff_cache/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+.~*
+
+# User-specific data (if any)
+# Uncomment if you have local config files that shouldn't be shared
+# .opencode/skills/paper-methodology/assets/memory/hard_memory.json
+# .opencode/skills/paper-methodology/assets/memory/soft_memory.json
+# .opencode/skills/paper-methodology/assets/error_log.md

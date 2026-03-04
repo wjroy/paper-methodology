@@ -1,0 +1,100 @@
+{
+  "_meta": {
+    "description": "Hard memory stores exact facts that must never be altered during generation. These are domain-specific constants, confirmed term mappings, and verified values.",
+    "usage": "The AI reads this file during the RECALL step. Every entry here is treated as ground truth. If a user's notes conflict with hard_memory, flag the conflict but present the hard_memory value as the established standard.",
+    "maintenance": "The AI or user adds entries when a fact is confirmed. Entries are never modified without explicit user approval.",
+    "last_updated": "initial-seed"
+  },
+
+  "critical_terms": {
+    "_note": "CN-EN term pairs that the user has explicitly confirmed or that appear consistently in all 3 published papers. These override any alternative translations.",
+    "基坑": "excavation pit",
+    "围护结构": "retaining structure",
+    "地下连续墙": "diaphragm wall",
+    "盾构隧道": "shield tunnel",
+    "地表沉降": "ground surface settlement",
+    "弹性地基梁": "beam on elastic foundation",
+    "代理模型": "surrogate model",
+    "生成对抗网络": "generative adversarial network (GAN)",
+    "图神经网络": "graph neural network (GNN)",
+    "图卷积网络": "graph convolutional network (GCN)",
+    "时空图卷积网络": "spatiotemporal graph convolutional network (STGCN)",
+    "注意力机制": "attention mechanism",
+    "物理信息神经网络": "physics-informed neural network (PINN)",
+    "物理约束": "physics constraint",
+    "数据驱动": "data-driven",
+    "邻接矩阵": "adjacency matrix",
+    "消融实验": "ablation study",
+    "对比实验": "comparative experiment",
+    "基线模型": "baseline model"
+  },
+
+  "standard_units": {
+    "_note": "Standard units used in geotechnical AI papers. Always use these unless the user specifies otherwise.",
+    "displacement": "mm",
+    "depth": "m",
+    "diameter": "m",
+    "length": "m",
+    "elastic_modulus": "MPa",
+    "stress": "kPa",
+    "cohesion": "kPa",
+    "unit_weight": "kN/m^3",
+    "friction_angle": "degrees",
+    "pressure": "kPa",
+    "learning_rate": "dimensionless",
+    "batch_size": "dimensionless (integer)",
+    "epochs": "dimensionless (integer)"
+  },
+
+  "notation_conventions": {
+    "_note": "Symbol conventions the user consistently uses across papers.",
+    "input_feature_matrix": "X",
+    "target_matrix": "Y",
+    "predicted_output": "Y_hat",
+    "weight_matrix": "W",
+    "bias_vector": "b",
+    "hidden_state": "h",
+    "latent_representation": "z",
+    "adjacency_matrix": "A",
+    "degree_matrix": "D_matrix",
+    "activation_function": "sigma()",
+    "learnable_parameters": "theta",
+    "attention_weight": "alpha",
+    "generator": "G",
+    "discriminator": "D_disc",
+    "loss_total": "L",
+    "loss_adversarial": "L_adv",
+    "loss_reconstruction": "L_rec",
+    "loss_weighting": "lambda",
+    "excavation_depth": "H",
+    "wall_displacement": "delta_w",
+    "soil_modulus": "E_s",
+    "spatial_index": "i, j",
+    "temporal_index": "t",
+    "layer_index": "k"
+  },
+
+  "evaluation_metrics": {
+    "_note": "Standard metrics and their abbreviations as used in the user's papers.",
+    "RMSE": "root mean squared error",
+    "MAE": "mean absolute error",
+    "MAPE": "mean absolute percentage error",
+    "R_squared": "coefficient of determination (R^2)"
+  },
+
+  "model_names": {
+    "_note": "User's own model names. Always capitalize and format exactly as listed.",
+    "Paper_01": "PitGAN",
+    "Paper_02": "PI-ETGCN",
+    "Paper_03": "THGAN"
+  },
+
+  "journal_formatting": {
+    "_note": "Journal-specific formatting rules the user has encountered. Add entries as new journals are targeted.",
+    "Computers_and_Geotechnics": {
+      "equation_style": "numbered sequentially (1), (2), (3)...",
+      "figure_citation": "Fig. X or Figure X (both accepted)",
+      "reference_style": "Author (Year)"
+    }
+  }
+}

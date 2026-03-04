@@ -1,0 +1,709 @@
+# Term Glossary: CN-EN Mapping
+# Domain: Geotechnical Engineering + AI/ML/DL/LLM
+# Usage: Ensure consistent terminology across Chinese and English methodology sections.
+# Rule: Once a term pair is established, use it consistently throughout the paper.
+
+# =============================================================================
+# GEOTECHNICAL ENGINEERING
+# =============================================================================
+
+geotechnical_engineering:
+  # --- Excavation & Foundation ---
+  - cn: 基坑
+    en: excavation pit
+    abbr: null
+    note: not "foundation pit" in modern usage
+  - cn: 围护结构
+    en: retaining structure
+    abbr: null
+  - cn: 地下连续墙
+    en: diaphragm wall
+    abbr: null
+  - cn: 支撑体系
+    en: bracing system
+    abbr: null
+  - cn: 内支撑
+    en: internal bracing
+    abbr: null
+  - cn: 锚索
+    en: anchor cable
+    abbr: null
+  - cn: 基坑开挖深度
+    en: excavation depth
+    abbr: null
+  - cn: 分步开挖
+    en: staged excavation
+    abbr: null
+  - cn: 坑底隆起
+    en: basal heave
+    abbr: null
+
+  # --- Tunnelling ---
+  - cn: 盾构隧道
+    en: shield tunnel
+    abbr: null
+  - cn: 盾构机
+    en: tunnel boring machine
+    abbr: TBM
+  - cn: 管片
+    en: segment / segment lining
+    abbr: null
+  - cn: 掘进参数
+    en: tunnelling parameters
+    abbr: null
+  - cn: 推力
+    en: thrust force
+    abbr: null
+  - cn: 刀盘扭矩
+    en: cutterhead torque
+    abbr: null
+  - cn: 土仓压力
+    en: chamber pressure
+    abbr: null
+  - cn: 注浆量
+    en: grouting volume
+    abbr: null
+  - cn: 注浆压力
+    en: grouting pressure
+    abbr: null
+  - cn: 地表沉降
+    en: ground surface settlement
+    abbr: null
+  - cn: 隧道收敛
+    en: tunnel convergence
+    abbr: null
+  - cn: 管片上浮
+    en: segment upward displacement
+    abbr: null
+
+  # --- Soil & Ground ---
+  - cn: 土体
+    en: soil mass / soil body
+    abbr: null
+  - cn: 地层
+    en: stratum / geological formation
+    abbr: null
+    note: plural "strata"
+  - cn: 软土
+    en: soft soil / soft clay
+    abbr: null
+  - cn: 粘土
+    en: clay
+    abbr: null
+  - cn: 砂土
+    en: sandy soil / sand
+    abbr: null
+  - cn: 地下水位
+    en: groundwater level
+    abbr: null
+  - cn: 土压力
+    en: earth pressure
+    abbr: null
+  - cn: 弹性模量
+    en: elastic modulus
+    abbr: E_s
+  - cn: 泊松比
+    en: Poisson's ratio
+    abbr: "nu"
+  - cn: 内摩擦角
+    en: internal friction angle
+    abbr: "phi"
+  - cn: 粘聚力
+    en: cohesion
+    abbr: c
+  - cn: 压缩模量
+    en: compression modulus
+    abbr: null
+
+  # --- Monitoring & Deformation ---
+  - cn: 侧向位移
+    en: lateral displacement
+    abbr: null
+  - cn: 水平位移
+    en: horizontal displacement
+    abbr: null
+  - cn: 竖向位移
+    en: vertical displacement
+    abbr: null
+  - cn: 变形监测
+    en: deformation monitoring
+    abbr: null
+  - cn: 监测点
+    en: monitoring point
+    abbr: null
+  - cn: 时空效应
+    en: spatiotemporal effect
+    abbr: null
+  - cn: 数字孪生
+    en: digital twin
+    abbr: DT
+
+  # --- Structural & Analysis ---
+  - cn: 有限元分析
+    en: finite element analysis
+    abbr: FEA
+  - cn: 有限元模型
+    en: finite element model
+    abbr: FEM
+  - cn: 数值模拟
+    en: numerical simulation
+    abbr: null
+  - cn: 代理模型
+    en: surrogate model
+    abbr: null
+  - cn: 力学模型
+    en: mechanical model
+    abbr: null
+  - cn: 本构模型
+    en: constitutive model
+    abbr: null
+  - cn: 弹性地基梁
+    en: beam on elastic foundation
+    abbr: null
+  - cn: Winkler 地基
+    en: Winkler foundation
+    abbr: null
+
+  # --- Risk Assessment ---
+  - cn: 风险评估
+    en: risk assessment
+    abbr: null
+  - cn: 风险等级
+    en: risk grade / risk level
+    abbr: null
+  - cn: 指标体系
+    en: indicator system
+    abbr: null
+  - cn: 层次分析法
+    en: analytic hierarchy process
+    abbr: AHP
+  - cn: 模糊层次分析法
+    en: fuzzy analytic hierarchy process
+    abbr: FAHP
+  - cn: 安全系数
+    en: safety factor
+    abbr: null
+
+# =============================================================================
+# NEURAL NETWORK FUNDAMENTALS
+# =============================================================================
+
+neural_network_fundamentals:
+  - cn: 神经网络
+    en: neural network
+    abbr: NN
+  - cn: 深度学习
+    en: deep learning
+    abbr: DL
+  - cn: 机器学习
+    en: machine learning
+    abbr: ML
+  - cn: 人工智能
+    en: artificial intelligence
+    abbr: AI
+  - cn: 前馈神经网络
+    en: feedforward neural network
+    abbr: FNN
+  - cn: 多层感知机
+    en: multilayer perceptron
+    abbr: MLP
+  - cn: 卷积神经网络
+    en: convolutional neural network
+    abbr: CNN
+  - cn: 循环神经网络
+    en: recurrent neural network
+    abbr: RNN
+  - cn: 长短期记忆网络
+    en: long short-term memory
+    abbr: LSTM
+  - cn: 门控循环单元
+    en: gated recurrent unit
+    abbr: GRU
+  - cn: 激活函数
+    en: activation function
+    abbr: null
+  - cn: 损失函数
+    en: loss function
+    abbr: null
+  - cn: 目标函数
+    en: objective function
+    abbr: null
+  - cn: 反向传播
+    en: backpropagation
+    abbr: null
+  - cn: 梯度下降
+    en: gradient descent
+    abbr: null
+  - cn: 学习率
+    en: learning rate
+    abbr: lr
+  - cn: 批大小
+    en: batch size
+    abbr: null
+  - cn: 训练轮次
+    en: epoch
+    abbr: null
+    note: plural "epochs"
+  - cn: 过拟合
+    en: overfitting
+    abbr: null
+  - cn: 欠拟合
+    en: underfitting
+    abbr: null
+  - cn: 正则化
+    en: regularization
+    abbr: null
+  - cn: Dropout
+    en: dropout
+    abbr: null
+  - cn: 批归一化
+    en: batch normalization
+    abbr: BN
+  - cn: 层归一化
+    en: layer normalization
+    abbr: LN
+  - cn: 权重初始化
+    en: weight initialization
+    abbr: null
+  - cn: 早停法
+    en: early stopping
+    abbr: null
+  - cn: 超参数
+    en: hyperparameter
+    abbr: null
+  - cn: 优化器
+    en: optimizer
+    abbr: null
+  - cn: Adam 优化器
+    en: Adam optimizer
+    abbr: null
+
+# =============================================================================
+# GENERATIVE ADVERSARIAL NETWORKS
+# =============================================================================
+
+gan:
+  - cn: 生成对抗网络
+    en: generative adversarial network
+    abbr: GAN
+  - cn: 条件生成对抗网络
+    en: conditional generative adversarial network
+    abbr: cGAN
+  - cn: 生成器
+    en: generator
+    abbr: G
+  - cn: 判别器
+    en: discriminator
+    abbr: D
+  - cn: 对抗训练
+    en: adversarial training
+    abbr: null
+  - cn: 生成样本
+    en: generated sample
+    abbr: null
+  - cn: Wasserstein 距离
+    en: Wasserstein distance
+    abbr: null
+  - cn: 梯度惩罚
+    en: gradient penalty
+    abbr: GP
+  - cn: 模式坍塌
+    en: mode collapse
+    abbr: null
+
+# =============================================================================
+# GRAPH NEURAL NETWORKS
+# =============================================================================
+
+graph_neural_network:
+  - cn: 图神经网络
+    en: graph neural network
+    abbr: GNN
+  - cn: 图卷积网络
+    en: graph convolutional network
+    abbr: GCN
+  - cn: 图注意力网络
+    en: graph attention network
+    abbr: GAT
+  - cn: 谱图卷积
+    en: spectral graph convolution
+    abbr: null
+  - cn: 切比雪夫多项式
+    en: Chebyshev polynomial
+    abbr: null
+  - cn: 邻接矩阵
+    en: adjacency matrix
+    abbr: A
+  - cn: 度矩阵
+    en: degree matrix
+    abbr: D
+  - cn: 拉普拉斯矩阵
+    en: Laplacian matrix
+    abbr: L
+  - cn: 节点特征
+    en: node feature
+    abbr: null
+  - cn: 边特征
+    en: edge feature
+    abbr: null
+  - cn: 消息传递
+    en: message passing
+    abbr: null
+  - cn: 图构建
+    en: graph construction
+    abbr: null
+  - cn: 空间依赖性
+    en: spatial dependency
+    abbr: null
+  - cn: 格兰杰因果关系
+    en: Granger causality
+    abbr: null
+
+# =============================================================================
+# ATTENTION MECHANISMS & TRANSFORMERS
+# =============================================================================
+
+attention_and_transformer:
+  - cn: 注意力机制
+    en: attention mechanism
+    abbr: null
+  - cn: 自注意力
+    en: self-attention
+    abbr: null
+  - cn: 多头注意力
+    en: multi-head attention
+    abbr: MHA
+  - cn: 交叉注意力
+    en: cross-attention
+    abbr: null
+  - cn: 特征注意力
+    en: feature attention
+    abbr: null
+  - cn: 时间注意力
+    en: temporal attention
+    abbr: null
+  - cn: 空间注意力
+    en: spatial attention
+    abbr: null
+  - cn: 查询-键-值
+    en: query-key-value
+    abbr: Q-K-V
+  - cn: Transformer
+    en: Transformer
+    abbr: null
+    note: capitalize as proper noun
+  - cn: 编码器
+    en: encoder
+    abbr: null
+  - cn: 解码器
+    en: decoder
+    abbr: null
+  - cn: 位置编码
+    en: positional encoding
+    abbr: null
+  - cn: 嵌入
+    en: embedding
+    abbr: null
+  - cn: 嵌入层
+    en: embedding layer
+    abbr: null
+
+# =============================================================================
+# LARGE LANGUAGE MODELS
+# =============================================================================
+
+llm:
+  - cn: 大语言模型
+    en: large language model
+    abbr: LLM
+  - cn: 基础模型
+    en: foundation model
+    abbr: FM
+  - cn: 预训练模型
+    en: pre-trained model
+    abbr: null
+  - cn: 微调
+    en: fine-tuning
+    abbr: null
+  - cn: 提示
+    en: prompt
+    abbr: null
+  - cn: 提示工程
+    en: prompt engineering
+    abbr: null
+  - cn: 上下文学习
+    en: in-context learning
+    abbr: ICL
+  - cn: 少样本学习
+    en: few-shot learning
+    abbr: null
+  - cn: 零样本学习
+    en: zero-shot learning
+    abbr: null
+  - cn: 思维链
+    en: chain-of-thought
+    abbr: CoT
+  - cn: 分词
+    en: tokenization
+    abbr: null
+  - cn: 词元
+    en: token
+    abbr: null
+  - cn: 知识图谱
+    en: knowledge graph
+    abbr: KG
+  - cn: 实体抽取
+    en: entity extraction
+    abbr: null
+  - cn: 主题建模
+    en: topic modeling
+    abbr: null
+  - cn: GPT
+    en: GPT
+    abbr: null
+  - cn: BERT
+    en: BERT
+    abbr: null
+  - cn: LLaMA
+    en: LLaMA
+    abbr: null
+  - cn: T5
+    en: T5
+    abbr: null
+
+# =============================================================================
+# SPATIOTEMPORAL MODELING
+# =============================================================================
+
+spatiotemporal:
+  - cn: 时空图卷积网络
+    en: spatiotemporal graph convolutional network
+    abbr: STGCN
+  - cn: 时序建模
+    en: temporal modeling
+    abbr: null
+  - cn: 空间建模
+    en: spatial modeling
+    abbr: null
+  - cn: 时空预测
+    en: spatiotemporal prediction / forecasting
+    abbr: null
+  - cn: 多源融合
+    en: multi-source fusion
+    abbr: null
+  - cn: 特征融合
+    en: feature fusion
+    abbr: null
+  - cn: 数据融合
+    en: data fusion
+    abbr: null
+  - cn: 滑动窗口
+    en: sliding window
+    abbr: null
+  - cn: 时间步
+    en: time step
+    abbr: null
+
+# =============================================================================
+# TRAINING & EVALUATION
+# =============================================================================
+
+training_and_evaluation:
+  - cn: 训练集
+    en: training set
+    abbr: null
+  - cn: 验证集
+    en: validation set
+    abbr: null
+  - cn: 测试集
+    en: test set
+    abbr: null
+  - cn: 交叉验证
+    en: cross-validation
+    abbr: CV
+  - cn: K 折交叉验证
+    en: K-fold cross-validation
+    abbr: null
+  - cn: 均方误差
+    en: mean squared error
+    abbr: MSE
+  - cn: 均方根误差
+    en: root mean squared error
+    abbr: RMSE
+  - cn: 平均绝对误差
+    en: mean absolute error
+    abbr: MAE
+  - cn: 平均绝对百分比误差
+    en: mean absolute percentage error
+    abbr: MAPE
+  - cn: 决定系数
+    en: coefficient of determination
+    abbr: R^2
+  - cn: 皮尔逊相关系数
+    en: Pearson correlation coefficient
+    abbr: r
+  - cn: 混淆矩阵
+    en: confusion matrix
+    abbr: null
+  - cn: 精确率
+    en: precision
+    abbr: null
+  - cn: 召回率
+    en: recall
+    abbr: null
+  - cn: F1 分数
+    en: F1-score
+    abbr: null
+  - cn: 消融实验
+    en: ablation study
+    abbr: null
+  - cn: 对比实验
+    en: comparative experiment
+    abbr: null
+  - cn: 基线模型
+    en: baseline model
+    abbr: null
+  - cn: 最优值
+    en: state-of-the-art
+    abbr: SOTA
+  - cn: 预测区间
+    en: prediction interval
+    abbr: PI
+  - cn: 置信区间
+    en: confidence interval
+    abbr: CI
+  - cn: 分位数预测
+    en: quantile prediction
+    abbr: null
+  - cn: 不确定性量化
+    en: uncertainty quantification
+    abbr: UQ
+
+# =============================================================================
+# DATA PROCESSING & AUGMENTATION
+# =============================================================================
+
+data_processing:
+  - cn: 数据预处理
+    en: data preprocessing
+    abbr: null
+  - cn: 数据增强
+    en: data augmentation
+    abbr: null
+  - cn: 归一化
+    en: normalization
+    abbr: null
+  - cn: 标准化
+    en: standardization
+    abbr: null
+  - cn: Min-Max 归一化
+    en: Min-Max normalization
+    abbr: null
+  - cn: 特征工程
+    en: feature engineering
+    abbr: null
+  - cn: 特征提取
+    en: feature extraction
+    abbr: null
+  - cn: 降维
+    en: dimensionality reduction
+    abbr: null
+  - cn: 主成分分析
+    en: principal component analysis
+    abbr: PCA
+  - cn: t-SNE 可视化
+    en: t-SNE visualization
+    abbr: null
+  - cn: 敏感性分析
+    en: sensitivity analysis
+    abbr: null
+  - cn: Sobol 敏感性分析
+    en: Sobol sensitivity analysis
+    abbr: null
+  - cn: 自助法
+    en: bootstrapping
+    abbr: null
+
+# =============================================================================
+# STATISTICAL & TRADITIONAL ML
+# =============================================================================
+
+statistical_ml:
+  - cn: 支持向量机
+    en: support vector machine
+    abbr: SVM
+  - cn: 最小二乘支持向量机
+    en: least squares support vector machine
+    abbr: LSSVM
+  - cn: 随机森林
+    en: random forest
+    abbr: RF
+  - cn: 梯度提升
+    en: gradient boosting
+    abbr: null
+  - cn: XGBoost
+    en: XGBoost
+    abbr: null
+  - cn: 高斯过程
+    en: Gaussian process
+    abbr: GP
+  - cn: 贝叶斯优化
+    en: Bayesian optimization
+    abbr: BO
+  - cn: Copula 理论
+    en: Copula theory
+    abbr: null
+  - cn: 元启发式算法
+    en: metaheuristic algorithm
+    abbr: null
+  - cn: 群体智能优化
+    en: swarm intelligence optimization
+    abbr: null
+  - cn: 乌鸦搜索算法
+    en: crow search algorithm
+    abbr: CSA
+  - cn: 云模型
+    en: cloud model
+    abbr: null
+  - cn: PageRank 算法
+    en: PageRank algorithm
+    abbr: null
+  - cn: 聚类系数
+    en: clustering coefficient
+    abbr: null
+  - cn: 有向无环图
+    en: directed acyclic graph
+    abbr: DAG
+
+# =============================================================================
+# PHYSICS-INFORMED & HYBRID
+# =============================================================================
+
+physics_informed:
+  - cn: 物理信息神经网络
+    en: physics-informed neural network
+    abbr: PINN
+  - cn: 物理约束
+    en: physics constraint
+    abbr: null
+  - cn: 物理引导
+    en: physics-guided
+    abbr: null
+  - cn: 混合模型
+    en: hybrid model
+    abbr: null
+  - cn: 数据驱动
+    en: data-driven
+    abbr: null
+  - cn: 机理驱动
+    en: mechanism-driven / physics-based
+    abbr: null
+  - cn: 数据-机理融合
+    en: data-mechanism fusion / physics-data integration
+    abbr: null
+  - cn: 迁移学习
+    en: transfer learning
+    abbr: TL
+  - cn: 领域自适应
+    en: domain adaptation
+    abbr: null
