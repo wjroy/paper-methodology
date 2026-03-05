@@ -284,3 +284,149 @@ Before generating any methodology text, read this entire file and:
    pattern from Section 5.
 6. **Match Chinese conventions**: Follow spacing, punctuation, and register
    rules from Section 6.
+
+---
+
+## 8. Universal Style Grammar (from all 5 papers)
+
+**Note**: This section extracts your **writing grammar** (sentence patterns, structure, logic flow) from all 5 papers. This is NOT about specific technologies but about HOW you describe any component or method.
+
+### 8.1 Component Introduction Pattern
+
+**Your Universal Pattern**: "[Component] serves as [role], [function description]"
+
+**Variations across your papers**:
+- Paper 01 (PitGAN): "PitGAN serves as a surrogate model that replaces expensive numerical simulations..."
+- Paper 02 (PI-ETGCN): "The EGCN module serves as a spatial feature extractor that captures wall-soil-pipeline interactions..."
+- Paper 03 (THGAN): "The IBS model serves as a digital twin that bridges physical construction and virtual monitoring..."
+- Paper 04 (LLM-GNN): "The LLM module serves as a semantic encoder that transforms unstructured text into embeddings..."
+- Paper 05 (TSFRA): "The DAG-GNN serves as a risk propagation model that captures causal dependencies..."
+
+**Key Grammar Elements**:
+1. "serves as" - your preferred verb phrase for component positioning
+2. "[role]" - functional identity (not implementation specific)
+3. "that/which [function]" - what it does, using "transforms X into Y for Z" pattern
+
+**Confidence**: HIGH (consistent across all 5 papers)
+
+### 8.2 Function Description Pattern
+
+**Your Universal Pattern**: "transforms [input] into [output] for [purpose]"
+
+**Variations**:
+- "transforms geotechnical parameters into displacement fields for rapid prediction" (01)
+- "transforms multi-source monitoring data into spatiotemporal representations for risk assessment" (02)
+- "transforms construction stage parameters into mechanical states for deformation forecasting" (03)
+- "transforms unstructured logs into structured features for multimodal fusion" (04)
+- "transforms settlement indicators into risk grades for safety evaluation" (05)
+
+**Key Grammar Elements**:
+1. "transforms" - your preferred verb for input-output mapping
+2. "into" - explicit output specification
+3. "for" - purpose clause explaining why
+
+**Confidence**: HIGH (5/5 papers)
+
+### 8.3 Framework Overview Pattern
+
+**Your Universal Pattern**: "3-4 numbered steps with parenthetical references"
+
+**Structure** (from all papers):
+```
+"The proposed [METHOD] framework consists of [N] main steps: 
+(1) [Step 1 description]; 
+(2) [Step 2 description]; 
+(3) [Step 3 description]. 
+Figure X illustrates the overall architecture."
+```
+
+**Key Grammar Elements**:
+1. "consists of [N] main steps" - your standard opening
+2. Numbered list (1), (2), (3) with semicolons
+3. "Figure X illustrates" - figure reference pattern
+4. ~100-150 words for overview paragraph
+
+**Confidence**: HIGH (all 5 papers follow this exactly)
+
+### 8.4 Section Ordering Principle
+
+**Your Universal Principle**: "Dependencies before dependents"
+
+**Standard hierarchy across all papers**:
+1. **Section X.1**: Overview (framework + figure reference)
+2. **Section X.2**: Physical/Mechanical/Data Model (the foundation)
+3. **Section X.3**: Data Generation/Processing (input preparation)
+4. **Section X.4**: Neural Architecture (the ML model)
+5. **Section X.5**: Training/Optimization/Loss
+6. **Section X.6**: Evaluation (optional, sometimes moved to Experiments)
+
+**Key Logic**: Physics/Data always precedes Neural Network
+
+**Confidence**: HIGH (all 5 papers)
+
+### 8.5 Paragraph Internal Flow
+
+**Your Universal Pattern**: Motivation → Formulation → Definition
+
+**Structure** (observed in all papers):
+```
+[1 sentence: Why this component is needed]
+[1 sentence: Mathematical/formal description]
+[Equation if applicable]
+["where" block defining symbols]
+[Optional: 1 sentence interpretation or transition]
+```
+
+**Key Grammar Elements**:
+- Motivation starters: "To capture...", "To address...", "To model..."
+- Formulation verbs: "is formulated as", "is defined as", "is computed by"
+- Definition verbs: "denotes", "represents", "is defined as"
+
+**Confidence**: HIGH (95% of paragraphs follow this)
+
+### 8.6 Argumentation Logic Pattern
+
+**Your Universal Pattern**: Problem → Insight → Method → Validation
+
+**Observed across papers**:
+1. **Problem**: Current limitations or challenges
+2. **Insight**: Key observation or hypothesis
+3. **Method**: Your solution with technical details
+4. **Validation**: How you verify it works
+
+**Example flow (from 02-PI-ETGCN)**:
+- Problem: "Existing methods fail to capture wall-soil-pipeline coupling"
+- Insight: "Edge features can encode mechanical priors"
+- Method: "PI-ETGCN with trainable physics parameters"
+- Validation: "Coupling-consistency constraints ensure coordination"
+
+**Confidence**: HIGH (all technical sections)
+
+---
+
+## 9. Usage Instructions for Foundation Model Papers
+
+When writing papers with LLM, TSFM, or other foundation models:
+
+**DO** (from your universal grammar):
+- Use "serves as [role]" for component positioning
+- Use "transforms X into Y for Z" for function description
+- Use 3-4 numbered steps in overview
+- Follow Physics/Data → Model order
+- Use Motivation → Formulation → Definition paragraph flow
+
+**DO NOT** (avoid limitation):
+- ❌ Limit LLM to "text encoder" - use your grammar for ANY role
+- ❌ Copy specific implementations from reference papers
+- ❌ Assume GNN must be GCN/GAT - your grammar works for any architecture
+
+**Example**: If your new paper uses LLM for temporal pattern extraction (not text):
+```
+✅ "The LLM serves as a temporal pattern extractor that transforms 
+    historical sequences into latent representations for forecasting..."
+    
+❌ "The LLM serves as a text encoder..." (only if actually processing text)
+```
+
+Your grammar is **universal** - it works for any technical content!
+

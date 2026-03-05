@@ -9,7 +9,9 @@
 
 - [ ] **No fabricated values**: Every dataset name, parameter value, hyperparameter, metric, and baseline in MethodSpec comes directly from the user's input (notes, code, config).
 - [ ] **No fabricated citations**: Every reference in MethodSpec is either provided by the user or marked as `[CITATION NEEDED]`.
-- [ ] **Conflict flagging**: If user notes contradict code/config files, the code/config value is used AND the conflict is logged in TODO/VERIFY.
+- [ ] **Source traceability**: Every hard fact (numerical value, dataset name, model architecture detail) has a populated `Source:` field. Empty Source fields are treated as FAIL.
+- [ ] **Confidence marking**: Every item with `Confidence: NEEDS_VERIFY` has a clear explanation in the TODO/VERIFY list.
+- [ ] **Conflict flagging**: If user notes contradict code/config files, the code/config value is used AND the conflict is logged in TODO/VERIFY WITH both Source references.
 - [ ] **Completeness**: All required MethodSpec fields have values or explicit `[TBD]` / `[TODO: user to confirm]` markers.
 
 ---

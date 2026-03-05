@@ -707,3 +707,502 @@ physics_informed:
   - cn: 领域自适应
     en: domain adaptation
     abbr: null
+
+# =============================================================================
+# LARGE LANGUAGE MODELS (LLM)
+# =============================================================================
+
+llm_foundation_models:
+  # --- LLM Basics ---
+  - cn: 大语言模型
+    en: large language model
+    abbr: LLM
+  - cn: 预训练语言模型
+    en: pre-trained language model
+    abbr: PLM
+  - cn: 基础模型
+    en: foundation model
+    abbr: null
+  - cn: 生成式预训练变换器
+    en: Generative Pre-trained Transformer
+    abbr: GPT
+  - cn: 双向编码器表示
+    en: Bidirectional Encoder Representations from Transformers
+    abbr: BERT
+  
+  # --- LLM Techniques ---
+  - cn: 提示工程
+    en: prompt engineering
+    abbr: null
+  - cn: 上下文学习
+    en: in-context learning
+    abbr: ICL
+  - cn: 少样本学习
+    en: few-shot learning
+    abbr: null
+  - cn: 零样本学习
+    en: zero-shot learning
+    abbr: null
+  - cn: 微调
+    en: fine-tuning
+    abbr: null
+  - cn: 指令微调
+    en: instruction tuning
+    abbr: null
+  - cn: 文本嵌入
+    en: text embedding
+    abbr: null
+  - cn: 词嵌入
+    en: word embedding
+    abbr: null
+  - cn: 掩码语言模型
+    en: masked language model
+    abbr: MLM
+  - cn: 命名实体识别
+    en: named entity recognition
+    abbr: NER
+  - cn: 关系抽取
+    en: relation extraction
+    abbr: null
+  - cn: 知识图谱
+    en: knowledge graph
+    abbr: KG
+    note: distinct from GNN graph structures
+  - cn: 三元组
+    en: triple
+    abbr: null
+    note: (subject, predicate, object) in knowledge graphs
+  - cn: 本体
+    en: ontology
+    abbr: null
+  - cn: 多模态融合
+    en: multimodal fusion
+    abbr: null
+  - cn: 文本分类
+    en: text classification
+    abbr: null
+  - cn: 主题建模
+    en: topic modeling
+    abbr: null
+
+# =============================================================================
+# PARAMETER-EFFICIENT FINE-TUNING (PEFT)
+# =============================================================================
+
+peft_methods:
+  # --- PEFT Overview ---
+  - cn: 参数高效微调
+    en: parameter-efficient fine-tuning
+    abbr: PEFT
+    note: umbrella term for LoRA, adapter, prompt tuning, etc.
+  
+  # --- Low-Rank Adaptation (LoRA) ---
+  - cn: 低秩适配
+    en: Low-Rank Adaptation
+    abbr: LoRA
+    note: fine-tuning via low-rank decomposition of weight updates
+  
+  - cn: 低秩分解
+    en: low-rank decomposition
+    abbr: null
+  
+  - cn: 秩
+    en: rank
+    abbr: r
+  
+  - cn: 权重更新
+    en: weight update
+    abbr: ΔW
+  
+  - cn: 缩放因子
+    en: scaling factor
+    abbr: α
+  
+  # --- Adapter Methods ---
+  - cn: 适配器
+    en: adapter
+    abbr: null
+    note: small trainable modules inserted between frozen layers
+  
+  - cn: 瓶颈层
+    en: bottleneck layer
+    abbr: null
+  
+  - cn: 降维投影
+    en: down-projection
+    abbr: null
+  
+  - cn: 升维投影
+    en: up-projection
+    abbr: null
+  
+  # --- Prompt Tuning Methods ---
+  - cn: 软提示微调
+    en: soft prompt tuning / prompt tuning
+    abbr: null
+    note: learning continuous prompt embeddings
+  
+  - cn: 前缀微调
+    en: prefix tuning
+    abbr: null
+    note: prepending trainable prefix vectors to each layer
+  
+  - cn: 视觉提示微调
+    en: visual prompt tuning
+    abbr: VPT
+    note: for vision models
+  
+  - cn: 可学习提示
+    en: learnable prompt / soft prompt
+    abbr: null
+  
+  # --- General PEFT Terms ---
+  - cn: 冻结主干网络
+    en: frozen backbone
+    abbr: null
+    note: keeping pre-trained weights fixed during adaptation
+  
+  - cn: 可训练参数
+    en: trainable parameters
+    abbr: null
+  
+  - cn: 参数冻结
+    en: parameter freezing
+    abbr: null
+  
+  - cn: 参数效率
+    en: parameter efficiency
+    abbr: null
+
+# =============================================================================
+# TIME SERIES FOUNDATION MODELS (TSFM)
+# =============================================================================
+
+tsfm_specific:
+  # --- TSFM Models ---
+  - cn: 时序基础模型
+    en: time series foundation model
+    abbr: TSFM
+  
+  - cn: Chronos模型
+    en: Chronos
+    abbr: null
+    note: language model-based TSFM
+  
+  - cn: TimesFM模型
+    en: TimesFM
+    abbr: null
+    note: Google's time series foundation model
+  
+  - cn: Moirai模型
+    en: Moirai
+    abbr: null
+    note: Salesforce's multimodal TSFM
+  
+  - cn: TimeGPT模型
+    en: TimeGPT
+    abbr: null
+    note: first commercial TSFM
+  
+  - cn: Timer模型
+    en: Timer
+    abbr: null
+    note: decoder-only TSFM
+  
+  # --- TSFM Techniques ---
+  - cn: 通道独立
+    en: channel-independent
+    abbr: CI
+    note: modeling each variable independently
+  
+  - cn: 单序列格式
+    en: single-series sequence
+    abbr: S3
+    note: Timer's data format
+  
+  - cn: 补丁嵌入
+    en: patch embedding
+    abbr: null
+    note: splitting time series into patches as tokens
+  
+  - cn: 自回归采样
+    en: autoregressive sampling
+    abbr: null
+  
+  - cn: 概率预测
+    en: probabilistic forecasting
+    abbr: null
+  
+  - cn: 量化
+    en: quantization
+    abbr: null
+    note: for time series tokenization
+  
+  - cn: 缩放
+    en: scaling
+    abbr: null
+    note: normalization for time series
+  
+  - cn: 可逆实例归一化
+    en: reversible instance normalization
+    abbr: RevIN
+  
+  - cn: 归一化偏置
+    en: normalization bias
+    abbr: NB
+    note: for prompt tuning adaptation
+  
+  # --- Data Augmentation ---
+  - cn: TSMixup
+    en: TSMixup
+    abbr: null
+    note: time series data augmentation method
+  
+  - cn: KernelSynth
+    en: KernelSynth
+    abbr: null
+    note: synthetic data generation via Gaussian processes
+
+# =============================================================================
+# RISK ASSESSMENT & UNCERTAINTY QUANTIFICATION
+# =============================================================================
+
+risk_assessment:
+  # --- Risk Concepts ---
+  - cn: 风险评估
+    en: risk assessment
+    abbr: null
+  - cn: 风险等级
+    en: risk grade / risk level
+    abbr: null
+  - cn: 风险概率
+    en: risk probability
+    abbr: null
+  - cn: 风险指标
+    en: risk indicator
+    abbr: null
+  - cn: 风险因素
+    en: risk factor
+    abbr: null
+  - cn: 不确定性量化
+    en: uncertainty quantification
+    abbr: UQ
+  
+  # --- Risk Assessment Methods ---
+  - cn: 层次分析法
+    en: Analytic Hierarchy Process
+    abbr: AHP
+  - cn: 模糊层次分析法
+    en: Fuzzy Analytic Hierarchy Process
+    abbr: FAHP
+  - cn: 熵权法
+    en: entropy method / entropy weight method
+    abbr: null
+  - cn: 期望值
+    en: expectation
+    abbr: Ex
+    note: Cloud Model parameter
+  - cn: 熵
+    en: entropy
+    abbr: En
+    note: Cloud Model parameter
+  - cn: 超熵
+    en: hyper-entropy
+    abbr: He
+    note: Cloud Model parameter
+  - cn: 隶属度
+    en: membership degree
+    abbr: null
+  - cn: 三角模糊数
+    en: triangular fuzzy number
+    abbr: TFN
+  
+  # --- Bayesian Methods ---
+  - cn: 贝叶斯推断
+    en: Bayesian inference
+    abbr: null
+  - cn: 先验分布
+    en: prior distribution
+    abbr: null
+  - cn: 后验分布
+    en: posterior distribution
+    abbr: null
+  - cn: 似然函数
+    en: likelihood function
+    abbr: null
+  - cn: Beta分布
+    en: Beta distribution
+    abbr: null
+  - cn: 二项分布
+    en: Binomial distribution
+    abbr: null
+  - cn: 贝叶斯程序学习
+    en: Bayesian Program Learning
+    abbr: BPL
+  
+  # --- Uncertainty Quantification ---
+  - cn: 分位数预测
+    en: quantile prediction
+    abbr: null
+  - cn: 预测区间
+    en: prediction interval
+    abbr: PI
+  - cn: 置信区间
+    en: confidence interval
+    abbr: CI
+  - cn: Copula理论
+    en: Copula theory
+    abbr: null
+  - cn: 自助法
+    en: bootstrapping
+    abbr: null
+  - cn: 蒙特卡洛模拟
+    en: Monte Carlo simulation
+    abbr: MC
+  - cn: 敏感性分析
+    en: sensitivity analysis
+    abbr: null
+  - cn: Sobol敏感性分析
+    en: Sobol sensitivity analysis
+    abbr: null
+
+# =============================================================================
+# ADVANCED GNN TECHNIQUES (EXTENSIONS)
+# =============================================================================
+
+gnn_advanced:
+  # --- Graph Types ---
+  - cn: 异构图
+    en: heterogeneous graph
+    abbr: null
+  - cn: 时空图
+    en: spatiotemporal graph
+    abbr: null
+  - cn: 多关系图
+    en: multi-relational graph
+    abbr: null
+  
+  # --- Advanced GNN Methods ---
+  - cn: 异构图注意力网络
+    en: Heterogeneous Graph Attention Network
+    abbr: HGAN
+  - cn: 边增强图卷积网络
+    en: Edge-enhanced Graph Convolutional Network
+    abbr: EGCN
+  - cn: 谱图卷积
+    en: spectral graph convolution
+    abbr: null
+  - cn: 切比雪夫多项式近似
+    en: Chebyshev polynomial approximation
+    abbr: null
+  - cn: 图小波网络
+    en: Graph WaveNet
+    abbr: null
+
+# =============================================================================
+# LARGE LANGUAGE MODELS (LLM)
+# =============================================================================
+
+llm_foundation_models:
+  - cn: 大语言模型
+    en: large language model
+    abbr: LLM
+  - cn: 预训练语言模型
+    en: pre-trained language model
+    abbr: PLM
+  - cn: 基础模型
+    en: foundation model
+    abbr: null
+  - cn: 提示工程
+    en: prompt engineering
+    abbr: null
+  - cn: 上下文学习
+    en: in-context learning
+    abbr: ICL
+  - cn: 少样本学习
+    en: few-shot learning
+    abbr: null
+  - cn: 零样本学习
+    en: zero-shot learning
+    abbr: null
+  - cn: 微调
+    en: fine-tuning
+    abbr: null
+  - cn: 文本嵌入
+    en: text embedding
+    abbr: null
+  - cn: 知识图谱
+    en: knowledge graph
+    abbr: KG
+  - cn: 多模态融合
+    en: multimodal fusion
+    abbr: null
+
+# =============================================================================
+# PEFT METHODS
+# =============================================================================
+
+peft_methods:
+  - cn: 参数高效微调
+    en: parameter-efficient fine-tuning
+    abbr: PEFT
+  - cn: 低秩适配
+    en: Low-Rank Adaptation
+    abbr: LoRA
+  - cn: 适配器
+    en: adapter
+    abbr: null
+  - cn: 软提示微调
+    en: soft prompt tuning
+    abbr: null
+  - cn: 冻结主干网络
+    en: frozen backbone
+    abbr: null
+  - cn: 可训练参数
+    en: trainable parameters
+    abbr: null
+
+# =============================================================================
+# TIME SERIES FOUNDATION MODELS
+# =============================================================================
+
+tsfm_specific:
+  - cn: 时序基础模型
+    en: time series foundation model
+    abbr: TSFM
+  - cn: 通道独立
+    en: channel-independent
+    abbr: CI
+  - cn: 补丁嵌入
+    en: patch embedding
+    abbr: null
+  - cn: 概率预测
+    en: probabilistic forecasting
+    abbr: null
+  - cn: 自回归采样
+    en: autoregressive sampling
+    abbr: null
+  - cn: 可逆实例归一化
+    en: reversible instance normalization
+    abbr: RevIN
+
+# =============================================================================
+# RISK & UNCERTAINTY
+# =============================================================================
+
+risk_uncertainty:
+  - cn: 分位数预测
+    en: quantile prediction
+    abbr: null
+  - cn: 预测区间
+    en: prediction interval
+    abbr: PI
+  - cn: 贝叶斯推断
+    en: Bayesian inference
+    abbr: null
+  - cn: 先验分布
+    en: prior distribution
+    abbr: null
+  - cn: 后验分布
+    en: posterior distribution
+    abbr: null

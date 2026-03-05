@@ -111,7 +111,66 @@ ANALYZE → RECALL → PLAN → DRAFT → AUDIT → ITERATE
 **Gate**: Do not proceed until all provided materials have been read. If
 materials are incomplete, list what is missing and ask the user.
 
-### Step 2: RECALL — Load Memory & Context
+### Step 2: MAP — Generate Methodology Map
+
+**Purpose**: Analyze research direction, extract keywords, and generate personalized methodology map from reference papers.
+
+**Actions**:
+
+1. **Open keyword extraction**:
+   - Parse user's research description for technical terms
+   - Identify model names (LLM, TSFM, GNN, etc.)
+   - Identify methods (LoRA, GAN, etc.)
+   - Identify application domain (excavation, tunnel, etc.)
+   - Ask clarifying questions for ambiguous terms
+
+2. **Search reference papers** (all 18 txt files):
+   - Search for extracted keywords in all reference_papers/*.txt
+   - Calculate relevance scores based on keyword matches
+   - Prioritize: exact matches > variant matches > semantic proximity
+   - Return top 5-7 most relevant papers
+
+3. **Generate Methodology Map**:
+   ```
+   METHODOLOGY MAP (Auto-generated)
+   ════════════════════════════════════════════════════════════
+   
+   Detected Keywords: [list of identified keywords]
+   
+   Your Style Profile (Universal Grammar):
+   - Component introduction: "[Component] serves as [role]"
+   - Function description: "transforms [input] into [output] for [purpose]"
+   - Overview format: 3-4 numbered steps
+   - Section order: Physics/Data → Model
+   - Paragraph flow: Motivation → Formulation → Definition
+   
+   Reference Papers (by relevance):
+   1. [FileName.txt] (Score: X.XX)
+      └─ Learn: [What narrative structure to learn from this paper]
+      └─ Not: [What NOT to copy - specific values/content]
+   
+   2. [FileName.txt] (Score: X.XX)
+      └─ Learn: [...]
+      └─ Not: [...]
+   
+   Suggested Structure (based on your style):
+   - Section X.1: Overview (your 3-4 step pattern)
+   - Section X.2: [Component/Model 1] (reference [paper] for structure)
+   - Section X.3: [Component/Model 2] (reference [paper] for structure)
+   - ...
+   
+   ⚠️  CRITICAL RULES:
+   1. Use reference papers ONLY for narrative STRUCTURE and LOGIC
+   2. ALL specific values/params/content must be YOURS from code/experiments
+   3. Write using YOUR style grammar (from user_style_profile.md)
+   4. Adapt technical descriptions to YOUR specific implementation
+   
+   ════════════════════════════════════════════════════════════
+   ```
+
+**Gate**: The Map is advisory. Proceed to Step 3 with the map in context.
+
+### Step 3: RECALL — Load Memory & Context
 
 **Purpose**: Load the user's established patterns and past corrections before writing.
 
@@ -143,7 +202,7 @@ materials are incomplete, list what is missing and ask the user.
 **Gate**: Confirm internally that all 4 files were read. If any file is missing
 or empty, note it and proceed with defaults from `style_guide_methodology.md`.
 
-### Step 3: PLAN — Generate MethodSpec with DoD
+### Step 4: PLAN — Generate MethodSpec with DoD
 
 **Purpose**: Create the single source of truth before any prose is written.
 
@@ -157,16 +216,33 @@ or empty, note it and proceed with defaults from `style_guide_methodology.md`.
    - LLM-enhanced → LLM integration point as dedicated subsection
    - Risk assessment → indicator system first
 5. Compile the CONFLICTS & GAPS section.
-6. **Present MethodSpec to the user** and wait for confirmation:
+6. **Present MethodSpec to the user** and STOP for confirmation:
 
    "MethodSpec is ready for review. Please check:
    1. Are all values correct? (Especially Section 8: Training Configuration)
-   2. Are there any missing components not captured above?
-   3. Should I proceed to generate the Chinese and English methodology sections?"
+   2. Are all Source fields populated for hard facts?
+   3. Are there any missing components not captured above?
+   4. Reply CONFIRM or OK to proceed to DRAFT, or provide corrections."
 
-**Gate**: Do NOT proceed to DRAFT until the user confirms. If the user provides
-corrections, update the MethodSpec, log corrections in `error_log.md` if they
-represent a generalizable mistake, and re-present.
+**Gate (MANDATORY)**: Do NOT proceed to DRAFT until the user explicitly replies with
+"CONFIRM", "OK", "proceed", or equivalent affirmative response. This gate is ALWAYS
+enforced UNLESS the user's initial prompt explicitly includes phrases like:
+- "skip confirmation" / "跳过确认"
+- "generate directly" / "直接生成"
+- "no review needed" / "无需审核"
+
+If the user provides corrections:
+- Update the MethodSpec with corrected values
+- Update Source fields if corrections reveal new sources
+- Log corrections in `error_log.md` if they represent a generalizable mistake
+- Re-present the updated MethodSpec and wait for confirmation again
+
+**Exception: Skip-confirmation mode**
+
+If the user's initial prompt contains explicit skip-confirmation instructions
+(e.g., "write methodology, skip MethodSpec confirmation" or "直接生成，无需确认"),
+the AI may proceed directly from PLAN to DRAFT without waiting. However, the
+MethodSpec must still be generated and included in the final output.
 
 ### Step 4: DRAFT — Write CN and EN Methodology
 

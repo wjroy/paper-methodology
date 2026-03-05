@@ -189,3 +189,4 @@ Replace these with simpler alternatives unless technically necessary:
 - Write equations in plain text notation or describe them verbally.
 - Mark equation placeholders: "[Equation (N): description]"
 - The user will format equations in Word's equation editor.
+

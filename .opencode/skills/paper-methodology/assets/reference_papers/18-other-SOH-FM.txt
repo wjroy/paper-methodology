@@ -1,0 +1,22 @@
+Fine-tuning enables state of health estimation for lithium-ion batteries via a time series foundation model.pdf
+提取的Method/Methodology部分:
+========================================================================
+2. Methodology
+We constructed a framework for estimating LIBs SOH using fine-tuned pre-trained TimeGPT, as shown in Fig. 1. The framework consists of a fine-tuning component, pre-trained TimeGPT, and an inference process. The battery data used for fine-tuning and the details of the fine-tuning process will be elaborated in Section 2.2.
+2.1. Framework overview
+As the first foundational model for time series data, TimeGPT is trained on the Transformer architecture. It has been trained on over a trillion data samples, with the training set encompassing time series data from numerous domains, including finance, healthcare, weather, the Internet of Things, energy, and network traffic. These time series datasets span different lengths, periods, and sampling frequencies. However, the specific training data and parameters have not been publicly disclosed, and currently, it can only be accessed via an API call.
+Fig. 1. Flowchart of fine-tuning TimeGPT with six different cathode materials in LIBs for SOH estimation.
+
+2.2. Fine tuning
+Fine-tuning serves as a bridge between pre-trained models and specific downstream tasks. By re-training the model on the dataset of the target task, fine-tuning specializes the model parameters. In this study, fine-tuning plays a crucial role, and the entire process is divided into four stages. Specifically, these include data preprocessing, constructing the fine-tuning dataset by concatenating the data, fine-tuning with the input dataset, and inference by determining the prediction step length based on the test set.
+Stage 1 involves preprocessing the data collected from six types of cathode materials, comprising a total of 143 LIBs. The corresponding SOH is calculated using the Coulomb counting method and used as the target value. In Stage 2, the preprocessed battery data from Stage 1 is concatenated to form the fine-tuning dataset. In Stage 3, the fine-tuning dataset obtained in Stage 2 is input into TimeGPT for fine-tuning. The input information includes 
+, 
+, 
+, 
+, and 
+. Stage 4 determines the prediction step length based on the dataset to be predicted before inference. Specifically, the prediction step length for the two test sets used in this study. The step length represents the number of cycles until the battery SOH decays to 0.8. The detailed processing and fine-tuning procedures can be found in Algorithm 1, and the detailed information of fine-tuning dataset can be found in Table 1. The hyperparameters involved in the process include 
+ (prediction step); 
+: RMSE; 
+: 10, 25, 50, 100; Exogenous variables: 
+, 
+.

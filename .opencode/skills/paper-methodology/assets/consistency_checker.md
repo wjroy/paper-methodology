@@ -170,23 +170,45 @@ ERROR LOG AUDIT
 
 ---
 
-### Pass 7: Anti-Hallucination Audit
+### Pass 7a: Source Traceability Audit
+
+**Scope**: MethodSpec only
+
+**Procedure**:
+1. For every hard fact in the MethodSpec (numerical values, dataset names, architecture details, hyperparameters):
+   - Check that the `Source:` field is populated (not empty).
+   - Verify the source reference is specific (e.g., `@config.yaml#L10` not just "config file").
+2. For every item with `Confidence: NEEDS_VERIFY`:
+   - Check that there is a corresponding entry in Section 10: CONFLICTS & GAPS.
+3. For every conflict between notes and code:
+   - Verify both sources are cited: `Source: user notes say X; code @file.py#L5 says Y; using Y (code wins)`.
+
+**Output format**:
+```
+SOURCE TRACEABILITY AUDIT
+  [PASS] batch_size=32 — Source: @config.yaml#L8, Confidence: OK
+  [PASS] learning_rate=0.0002 — Source: @train.py#L45, Confidence: OK
+  [FAIL] "3000 samples" — Source field is empty — add source or mark [TBD]
+  [FLAG] "excavation depth range 5-15m" — Confidence: NEEDS_VERIFY but no explanation in Section 10 — add to CONFLICTS & GAPS
+```
+
+---
+
+### Pass 7b: Anti-Hallucination Audit
 
 **Scope**: MethodSpec + both versions
 
 **Procedure**:
-1. For every dataset name, parameter value, hyperparameter, metric, and baseline
-   in the text: trace it back to the user's input (notes, code, or config).
-2. If a value cannot be traced: FAIL — mark as [TBD] and add to TODO/VERIFY.
+1. For every dataset name, parameter value, hyperparameter, metric, and baseline in the text: trace it back to the MethodSpec Source field.
+2. If a value in CN/EN text cannot be traced to a MethodSpec Source: FAIL — mark as [TBD] and add to TODO/VERIFY.
 3. For every citation: verify it was provided by the user, not generated.
-4. Check that no equation, model name, or technique was introduced that the user
-   did not mention.
+4. Check that no equation, model name, or technique was introduced that the user did not mention.
 
 **Output format**:
 ```
 ANTI-HALLUCINATION AUDIT
-  [PASS] All parameter values traced to user input
-  [FAIL] "dropout rate of 0.3" appears in EN Section 3.4 but user never specified dropout — remove or mark [TBD]
+  [PASS] All parameter values traced to MethodSpec with valid Source
+  [FAIL] "dropout rate of 0.3" appears in EN Section 3.4 but MethodSpec has no Source for this — remove or mark [TBD]
   [FLAG] Citation "Zhang et al. (2024)" — user provided name but not full reference — add [CITATION NEEDED]
 ```
 

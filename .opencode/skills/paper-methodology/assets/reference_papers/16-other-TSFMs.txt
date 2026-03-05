@@ -1,0 +1,91 @@
+Probabilistic forecasting for building energy systems using time-series foundation models.pdf
+提取的Method/Methodology部分:
+========================================================================
+2. Methodology
+We propose a probabilistic forecasting framework that leverages time-series foundation models for building energy systems. We begin by formulating the problem as a probabilistic time-series forecasting task, as detailed in Section 2.1. Subsequently, in Section 2.2, we detail the fine-tuning methods applied to adapt the foundation models to our specific application, enhancing their accuracy and reliability in the context of building energy systems.
+2.1. Probabilistic forecasting in building energy systems
+Consider a zone in the building equipped with sensors that collect time-series data, such as occupancy, CO2, or plug loads. Let 
+ denote the univariate time-series of one of the monitored signals. The primary objective of probabilistic forecasting is to predict the conditional probability distribution
+of the future sequence
+(1)
+based on a past context sequence
+(2)
+for a given predictive window length 
+ and context window length 
+. Consequently, a data-driven approach identifies a model, with parameters 
+, that best describes the conditional distribution (usually by minimizing a loss function) by taking windows of training data.
+In this paper, we formulate the building forecasting problem as univariate forecasting each of the time-series signals. This is mainly to make the study fair as most state-of-the-art deep learning models, especially TSFMs, currently do not support multivariate forecasting. Additionally, empirical evidence suggests that the state-of-the-art multivariate approach, while theoretically consistent, often results in lower performance compared to univariate methods [42], [43], although this may be debated.
+2.2. Time-series foundation models
+Foundation models (FMs) [33] have recently emerged as a significant paradigm in artificial intelligence (AI), demonstrating state-of-the-art performance across a wide range of applications. The core concept of FMs involves using large datasets to pre-train models with a very large number of parameters on generic self-supervised generative tasks (typically next-sample prediction), which can then be applied to downstream tasks with little (fine-tuning) to zero adaptation. Since FMs are compositions of a very large number of parameterized modules, they are flexible enough to reconstruct a varied landscape of functions. In this paper, we restrict our study to time-series foundation models, of which we consider three available at the time this paper is written: Moirai, TimesFM, and Chronos. Moirai, with its multimodal and hierarchical design, is reported to excel at capturing both short-term fluctuations and long-term trends, making it particularly adept at handling fragmented and high-variance inputs [43]. TimesFM, on the other hand, emphasizes cross-task transfer learning by providing a flexible framework that seamlessly adapts its forecasting layers to new tasks without extensive re-training, thus boosting efficiency in real-world deployment scenarios [44]. Chronos leverages a customized attention mechanism that natively handles irregular sampling and missing data, and is touted to perform well in tasks with incomplete contextual data [45]. Despite some structural and algorithmic differences, the TSFM networks share many similarities: the foremost being that they are all probabilistic time-series forecasting models, trained with self-supervised generative task consistent with the foundation model paradigm. Furthermore, they are essentially built around transformer networks [19], and comprise over 
+ trainable parameters. Additionally, they have all been made available on GitHub with weights pre-trained on broad collections of publicly available datasets covering various domains such as energy, transport, climate/weather, sales, economy, healthcare, and web data, often along with synthetic datasets, all of which have been considered at multiple time-scales. For these reasons, the authors of these works often refer to these TSFMs as ‘universal forecasters’. We opted not to discuss other time-series foundation models in this study primarily because Moirai, TimesFM, and Chronos collectively epitomize the predominant design innovations: hierarchical multi-modality, cross-task transfer capabilities, and adaptive attention-based architectures. Although there exist additional models that rely on variations of these strategies, they rarely depart substantially in either methodological underpinnings or empirical contributions.
+Note that the objective of this work is not to choose a ‘winner’ between the TSFMs, but instead to understand applicability and challenges in adopting them for time-series forecasting in practical building energy applications.
+Due to their training on myriad datasets, TSFMs acquire the capability to autonomously identify temporal patterns such as periodicity and other generic yet distinctive trends within the pre-training data. This characteristic enables TSFMs to approximately generalize to unseen domains without task-specific fine-tuning, a feature known as zero-shot inference. This means that zero adaptation/fine-tuning iterations are spent training the TSFM on task-specific data, and only the network’s intrinsic adaptation mechanism, usually via attention layers, provides the conditional distribution 
+. The feasibility of zero-shot prediction differentiates FMs from classical deep learning models, offering significant convenience by eliminating the cumbersome process of data preparation and model retraining for each new task.
+Unfortunately, zero-shot inference requires a sufficiently long context dataset to yield good predictive accuracy (we provide evidence later in §Section 4.2 of this paper), which may not always be available for reasons discussed in the introduction. In fact, allowing for long context lengths is contrary to the major premise of this paper, which is to be able to generate good predictions with limited data. Therefore, we focus our efforts on investigating efficient adaptation mechanisms with limited contextual data, which is discussed next.
+2.3. Fine-tuning TSFMs for building energy systems
+Fine-tuning is a post-training process that not only enables rapid adaptation to a specific task (i.e., signals from a particular target building energy system), but also leverages the synergy between the information embedded within the pre-trained model and the information contained in the downstream task-specific data. By fine-tuning the TSFM, we are effectively transfer-learning from a wide array of tasks (pre-training) to a specific one.
+Formally, let us consider a pre-trained TSFM parameterized by the weights 
+, and a training ground-truth time-series 
+ collected from the target building under consideration. Given a context window length 
+ and a predictive window length 
+, we construct a fine-tuning dataset 
+ as follows:
+(3)
+2.3.1. Full fine-tuning (FullFT)
+Full fine-tuning involves re-training all the TSFM parameters by minimizing a loss function 
+ suitable for the target building forecasting problem, using gradient descent methods such as Adam [46] or its variants [47]. The optimization is performed over the fine-tuning dataset 
+ and we denote the resulting model parameters update by
+(4)
+where 
+ denotes statistics or sample predictions drawn from the probabilistic model, given a context input 
+.
+The specific form of the loss function 
+ depends on the architecture of the TSFM and the target task. For instance, TimesFM employs a weighted quantile loss, while Chronos discretizes the target values to reformulate the regression problem as a classification task, subsequently applying the categorical cross-entropy loss. A major issue with solving (4) is that TSFMs typically contain hundreds of millions of parameters, and therefore the training procedure requires significant compute as well as care to avoid overfitting and, in extreme cases, catastrophic forgetting [48], [49].
+2.3.2. Parameter-Efficient Fine-Tuning (PEFT)
+To mitigate the issues of full fine-tuning, we adopt the common strategy of training on a lower-dimensional subspace of 
+. Since this requires training much fewer number of parameters, it is often referred to as parameter-efficient fine-tuning (PEFT).
+In particular, we employ low-rank adaptation (LoRA), which is one of the most prominent PEFT techniques at the time of writing [41]. The concept of LoRA is simple: rather than updating all 
+, LoRA adapts on a low-rank subspace within 
+. A more mathematical description of the approach is provided below.
+Previously, we have assumed 
+ encapsulates all the weights in all the layers of the TSFM as a flattened tensor. Implementing LoRA involves first selecting a subset of layers, indexed by 
+, whose weights will be adapted. Let 
+ denote a matrix of weights in the 
+th layer of the TSFM, where 
+; the size of 
+ is 
+. For each of the adapted layers, we define a low-rank adapter matrix 
+ where 
+ has size 
+ and 
+ has size 
+ for some prescribed rank 
+. For simplicity of implementation, one often selects a uniform rank 
+ across all layers which satisfies 
+. By doing this, the fine-tuning optimization problem can be recast as
+(5)
+which results in training 
+ weights. Since 
+ is quite small compared to the number of neurons per layer, this can be made significantly less than the original dimensionality 
+. Since the original parameter 
+ remains fixed throughout the PEFT stage, much fewer parameters are involved in back-propagation, resulting in significantly improved computational efficiency during training, making it feasible on resource-limited hardware on-site. After solving (5), the learned adaptation matrices 
+ are added into the original weight matrices, that is 
+. Furthermore, as noted in [41], [50], the lower number of fine-tunable parameters means LoRA also protects against overfitting on small-sized target datasets.
+In particular, for LoRA fine-tuning within the transformer components of the TSFM, the adaptation is as follows. The self-attention mechanism enables each token in an input sequence to dynamically attend to all other tokens by computing a weighted sum of value vectors based on the similarity between query and key vectors. Given input tokens 
+, the mechanism first projects 
+ into queries, keys, and values via 
+, 
+, and 
+, where 
+ are learnable weight matrices. The attention output is then computed as
+with 
+ being the dimensionality of the keys, and 
+, exponents taken component-wise. To adapt pre-trained models efficiently, LoRA fine-tuning is applied by injecting trainable low-rank matrices into the query and value weights. Concretely, instead of updating 
+ and 
+ in their entirety, we update 
+ and 
+, with low-rank matrices 
+, 
+, 
+, and 
+. This approach retains the original pre-trained parameters while enabling task-specific adjustments with significantly fewer trainable parameters.

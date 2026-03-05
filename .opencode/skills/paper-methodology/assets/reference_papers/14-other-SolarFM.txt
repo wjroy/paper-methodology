@@ -1,0 +1,55 @@
+SolarFM: Spatio-temporal solar irradiance forecasting based on time series foundation model.pdf
+提取的Method/Methodology部分:
+========================================================================
+3. Methods
+The overarching framework of the proposed methodology is illustrated in Fig. 2, with detailed components shown in Fig. 3. The process begins with the application of a TSFM to forecast the historical multivariate dataset, thereby generating probabilistic predictions for the meteorological factors and all irradiance variables across each channel. Notably, these multiple probabilistic predictions are feature-encoded across three distinct channels. Secondly, to leverage the generalization capability of the TSFM and enhance the precision of the forecasts, a dual-channel spatio-temporal feature encoder is deployed. This encoder is designed to predict future irradiance across multiple sites, utilizing both historical data and the aforementioned probabilistic forecasts.
+In the realm of future temporal feature extraction, this paper strategically implements a Tensor Regression Network (TRN) to replace traditional fully connected layers for performing regression analysis on high-dimensional feature spaces. Unlike fully connected layers, which are prone to disrupting the inherent structure within high-dimensional features, the proposed TR method adeptly retains the structural interrelations among variables.
+3.1. Channel-independent prediction based on TSFMs
+Initially, the TSFMs are employed to generate a preliminary forecast for each variable within the historical dataset. Fig. 4 shows the tokenization and inference process of TSFMs. Chronos [43] is a pre-trained time series forecasting model that is underpinned by a language model architecture. The time series data are converted into a sequence of tokens through a process of scaling and quantization, with the language model being trained on these tokens using a cross-entropy loss function. Post-training, the model is capable of producing probabilistic forecasts by sampling multiple future trajectories from a given historical context. Chronos has been extensively trained on a wide array of publicly available time series data, as well as synthetic data generated through Gaussian processes. The input time series is processed to create a sequence of tokens, which are then input into a language model, which could be either an encoder-decoder or a decoder-only model, and trained using a cross-entropy loss. During the inference stage, tokens are sampled autoregressively from the model and translated back into numerical values, with multiple trajectories being sampled to form a predictive distribution. In addition to training on a broad collection of public datasets, Chronos incorporates advanced data augmentation strategies, namely TSMixup and KernelSynth. These methodologies are designed to overcome the limitations associated with small training datasets in time series forecasting, thereby bolstering the model’s robustness and generalization capabilities. Chronos provides a range of pre-trained model parameters, scaling from a compact model with 5M parameters to a more extensive model, designated as Large, with a substantial 710M parameters.
+Within the scope of this study, the historical sequences of length 
+ represented as 
+ serve as inputs to the Chronos model. This process yields a new sequence of length 
+, denoted as 
+, which corresponds to the predicted values for subsequent time steps. This methodology effectively harnesses the predictive power of the Chronos model to anticipate future values within the time series based on the historical data provided, offering a sophisticated approach to time series forecasting in the domain of solar irradiance.
+(2)
+In this context, 
+ symbolizes the probabilistic outcomes yielded by the Chronos model, where 
+ denotes the dimensionality of the meteorological factors under consideration, 
+ denotes the number of distributed PV stations, and 
+ refers to the extent of the look-back period utilized for analysis. The term 
+ indicates the number of subsequent time steps for which predictive insights are desired.
+The Chronos model boasts the capacity to generate a suite of up to 20 probabilistic forecasts, thereby delineating a comprehensive spectrum of potential outcomes. Chronos is capable of probabilistic forecasting, and its confidence intervals capture the uncertainty in irradiance predictions. Therefore, the future channel can consider a wider range of predictive possibilities, offering a certain level of robustness against sudden weather changes on one hand, and fully leveraging the capabilities of the front-end TSFM on the other.
+Despite the richness of this dataset, a judicious selection of key probabilistic indicators can succinctly encapsulate the forecast’s probabilistic bounds. These indicators may include, but are not limited to, the maximum and minimum values, the mean, quantiles, and other pivotal statistical measures. To this end, within the probabilistic values channel, a linear layer network is deployed to synthesize these probabilities into a condensed feature vector of dimension 3. This feature adaptively distills and represents the critical information embedded within the probability distribution. By concentrating on these fundamental probabilistic traits, this methodology adeptly reduces information redundancy, ensuring that the model remains focused on the most salient aspects of the predictive distribution.
+3.2. Dual-channel spatio-temporal encoder
+The dual-channel spatio-temporal decoder is employed to integrate the forecast information from the TSFMs with historical meteorological and irradiance data. This system primarily comprises the backbone network, ConvLSTM, and the tensor regression network, which are detailed in the following sections. The backbone network, ConvLSTM, is designed to handle the spatio-temporal dynamics of the data. It leverages the strengths of convolutional layers to extract spatial features and the power of LSTM units to capture temporal dependencies. Following the ConvLSTM, the tensor regression network is introduced to further refine the feature representation and enhance the predictive accuracy. This network employs tensor decomposition techniques to capture the complex interactions within the data, allowing for a more nuanced understanding of the spatio-temporal relationships that influence solar irradiance patterns.
+3.2.1. ConvLSTM
+For the historical data, the backbone network for feature extraction is the ConvLSTM [44], which is specifically designed to address spatio-temporal data. This network adeptly integrates the spatial dimensions of location and variables using a CNN, followed by the recurrent processing of these spatial features through a LSTM network. The LSTM’s formulation is detailed in the subsequent equation, as depicted in Section 3.2.1:
+(3)
+For the predicted future data, the Chronos model generates 20 probabilistic forecast intervals, commonly characterized by the maximum, median, and mean values. Reflecting this, a three-channel ConvLSTM is engaged for the future channel (Fig. 5).
+Within the future channel’s domain, the probabilistic aggregation of the 20 forecast intervals is executed. This aggregation homes in on the maximum, median, and mean values, encapsulating the core facets of the predictive distribution. The ConvLSTM network is then tailored to manage this three-dimensional input, with each dimension aligning with one of the statistical measures mentioned earlier. This methodology empowers the model to capitalize on the rich tapestry of probabilistic forecasts, thereby amplifying the portrayal of the forecast’s inherent uncertainty and variability.
+3.2.2. Tensor regression layer
+For a third-order tensor, its representation is achievable through a linear combination of rank-1 vectors, a process known as Canonical Polyadic (CP) decomposition [45]. By applying tensor decomposition to 
+, the inherent structure of the original tensor 
+ is preserved, concurrently reducing the dimensionality of 
+. The CP decomposition aspires to express a tensor as an aggregate of rank-one components. For an N-mode tensor 
+, the rank-R CP decomposition is formulated as an approximation:
+In this equation, 
+ denotes the mode-
+ fiber of the rank-one tensor component 
+, with 
+ signifying the rank of the decomposition. The CP decomposition adeptly captures the interplay among the tensor’s various modes while streamlining the representation’s complexity (Fig. 6).
+Fig. 6
+Download: Download high-res image (161KB)
+Download: Download full-size image
+Fig. 6. Illustration of CP decomposition.
+
+When confronting a high-order (N) tensor, a tensor regression network is engaged to compress the extracted features. This network, in contrast to the fully connected networks typically deployed, maintains the structural integrity of the high-order tensor, circumventing the losses that accompany structural compression. The optimization of the linear regression equation presented in Section 3.2.2 ensues, where 
+ is articulated by the high-order core tensor 
+ and the coordinate matrices 
+ as follows:
+(4)
+In this formulation, 
+ represents the n-mode product of the tensor 
+ with the matrix 
+, with 
+ being the coordinate matrix for the n-th mode of the tensor. This approach engenders a more succinct and organized representation of the tensor, advantageous for sequestering the intrinsic relationships enshrined within the high-dimensional data, all the while diminishing computational intricacy.

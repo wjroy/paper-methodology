@@ -74,18 +74,37 @@ METHODSPEC v2.0
 
 2. PROBLEM DEFINITION
    - Physical problem: ...
+     Source: [user notes / code comments / config file]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Engineering context: [excavation / tunnelling / foundation / slope / other]
+     Source: [user notes / domain inference from problem description]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Input variables: [list with symbols and units from notation.md]
+     Source: [code: model input definition @file.py#L10-15 / user notes]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Output variables: [list with symbols and units]
+     Source: [code: model output definition @file.py#L20-25 / user notes]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Key assumptions: ...
+     Source: [user notes / inferred from physics model]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Physical constraints: [if any — boundary conditions, conservation laws, etc.]
+     Source: [user notes / physics model documentation]
+     Confidence: [OK / NEEDS_VERIFY]
 
    DoD:
-   [ ] Physical problem stated in 1-2 sentences
-   [ ] All input variables listed with symbols AND units
-   [ ] All output variables listed with symbols AND units
+   [ ] Physical problem stated in 1-2 sentences WITH Source
+   [ ] All input variables listed with symbols AND units WITH Source
+   [ ] All output variables listed with symbols AND units WITH Source
    [ ] Every symbol matches notation.md conventions (or new symbol is defined)
    [ ] Units match hard_memory.json standard_units
+   [ ] Every hard fact has Source field populated (not empty)
+   [ ] Confidence is OK for all items OR flagged NEEDS_VERIFY with explanation
 
 3. FRAMEWORK OVERVIEW
    - Number of stages/modules: ...
@@ -116,20 +135,44 @@ METHODSPEC v2.0
 
 5. DATA
    - Source: [simulation / field monitoring / hybrid / public dataset]
+     Source: [user notes / code comments]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Generation method: [FEM parametric / real-world monitoring / synthetic / ...]
+     Source: [user notes / inferred from data source]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Total samples: ...
+     Source: [code: dataset.__len__() @data.py#L50 / user notes]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Input features (with dimensions): ...
+     Source: [code: input shape @model.py#L10 / user notes]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Output targets (with dimensions): ...
+     Source: [code: output shape @model.py#L20 / user notes]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Split ratio: train/val/test = .../.../ ...
+     Source: [code: train_test_split @train.py#L30 / config.yaml#L15]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Preprocessing: [normalization method, missing data handling, augmentation]
+     Source: [code: preprocessing pipeline @data.py#L100 / user notes]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Data quality notes: [noise level, class balance, temporal resolution]
+     Source: [user notes / inferred from data inspection]
+     Confidence: [OK / NEEDS_VERIFY]
 
    DoD:
-   [ ] Data source is from user input (not assumed)
-   [ ] Total sample count is from user input or marked [TBD]
-   [ ] Split ratio is from user input or marked [TBD]
-   [ ] Input/output dimensions are from code or marked [TBD]
-   [ ] Preprocessing method is from code/notes or marked [TBD]
+   [ ] Data source is from user input (not assumed) WITH Source
+   [ ] Total sample count is from user input or marked [TBD] WITH Source
+   [ ] Split ratio is from user input or marked [TBD] WITH Source
+   [ ] Input/output dimensions are from code or marked [TBD] WITH Source
+   [ ] Preprocessing method is from code/notes or marked [TBD] WITH Source
+   [ ] Every numerical value has Source field populated
 
 6. MODEL ARCHITECTURE
    - Architecture type: [GAN / GCN / Transformer / hybrid / ...]
@@ -162,29 +205,65 @@ METHODSPEC v2.0
 
 8. TRAINING CONFIGURATION
    - Optimizer: ...
+     Source: [@train.py#L45 / @config.yaml#L10]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Learning rate: ... [scheduler: ...]
+     Source: [@config.yaml#L12]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Batch size: ...
+     Source: [@config.yaml#L8]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Epochs: ...
+     Source: [@config.yaml#L15 / @train.py#L50]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Early stopping: [yes/no, patience: ...]
+     Source: [@train.py#L60 / user notes]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Weight decay: ...
+     Source: [@config.yaml#L18]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Hardware: [GPU type, count]
+     Source: [user notes / inferred from training logs]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Framework: [PyTorch / TensorFlow / ...]
+     Source: [code: import statements @train.py#L1-5]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Random seed: ...
+     Source: [@train.py#L10 / @config.yaml#L5]
+     Confidence: [OK / NEEDS_VERIFY]
 
    DoD:
-   [ ] Every value is from code/config or marked [TBD]
-   [ ] If both notes and code provide a value, code value is used + conflict logged
-   [ ] Optimizer type matches code exactly (Adam vs AdamW vs SGD)
+   [ ] Every value is from code/config or marked [TBD] WITH Source
+   [ ] If both notes and code provide a value, code value is used + conflict logged WITH both Sources
+   [ ] Optimizer type matches code exactly (Adam vs AdamW vs SGD) WITH Source
+   [ ] All Source fields are specific (e.g., @config.yaml#L10 not just "config file")
 
 9. EVALUATION METRICS
    - Metric list with formulas: [RMSE = ..., MAE = ..., ...]
+     Source: [user notes / code: evaluation.py#L20-30]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Baseline models: [list with full names and abbreviations]
+     Source: [user notes / code: baselines.py]
+     Confidence: [OK / NEEDS_VERIFY]
+   
    - Comparison setup: [same dataset split, same preprocessing, same hardware?]
+     Source: [user notes / inferred from experimental setup]
+     Confidence: [OK / NEEDS_VERIFY]
 
    DoD:
    [ ] Metric names match term_glossary.yml
-   [ ] Baseline model names are from user input (not suggested by AI)
+   [ ] Baseline model names are from user input (not suggested by AI) WITH Source
    [ ] Metric formulas are standard (from notation.md or textbook)
+   [ ] All Source fields populated for metrics and baselines
 
 10. CONFLICTS & GAPS
     - Conflicts: [List every conflict between notes and code, with resolution]
@@ -206,8 +285,9 @@ After generating the MethodSpec, present it to the user with this prompt:
 
 "MethodSpec is ready for review. Please check:
 1. Are all values correct? (Especially Section 8: Training Configuration)
-2. Are there any missing components not captured above?
-3. Should I proceed to generate the Chinese and English methodology sections?"
+2. Are all Source fields populated for hard facts?
+3. Are there any missing components not captured above?
+4. Reply CONFIRM or OK to proceed to DRAFT, or provide corrections."
 
 DO NOT proceed to DRAFT until the user confirms. If the user provides corrections,
 update the MethodSpec and re-present. Log any corrections in error_log.md.

@@ -1,0 +1,99 @@
+Transfer Learning with Foundational Models for Time Series Forecasting using Low-Rank Adaptations.pdf
+提取的Method/Methodology部分:
+========================================================================
+3. LLIAM: Llama lora-integrated autoregressive model
+LLMs are pre-trained with massive amounts of data from different sources. Due to the vast volume of information that a model has to process, significant computational power and time is demanded to build such an extensive knowledge. PEFT techniques enable us to rapidly adapt these models to specific tasks, leveraging their prior knowledge. Our contribution adapts and evaluates the LLM LlaMA for TSF using the LoRA reparameterization technique based on its open-source Lit-LLaMA implementation1 and a generalization of the PromptCast [40] prompting scheme for time-series, which allows us to show how these models, using only the input data of conventional DL algorithms, perform on the TSF task. The resulting approach is called LLIAM: The Llama Lora-Integrated Autoregressive Model.
+Our proposal employs the LLaMA-1 7B model because it is the most lightweight one. A stacked Transformer decoder-only architecture is employed. Before entering the information into the decoder stack, the input series is transformed with our general prompting scheme into a textual prompt and converted into a numerical vector using an embedding. RMS Normalization is applied before processing the data in the Multi-Headed Attention module (MHA) and the Feed Forward Network (FNN) to stabilize the training of the model. MHA allows learning the relationships between the elements of the input data. An efficient implementation of it is used, with a cache that allows the recycling of previous computations to reduce the computational cost. Finally, an FFN is used to improve the features computed by MHA. The output of one decoder is used as the input of the next. Finally, the last output projected with a linear layer, used to predict the next token of the series, which will be added to the input to infer the next one.
+In Fig. 2 the proposed architecture of LLIAM is presented. The following paragraphs describe its main mechanisms.
+Input data.
+LLaMA-1 7B can only process textual information as its input as a LLM. Time-series are prompted into the model, following a simplification of the prompting scheme Prompcast [40]. The numerical sequential data is transformed into textual strings following the pattern presented in Table 1. As seen, our proposal aims for a more generic pattern that does not introduce any exogenous variable or data into the prompt. In contrast with the approach proposed by Promptcast, only the number (n) and value of the input observations (series) and the desired forecast horizon (h) is provided to the model. It is expected to only return the desired future values of the series (
+). This will enable the use of the same template for all the datasets and evaluate the model output, relying on only its capabilities to extract the different patterns presented in the input series without providing any additional helpful information. Using a common prompt during the fine-tuning phase of the model helps differentiate between a TSF task and other unrelated tasks. This way, our approach can recognize when it is dealing with a forecasting task.
+Fig. 2. LLIAM architecture. Only Low-Rank adaptations applied to Query (Q) and Values (V) are trained. The rest of the models is freezed. Our prompting scheme is applied to the numerical input data to align with the textual representation used by the LLM.
+
+Embedding.
+An embedding is used to transform textual tokens into vectors of continuous values in order to ensure a correct computation of the input data by the model. In LLaMA-1 7B, each vector has a dimensionality equal to 4096 [6]. This hyperparameter is known as the dimensionality of the model (
+), and must be consistent across all the modules of LLaMA-1 7B to ensure uniformity between their inputs and outputs. Therefore, all of them will also have 
+ dimensions.
+Table 1. Comparison between our prompting scheme and Promptcast, which it is based on. Expected answers are also provided.
+
+Promptcast	Context	From {
+} to {
+}, the {variable descriptor} was {series} {units} on each {frequency}
+Question	What is the {variable descriptor} going to be on the next {n+h} {frequency}?
+Answer	The {variable descriptor} will be {
+} {units}.
+LLIAM	Context	The last {n} observations of an unknown variable were {series}.
+Question	What will the next {h} observations be? Response:
+Answer	{
+}
+RMS norm.
+Layer Normalization (LN) [46] is employed to improve and stabilize the training of the baseline Transformer after each of its modules. However, LLaMA-1 7B developers opted for changing what normalization technique is applied and when. Specifically, they applied Root Mean Squared Normalization (RMS Norm) [47] before processing the inputs on every module. This modification was inspired by GPT3.
+Multi-headed attention with KV-cache.
+The baseline Scaled Dot-Product Attention [15] is used in LLaMA-1 7B. This mechanism is capable of learning relationships between two inputs computationally-efficiently. This procedure can be interpreted as a similarity measure between the different pair of elements that compose the input. In Eq. (1) is shown how this attention matrix is computed. For a given embedding of the input data 
+, three new representations are calculated, called queries (
+), keys (
+) and values (
+). Queries represent what an element of 
+ wants to attend, keys show what valuable information a token can provide and 
+ what an element really is. Each of these representations are generated by multiplying three learnable weights matrices to 
+. The similarity between the queries and keys is determined by their dot product, represented as 
+. Higher values indicate greater similarity. A softmax function is applied to produce a probability distribution that describes how much attention each query pays to each key.
+(1)
+Nevertheless, employing a single attention mechanism limits the range of relationship a model can notice. Consequently, many of them, known as heads, are computed with different 
+, 
+ and 
+ representations at the same time. This is referred to as Multi-Headed Attention (MHA) and provides an enhancement of the capacity of the model, enabling the discovery of relationships at different levels. Eq. (2) shows how MHA is computed. The final MHA module output is obtained by horizontally concatenating the heads and projecting them into the model’s dimensionality (
+) using a linear layer (weights matrix 
+). In LLaMA-1 7B, the number of heads used is 32.
+(2)
+The autoregressive nature of LLaMA-1 7B leads to repeating redundant calculations that remain unchanged when adding the predicted output tokens to the input. To speed up the computation of MHA, the queries and keys of the input sentence are cached at each step. When predicting the 
+th token, two auxiliary matrices are used to retrieve these representations from the first to the 
+ token. Consequently, only the key and value for the 
+th element need to be computed instead of the full 
+ and 
+ matrices. Also, these new values are stored in these caches, facilitating the calculation for the 
+ token.
+Rotary positional embedding (rope).
+Instead of using the absolute positional encoding proposed by Vaswani et al. [15], LLaMA-1 7B employs a relative positional encoding method known as RoPE [48]. This technique integrates positional information into the MHA module using a 2D rotation matrix, applicable to any even-dimensional space. In essence, for an element of the input at position 
+, RoPE rotates the corresponding key and query by 
+ times a fixed angle 
+. When the dimensionality of the keys (
+) and queries (
+) are higher than two, dimensions are grouped in 
+ pairs and rotated following the set of different rotation angles (
+) given by Eq. (3).
+(3)
+Feed forward network (FFN).
+FFNs are used at the end of each decoder to introduce non-linearity while the MHA module processes relationships between positions. The original Transformer architecture uses an FFN with a ReLU activation function. However, LLaMA-1 7B improves performance by using the SwiGLU activation function [49], which has been shown to outperform Transformers using ReLU on various language understanding tasks.
+Low-rank adaptations on MHA.
+As introduced in Section 2.3, Low-Rank Adaptation (LoRA) [7] is a PEFT technique used for fine-tuning FMs. This method can be incorporated into the model during production deployment, resulting in no additional inference latency, unlike other techniques such as adapters. LoRA was motivated by the conclusions obtained in [50], which specify that as models become larger, fewer parameters are needed to fine-tune them to achieve a certain accuracy on a specific task (a concept known as intrinsic dimension). Therefore, the change in the parameters of a model when fine-tuning may also have a low intrinsic dimension. A reparameterization such as LoRA may achieve competitive results in LLMs.
+Eq. (4) describes how the LoRA technique is added into a DL module. Given a pre-trained model with 
+ weights, the change needed for fine-tuning it to a certain task is given by 
+. Based on the previous hypothesis, it must have a low intrinsic dimension. This is ensured by expressing 
+ as a low-rank decomposition of two matrices 
+ and 
+, where 
+ and 
+. 
+ is the hyperparameter responsible for defining the maximum desired rank of these matrices, therefore it must be 
+. It should be noted that 
+ is not changing during the fine-tuning phase, and only 
+ and 
+ are trainable. The matrix 
+ is initialized to 0 to ensure that 
+ at the beginning of the training.
+When processing an input matrix 
+, the output 
+ of a fine-tuned module equals to the combination of its multiplication by the original weights 
+ and by the specialized adjustment for a task given by 
+. This last component is scaled by a factor 
+, indicating the influence of the LoRA over the output and helps to reduce the need to retune hyperparameters when 
+ is changed. 
+ is set to a fixed value, thus this scale factor is not modified during fine-tuning.
+(4)
+LoRA can be applied to almost every module of LLaMA-1 7B, but it is only applied over the queries and values projections, as illustrated in Fig. 2.
+To conclude this section, Algorithm 1 presents the pseudo-code for the forward step of LLIAM, offering a clearer understanding of how all the modules interact. For simplicity, the initialization of RoPE and KV-Cache management has been omitted. Within the ATTENTION procedure (line 8), RoPE and LoRAs are applied to Q and V. A forward step of LLIAM produces unnormalized values (logits), which are subsequently normalized using a softmax function in the prediction step outlined in Algorithm 2. During this step, LLIAM generates predictions in an autoregressive manner. The stop criterion checks if the maximum length has been reached or if the model has outputted the end of sentence (EOS) token. After generating all the tokens, the textual output is parsed and sanitized to construct the next predicted 
+ values of the input series.
+Since LLIAM is based on the LLaMA-1 7B model, most of its hyperparameters are identical to those detailed in [6]. Table 2 lists the main hyperparameters of LLIAM. #heads, #embd, and #decoders refer to the base model architecture, indicating the number of heads in the MHA, the embedding dimension, and the number of stacked decoders, respectively. The remaining hyperparameters relate to the LoRA architecture and training. With 
+ set to 8 and 
+ set to 16, the scale factor when merging the model and LoRA outputs is 2. A light dropout (0.05) is applied to the LoRA weights to prevent overfitting. The optimizer algorithm used is AdamW [51]. A micro-batch training strategy is adopted and a maximum number of training iterations is also defined. To train the LoRAs a supervised procedure is followed. The generated prompt is tokenized and transformed into a nominal representation using the SentencePieces method [52]. Then, input and target tokens are separated. The target tokens logits and the model generated logits are used to calculate a cross-entropy loss.

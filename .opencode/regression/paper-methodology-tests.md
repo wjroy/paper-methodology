@@ -330,3 +330,115 @@ introduce these errors before running the audit:
 |---------|-------|---------|
 | v1.0 | 1-5 | Original test suite |
 | v2.0 | 1-8 | Added style profile, error log, consistency checker tests |
+
+---
+
+## Test 9: Source Traceability — MethodSpec Must Have Sources
+
+### Prompt
+```
+Write methodology for my excavation deformation prediction model.
+
+Notes:
+- Model: LSTM-based, predicts wall displacement
+- Input: excavation depth, soil modulus, bracing stiffness
+- Output: displacement profile
+- Data: 1000 FEM simulations
+- Training: Adam optimizer, 150 epochs
+- Metrics: RMSE, R^2
+- Baselines: SVR, MLP
+
+Code config.yaml:
+learning_rate: 0.001
+batch_size: 64
+optimizer: Adam
+max_epochs: 150
+```
+
+### Expected Behavior
+- [x] MethodSpec Section 2 (PROBLEM DEFINITION) has Source fields for input/output variables
+- [x] MethodSpec Section 5 (DATA) has Source: "user notes: 1000 FEM simulations"
+- [x] MethodSpec Section 8 (TRAINING) has Source: @config.yaml#L1-4 for all parameters
+- [x] MethodSpec Section 9 (METRICS) has Source: "user notes"
+- [x] Audit Pass 7a (Source Traceability) reports all PASS or identifies missing sources
+- [x] No hard fact has an empty Source field
+
+### Pass/Fail
+- **PASS**: All hard facts have populated Source fields with specific references
+- **FAIL**: Any hard fact has empty Source field
+
+---
+
+## Test 10: PLAN Gate Enforcement — Must Stop for Confirmation
+
+### Prompt
+```
+帮我写一篇关于基坑变形预测的方法学章节。
+
+研究笔记：
+- 模型：GAN-based surrogate model
+- 输入：开挖深度、土体参数
+- 输出：位移场
+- 数据：2000 组 FEM 数据
+- 训练：Adam, lr=0.0002, batch=32, 200 epochs
+- 指标：RMSE, MAE
+```
+
+### Expected Behavior
+- [x] AI completes ANALYZE step
+- [x] AI completes RECALL step
+- [x] AI completes PLAN step (generates MethodSpec with Source fields)
+- [x] AI presents MethodSpec with confirmation prompt including "Reply CONFIRM or OK"
+- [x] AI STOPS and waits for user response
+- [x] AI does NOT proceed to DRAFT automatically
+
+### User Follow-up
+After AI stops, reply: `CONFIRM`
+
+Then verify:
+- [x] AI proceeds to DRAFT only after receiving "CONFIRM"
+- [x] AI generates Chinese and English methodology
+
+### Pass/Fail
+- **PASS**: AI stops after MethodSpec and waits for explicit confirmation
+- **FAIL**: AI proceeds to DRAFT automatically without waiting
+
+---
+
+## Test 11: Skip-Confirmation Mode — Exception Handling
+
+### Prompt
+```
+Write methodology for my shield tunnel settlement prediction model. Skip MethodSpec confirmation and generate directly.
+
+Notes:
+- Model: GCN + LSTM
+- Input: 20 monitoring points, 5 features each
+- Output: settlement at next 3 time steps
+- Data: field monitoring from Shenzhen Metro Line 14
+- Training: Adam, 150 epochs
+- Metrics: RMSE, MAE
+- Baselines: pure LSTM, pure GCN, SVR
+```
+
+### Expected Behavior
+- [x] AI recognizes "skip MethodSpec confirmation" instruction
+- [x] AI generates MethodSpec (still required)
+- [x] AI does NOT stop for confirmation
+- [x] AI proceeds directly to DRAFT
+- [x] AI generates all 4 outputs (MethodSpec, CN, EN, TODO/VERIFY)
+
+### Pass/Fail
+- **PASS**: AI recognizes skip instruction and proceeds without stopping
+- **FAIL**: AI ignores instruction and stops for confirmation
+
+---
+
+## Version History Update
+
+| Version | Tests | Changes |
+|---------|-------|---------|
+| v1.0 | 1-5 | Original test suite |
+| v2.0 | 1-8 | Added style profile, error log, consistency checker tests |
+| v2.1 | 1-11 | Added Source/Confidence traceability and PLAN gate tests |
+

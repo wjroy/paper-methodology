@@ -44,8 +44,13 @@ When the user corrects your output, append a new entry using this format:
 
 ## Error Entries
 
-> No errors logged yet. This section will grow as the user provides corrections.
-> Each correction becomes a permanent rule for future generations.
+### FACTUAL — THGAN application domain misidentified as tunnel instead of pit
+- Date: 2026-03-05
+- Wrong: "THGAN is for tunnel health monitoring"
+- Correct: "THGAN is for deep excavation (pit) risk prediction using digital twin"
+- Context: reference_papers/README.md, Line 24; also affects any auto-generated summaries
+- Rule: Always verify application domain from the paper content itself, not from model name or abstract keywords. THGAN explicitly focuses on "deep excavation", "retaining wall deflection", "ground settlement", and "excavation unloading" — all characteristic of pit excavation, NOT tunneling. No mention of "tunnel", "shield", or "TBM" anywhere in the paper.
+- Evidence: 03-own-THGAN.txt mentions "deep excavation" (L12, L54), "retaining wall" (L16, L54), "excavation-side soil" (L16), "pit excavation" (implicit throughout IBS model), and typical pit monitoring (wall deflection + ground settlement). Zero tunnel-related terms.
 
 <!-- 
 Example entry (for reference — delete this comment block after first real entry):
