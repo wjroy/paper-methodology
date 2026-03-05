@@ -8,16 +8,18 @@ description: >
   Related Work, and Abstract — this skill covers ONLY the Methodology/Methods section.
 ---
 
-# paper-methodology v2.0
+# paper-methodology v2.1
 
 Generate publication-ready bilingual Methodology sections for SCI papers in the
 geotechnical AI domain (excavation, tunnelling, foundation, underground construction
 + deep learning, GNN, GAN, LLM, physics-informed models).
 
-**Version 2.0 changes**: 6-step mandatory workflow (Analyze → Recall → Plan →
-Draft → Audit → Iterate), persistent style profile, error memory, hard/soft
+**Version 2.1 changes**: 7-step mandatory workflow (Analyze → Map → Recall → Plan →
+Draft → Audit → Iterate), dynamic Map Agent for keyword extraction and reference
+matching, Source/Confidence traceability in MethodSpec, PLAN gate enforcement,
+persistent style profile with universal grammar extraction, error memory, hard/soft
 memory system, Definition of Done enforcement, Revision Plan protocol, and
-dedicated consistency checker.
+dedicated consistency checker with Source Traceability audit.
 
 ---
 
@@ -80,12 +82,12 @@ The user should provide some combination of:
 
 ---
 
-## 6-STEP MANDATORY WORKFLOW
+## 7-STEP MANDATORY WORKFLOW
 
 Every invocation of this skill follows this exact sequence. No step may be skipped.
 
 ```
-ANALYZE → RECALL → PLAN → DRAFT → AUDIT → ITERATE
+ANALYZE → MAP → RECALL → PLAN → DRAFT → AUDIT → ITERATE
 ```
 
 ### Step 1: ANALYZE — Read All Materials
@@ -244,11 +246,11 @@ If the user's initial prompt contains explicit skip-confirmation instructions
 the AI may proceed directly from PLAN to DRAFT without waiting. However, the
 MethodSpec must still be generated and included in the final output.
 
-### Step 4: DRAFT — Write CN and EN Methodology
+### Step 5: DRAFT — Write CN and EN Methodology
 
 **Purpose**: Produce both language versions from the confirmed MethodSpec.
 
-#### Step 4a: Chinese Methodology (CN)
+#### Step 5a: Chinese Methodology (CN)
 
 Write the Chinese methodology section following these rules:
 
@@ -275,7 +277,7 @@ Write the Chinese methodology section following these rules:
 
 **Symbols**: Use `notation.md` conventions.
 
-#### Step 4b: English Methodology (EN)
+#### Step 5b: English Methodology (EN)
 
 Write the English methodology section following these rules:
 
@@ -317,7 +319,7 @@ same equation numbers, same figure/table references.
 - Equation introduction: "is formulated as:", "can be expressed as:"
 - Cross-references: "as defined in Equation (N)", "as described in Section X.Y"
 
-#### Step 4c: Optional Humanizer Pass (Ask First)
+#### Step 5c: Optional Humanizer Pass (Ask First)
 
 After generating EN, ask the user:
 > "The English methodology section is ready. Would you like me to apply a
@@ -350,7 +352,7 @@ After generating EN, ask the user:
 4. **Verify preservation**: After humanizing, re-run Pass 2 (Numerical Value Audit)
    of the consistency checker to confirm no technical content was altered.
 
-### Step 5: AUDIT — Run Consistency Checker
+### Step 6: AUDIT — Run Consistency Checker
 
 **Purpose**: Systematic verification of the generated text before delivery.
 
@@ -369,7 +371,7 @@ After generating EN, ask the user:
 
 **Compile audit summary** (template in consistency_checker.md).
 
-### Step 6: ITERATE — Deliver & Handle Revisions
+### Step 7: ITERATE — Deliver & Handle Revisions
 
 **Purpose**: Present final output and manage user feedback.
 
@@ -493,7 +495,7 @@ Adapted from awesome-ai-research-writing CN-to-EN prompt:
 
 ## LOGIC CHECK INTEGRATION
 
-Integrated into the AUDIT step (Step 5). After completing both versions,
+Integrated into the AUDIT step (Step 6). After completing both versions,
 the consistency checker's 7 passes cover:
 
 1. Are there contradictory claims between sections?
@@ -562,7 +564,7 @@ The skill produces 4 sequential outputs:
 
 ### Output 1: MethodSpec
 ```
-METHODSPEC v2.0
+METHODSPEC v2.1
 ===============
 [Structured MethodSpec with DoD checkmarks — see document_spec_template.md]
 ```

@@ -1,15 +1,17 @@
 # User Style Profile — Writing DNA
 
-> Auto-generated from analysis of the user's 3 published papers:
+> Auto-generated from analysis of the user's 5 own papers:
 > - 01-own-PitGAN (excavation surrogate model with cGAN)
 > - 02-own-PI-ETGCN (physics-informed spatiotemporal GCN)
-> - 03-own-THGAN (tunnel hybrid GAN)
+> - 03-own-THGAN (deep excavation hybrid graph-attention model)
+> - 04-own-LLM-GNN (LLM-enhanced multimodal spatiotemporal model)
+> - 05-own-TSFRA (temporal-spatial fusion risk assessment model)
 >
 > This file is read by the AI before every text generation. Patterns marked HIGH
 > are mandatory to follow; MEDIUM patterns are strongly preferred; LOW patterns
 > are optional guidelines.
 >
-> Last updated: Initial extraction from 3 papers.
+> Last updated: Expanded to 5 own papers (01-05).
 > To update: Run `style_extractor.md` on new papers and merge results.
 
 ---
@@ -24,7 +26,7 @@
 - References the overall framework figure
 - Word count: ~100-150 words
 
-**Confidence**: HIGH (all 3 papers)
+**Confidence**: HIGH (core style confirmed in own papers)
 
 **EN example** [Paper 01 — PitGAN]:
 "The proposed PitGAN framework consists of three main stages: (1) physics-based
@@ -41,7 +43,7 @@ The overall architecture is illustrated in Figure 2."
 **Pattern**: Physics-first ordering — the analytical/mechanical model always
 precedes the neural network architecture.
 
-**Confidence**: HIGH (all 3 papers)
+**Confidence**: HIGH (core style confirmed in own papers)
 
 **Typical hierarchy**:
 ```
@@ -106,7 +108,7 @@ learnable weight parameters, and sigma() is the activation function."
 - Tables: "as summarized in Table X"
 - CN: "如公式 (N) 所示", "如第 X.Y 节所述", "如图 X 所示"
 
-**Confidence**: HIGH (consistent across all 3 papers)
+**Confidence**: HIGH (consistent across core own papers)
 
 ---
 
@@ -169,7 +171,7 @@ learnable weight parameters, and sigma() is the activation function."
 - "Furthermore" / "Moreover" stacking — rare
 - "First and foremost" — never used
 
-**Confidence**: HIGH (extracted from all 3 papers)
+**Confidence**: HIGH (extracted from own papers)
 
 ### 4.2 Technical Verbs
 
@@ -429,4 +431,3 @@ When writing papers with LLM, TSFM, or other foundation models:
 ```
 
 Your grammar is **universal** - it works for any technical content!
-

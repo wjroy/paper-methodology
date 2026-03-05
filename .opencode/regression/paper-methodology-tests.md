@@ -1,8 +1,9 @@
-# Regression Tests for paper-methodology Skill (v2.0)
+# Regression Tests for paper-methodology Skill (v2.1)
 
-> 8 test prompts with expected behaviors and pass/fail criteria.
+> 11 test prompts with expected behaviors and pass/fail criteria.
 > Tests 1-5: original tests (unchanged, still valid).
-> Tests 6-8: new tests for v2.0 features (style profile, error log, consistency checker).
+> Tests 6-8: style profile, error log, and consistency checker tests.
+> Tests 9-11: Source/Confidence traceability and PLAN gate behavior tests.
 > Use these to verify the skill produces correct output under different conditions.
 
 ---
@@ -307,22 +308,24 @@ introduce these errors before running the audit:
 ## Running These Tests
 
 1. Start a new conversation with the paper-methodology skill loaded
-2. For tests 1-6: paste each test prompt exactly as shown
+2. For tests 1-11: paste each test prompt exactly as shown
 3. For test 7: first add the error log entries, then paste the prompt
 4. For test 8: generate from test 1, manually introduce errors, then run audit
-5. Compare the output against the Expected Behavior checklist
-6. Mark each item as pass/fail
-7. A test passes only if ALL expected behaviors are satisfied
+5. For test 10: verify PLAN gate stops before DRAFT until CONFIRM
+6. For test 11: verify skip-confirmation mode proceeds directly
+7. Compare the output against the Expected Behavior checklist
+8. Mark each item as pass/fail
+9. A test passes only if ALL expected behaviors are satisfied
 
 ## Scoring
 
 | Score | Interpretation |
 |-------|---------------|
-| 8/8 | Skill is production-ready (v2.0 verified) |
-| 7/8 | Minor issue — review the failing test and adjust |
-| 6/8 | Moderate issues — likely need to adjust SKILL.md or an asset file |
-| 5/8 | Significant issues — structural problem in the workflow |
-| <=4/8 | Major revision needed |
+| 11/11 | Skill is production-ready (v2.1 verified) |
+| 10/11 | Minor issue — review the failing test and adjust |
+| 8-9/11 | Moderate issues — likely need to adjust SKILL.md or an asset file |
+| 6-7/11 | Significant issues — structural problem in the workflow |
+| <=5/11 | Major revision needed |
 
 ## Version History
 
@@ -330,6 +333,7 @@ introduce these errors before running the audit:
 |---------|-------|---------|
 | v1.0 | 1-5 | Original test suite |
 | v2.0 | 1-8 | Added style profile, error log, consistency checker tests |
+| v2.1 | 1-11 | Added Source/Confidence traceability and PLAN gate tests |
 
 ---
 
@@ -436,9 +440,4 @@ Notes:
 
 ## Version History Update
 
-| Version | Tests | Changes |
-|---------|-------|---------|
-| v1.0 | 1-5 | Original test suite |
-| v2.0 | 1-8 | Added style profile, error log, consistency checker tests |
-| v2.1 | 1-11 | Added Source/Confidence traceability and PLAN gate tests |
-
+See "Version History" section above.

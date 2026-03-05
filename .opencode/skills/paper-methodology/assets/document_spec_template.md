@@ -59,7 +59,7 @@ Proceed? [Wait for user confirmation]
 ## MethodSpec Template
 
 ```
-METHODSPEC v2.0
+METHODSPEC v2.1
 ===============
 
 1. PAPER METADATA

@@ -1,14 +1,14 @@
 ---
 description: >
   Generate bilingual (CN + EN) Methodology section for a geotechnical AI paper.
-  Uses the 6-step workflow: Analyze → Recall → Plan → Draft → Audit → Iterate.
-  Produces: MethodSpec -> Chinese Methods -> English Methods -> TODO/VERIFY list.
+  Uses the 7-step workflow: Analyze → Map → Recall → Plan → Draft → Audit → Iterate.
+  Produces: Methodology Map -> MethodSpec -> Chinese Methods -> English Methods -> TODO/VERIFY list.
 ---
 
-# Bilingual Methods Section Generator (v2.0)
+# Bilingual Methods Section Generator (v2.1)
 
 You are about to generate a complete Methodology/Methods section for a geotechnical
-AI paper. Follow the `paper-methodology` skill's 6-step mandatory workflow strictly.
+AI paper. Follow the `paper-methodology` skill's 7-step mandatory workflow strictly.
 
 ## Your Input
 
