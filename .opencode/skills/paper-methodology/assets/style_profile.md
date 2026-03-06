@@ -12,8 +12,8 @@ Priority rule:
 
 ## 1. Structural Preferences
 
-- Opening paragraph: one paragraph, names method, references framework figure;
-  numbered steps are optional (do not force).
+- Opening paragraph: one paragraph, names method, references framework figure,
+  typically enumerates 3-4 main steps/components with numbers (1)(2)(3) or letters (a)(b)(c).
 - Section planning rule: use base skeleton + selected pattern overlay from
   methodology pattern library (do not force one invariant order).
 - Subsection flow: Purpose/context -> method/approach -> technical detail/formula.
@@ -31,9 +31,10 @@ Priority rule:
 
 - Method descriptions: present tense.
 - Prior published work: past tense allowed.
-- English voice target: about 60/40 active/passive.
-- English first-person: rare-to-none for "we" in Methods; prefer
-  "this study" / "this paper" / "the proposed framework".
+- English voice target: passive-dominant (60-80% passive voice for technical descriptions).
+- English subject choice: Passive voice is dominant. When active voice is needed,
+  prefer "this study" / "the proposed [method]" / method name as subject.
+  Avoid first-person "we" entirely.
 - Chinese first-person preference: use "本文" / "本研究", avoid "我们".
 
 ## 4. Vocabulary Preferences

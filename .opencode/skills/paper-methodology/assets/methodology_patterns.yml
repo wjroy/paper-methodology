@@ -25,7 +25,7 @@ patterns:
       - "04-own-LLM-GNN"
       - "05-own-TSFRA"
     what_not_to_force:
-      - "Do not force numbered 3-4 steps in every opening paragraph."
+      - "Typically enumerate 3-4 main steps/components; adjust count based on actual complexity."
       - "Do not force a fixed physics->data->architecture order when modules are text/fusion/decision centric."
 
   - id: physics-mechanism-first

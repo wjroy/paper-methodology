@@ -21,7 +21,7 @@
   },
 
   "voice_preferences": {
-    "active_passive_ratio": "60:40",
+    "active_passive_ratio": "passive-dominant (60-80% passive)",
     "first_person_en": {
       "frequency": "none",
       "count_per_section": "0",
@@ -56,7 +56,7 @@
       "First and foremost",
       "In light of",
       "It is imperative to note",
-      "Furthermore/Moreover stacking"
+      "Furthermore/Moreover overuse (max 2 per paper)"
     ]
   },
 

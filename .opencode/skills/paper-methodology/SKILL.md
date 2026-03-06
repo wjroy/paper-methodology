@@ -110,6 +110,9 @@ Goal: create a single source of truth for CN and EN drafting.
 B0. Select methodology pattern before writing MethodSpec.
 - Match current task to one primary pattern from assets/methodology_patterns.yml.
 - Record short rationale and 1-2 fallback patterns.
+- Pattern selection is adaptive: when new paper's technical architecture differs
+  from own papers, select the most suitable pattern or use hybrid patterns.
+  Do not default to a single pattern.
 - Never force a single invariant order across all own papers.
 
 B1. Build section plan from base skeleton + selected pattern overlay.
@@ -168,7 +171,9 @@ C3. Ask humanizer question (do not auto-apply)
 - If user agrees, apply inlined de-AI constraints:
   1) Keep all technical content unchanged (numbers/formulas/symbols/refs)
   2) Remove filler/promotional/mechanical connectors
-  3) Keep text if already natural (return pass verdict)
+  3) Preserve passive-dominant voice and technical precision characteristic
+     of own papers
+  4) Keep text if already natural (return pass verdict)
 
 C3.1 Optional refinement operations (ask-first, never auto-apply):
 - Expand: +5 to +15 words, add only logic-explicit details implied by source.
