@@ -13,20 +13,19 @@
       "note": "Dense paragraphs, one core idea each. Extracted from own paper set."
     },
     "opening_sentence_style": "topic_sentence",
-    "opening_sentence_note": "Each paragraph opens with a sentence stating its purpose or context. Common patterns: 'To [verb]..., this study [verb]s...' or 'The [COMPONENT] module is designed to [PURPOSE].'",
+    "opening_sentence_note": "Each paragraph opens with a sentence stating its purpose, e.g., 'The [COMPONENT] module is designed to [PURPOSE].'",
     "closing_sentence_style": "mixed",
     "closing_sentence_note": "No single dominant pattern. Sometimes transition, sometimes summary, sometimes equation reference.",
-    "internal_flow": "purpose_then_method_then_detail",
-    "internal_flow_note": "1. Purpose/context (1-2 sentences, often a 'To [verb]...' clause) -> 2. Method statement or approach -> 3. Technical detail, formulation, or step-by-step procedure. NOT a rigid motivation->formulation->definition template."
+    "internal_flow": "motivation_then_formulation_then_definition",
+    "internal_flow_note": "1. WHY this is needed (1-2 sentences) -> 2. Equation/formulation -> 3. Variable definitions"
   },
 
   "voice_preferences": {
     "active_passive_ratio": "60:40",
     "first_person_en": {
-      "frequency": "none",
-      "count_per_section": "0 — all 5 own papers use zero first-person pronouns",
-      "self_reference": ["this study", "this paper", "the proposed framework/model"],
-      "self_reference_note": "'this study' is dominant (4/5 papers); Paper 01 prefers 'this paper'. Never 'we/our/us'."
+      "frequency": "moderate",
+      "count_per_section": "5-10 instances of 'we'",
+      "preferred_phrases": ["We design", "We propose", "We employ", "We adopt"]
     },
     "first_person_cn": {
       "frequency": "rare",
@@ -37,24 +36,17 @@
 
   "connector_preferences": {
     "high_frequency": [
-      {"en": "To [verb]... purpose clauses", "cn": "为了[动词]…", "note": "Dominant sentence-opening device across all 5 own papers (54+ total instances). E.g., 'To capture...', 'To address...', 'To represent...'."},
-      {"en": "As shown/illustrated in Fig./Figure X", "cn": "如图 X 所示", "note": "Primary back-reference connector (34+ total). Format depends on journal: 'Fig. X' (3/5 papers) or 'Figure X' (2/5 papers)."},
-      {"en": "Specifically", "cn": "具体而言", "note": "10 instances across 5 papers."},
-      {"en": "Subsequently", "cn": "随后", "note": "13 instances across 5 papers."}
+      {"en": "Specifically", "cn": "具体而言"},
+      {"en": "To this end", "cn": "为此"},
+      {"en": "In particular", "cn": "特别地"},
+      {"en": "As illustrated in Figure X", "cn": "如图 X 所示"}
     ],
     "medium_frequency": [
-      {"en": "Additionally/Moreover", "cn": "此外", "note": "11 instances, mainly Papers 01-02."},
-      {"en": "Therefore/Thus", "cn": "因此", "note": "11 instances across papers."},
-      {"en": "thereby", "cn": "从而", "note": "12 instances, concentrated in Paper 04. Signature participial bridge."},
-      {"en": "Based on", "cn": "基于"},
+      {"en": "To be more specific", "cn": "更具体地"},
+      {"en": "Accordingly", "cn": "因此"},
       {"en": "In this study", "cn": "本研究中"},
-      {"en": "Unlike", "cn": "不同于", "note": "Used for contrast with prior work."}
-    ],
-    "low_frequency": [
-      {"en": "To this end", "cn": "为此", "note": "Only 1 instance across all 5 papers."},
-      {"en": "In particular", "cn": "特别地", "note": "Only 1 instance across all 5 papers."},
-      {"en": "Accordingly", "cn": "因此", "note": "Only 2 instances across all 5 papers."},
       {"en": "In contrast", "cn": "相比之下"},
+      {"en": "Subsequently", "cn": "随后"},
       {"en": "On this basis", "cn": "在此基础上"}
     ],
     "avoid": [
@@ -80,35 +72,30 @@
 
   "cross_reference_preferences": {
     "equation_format_en": "Equation (N)",
-    "equation_format_en_alt": "Eq. (N)",
-    "equation_format_note": "Papers 01-04 use 'Equation (N)'; Paper 05 uses 'Eq. (N)'. Follow target journal style.",
     "equation_format_cn": "公式 (N)",
     "section_format_en": "Section X.Y",
     "section_format_cn": "第 X.Y 节",
-    "figure_format_en": "Fig. X",
-    "figure_format_en_alt": "Figure X",
-    "figure_format_note": "Papers 03-05 use 'Fig. X'; Papers 01-02 use 'Figure X'. Determined by journal convention, not a fixed preference.",
+    "figure_format_en": "Figure X",
     "figure_format_cn": "图 X",
     "table_format_en": "Table X",
     "table_format_cn": "表 X",
     "preposition_en_equation": "as defined in",
     "preposition_en_section": "as described in",
     "preposition_en_figure": "as illustrated in",
-    "preposition_en_figure_alt": "as shown in",
     "preposition_en_table": "as summarized in"
   },
 
   "section_ordering_preference": {
-    "pattern": "framework_first_then_pipeline_order",
+    "pattern": "physics_first",
     "typical_order": [
-      "Overall Framework (with figure reference)",
-      "Physics/Mechanical Modeling (if applicable — present in 3/5 own papers)",
-      "Data Generation/Collection/Processing",
+      "Overall Framework",
+      "Physical/Mechanical Modeling",
+      "Data Generation/Processing",
       "Model Architecture (with sub-subsections per component)",
       "Loss Function and Training",
       "Evaluation Metrics"
     ],
-    "note": "The true invariant is: framework overview first, then module-by-module in pipeline order. Physics-before-architecture holds when a physics module exists (Papers 01-03) but is NOT universal — Papers 04 and 05 have no physics/mechanics section."
+    "note": "Physics model always precedes neural architecture. This is the invariant pattern across the own paper set."
   },
 
   "humanizer_preference": {
@@ -117,19 +104,13 @@
   },
 
   "technical_verb_preferences": {
-    "dominant_verbs": {
-      "_note": "Most frequent technical verbs across all 5 own papers, ranked by total count.",
-      "high": ["represent", "capture", "model", "construct", "generate", "compute", "denote", "predict", "define", "obtain"],
-      "medium": ["embed", "integrate", "adopt", "employ", "propose", "extract", "derive", "process"]
-    },
-    "introducing_method": ["propose", "develop", "present"],
-    "using_technique": ["employ", "adopt", "utilize"],
-    "describing_function": ["capture", "construct", "represent", "compute", "generate", "obtain"],
+    "introducing_method": ["propose", "present"],
+    "using_technique": ["employ", "adopt"],
+    "achieving_results": ["achieve"],
     "designing_components": ["design"],
     "processing_data": ["process"],
-    "extracting_features": ["extract", "embed"],
-    "avoid_verbs": ["put forward", "craft", "architect", "harvest", "glean", "garner", "attain"],
-    "avoid_note": "Previously 'utilize' and 'leverage' were on the avoid list, but both appear in own papers (utilize: Papers 04/05; leverage: Paper 04). Moved to acceptable usage."
+    "extracting_features": ["extract"],
+    "avoid_verbs": ["utilize", "leverage", "put forward", "craft", "architect", "harvest", "glean", "garner", "attain"]
   },
 
   "cn_formatting": {

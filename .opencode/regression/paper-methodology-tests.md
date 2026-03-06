@@ -1,9 +1,10 @@
-# Regression Tests for paper-methodology Skill (v3.1)
+# Regression Tests for paper-methodology Skill (v3.3)
 
-> 11 test prompts with expected behaviors and pass/fail criteria.
-> Tests 1-5: original tests (unchanged, still valid).
+> 13 test prompts with expected behaviors and pass/fail criteria.
+> Tests 1-5: core workflow tests (updated for v3.3 where needed).
 > Tests 6-8: style profile, error log, and consistency checker tests.
 > Tests 9-11: Source/Confidence traceability and PLAN gate behavior tests.
+> Tests 12-13: pattern library selection and inlined prompt-pack capability tests.
 > Use these to verify the skill produces correct output under different conditions.
 
 ---
@@ -32,9 +33,10 @@
 - [x] Produces complete MethodSpec with all 10 sections filled
 - [x] Every hard-fact field in MethodSpec Sections 2-9 has a populated Source and Confidence
 - [x] No hard-fact field has a blank Source (Audit Pass 6 would FAIL otherwise)
-- [x] CN version has opening overview paragraph with 3 numbered steps
+- [x] PLAN selects a primary methodology pattern before drafting (no single invariant template)
+- [x] CN version has opening overview paragraph with method name + figure anchor (numbered steps optional)
 - [x] EN version mirrors CN structure exactly
-- [x] Physics model (elastic foundation beam) precedes neural network architecture
+- [x] Section order follows selected pattern overlay and input logic (not forced universal order)
 - [x] All numerical values match input (lr=0.0002, batch_size=64, 200 epochs, 3000 samples, 7:1.5:1.5)
 - [x] Term glossary terms used consistently (弹性地基梁 = beam on elastic foundation)
 - [x] Plain text output, no Markdown formatting
@@ -205,14 +207,14 @@ Please match my usual writing style from my published papers.
 
 ### Expected Behavior
 - [x] Phase A explicitly reads `style_profile.md`
-- [x] Opening paragraph matches the user's pattern: names PI-WallGAN, lists numbered steps, references a figure
-- [x] Physics-first ordering: Winkler beam model section precedes GAN architecture
+- [x] Opening paragraph names PI-WallGAN and references a framework figure (numbered steps optional)
+- [x] PLAN explicitly chooses a pattern (likely physics-mechanism-first or constraint-loss-first) with short rationale
 - [x] Paragraphs are 100-250 words each
 - [x] Equation introduction uses preferred pattern: "is formulated as:" or "can be expressed as:"
 - [x] "Where" blocks use "denotes" and "represents" (not "in which")
 - [x] Cross-references use "as defined in Equation (N)" and "as described in Section X.Y"
-- [x] EN uses "we" moderately (5-10 times); CN uses "本文/本研究"
-- [x] Transition phrases are from the user's preferred list (Specifically, To this end, In particular)
+- [x] EN avoids forced first-person "we" and prefers objective subject style; CN uses "本文/本研究"
+- [x] Transition usage is natural and not forced to a fixed connector list
 - [x] Technical verbs are from the user's preferred list (propose, employ, design, extract)
 - [x] No filler phrases the user avoids ("It is worth noting that", "Interestingly")
 - [x] Audit checks style compliance via style_profile.md during Phase C
@@ -311,24 +313,26 @@ introduce these errors before running the audit:
 ## Running These Tests
 
 1. Start a new conversation with the paper-methodology skill loaded
-2. For tests 1-11: paste each test prompt exactly as shown
+2. For tests 1-13: paste each test prompt exactly as shown
 3. For test 7: first add the error log entries, then paste the prompt
 4. For test 8: generate from test 1, manually introduce errors, then run audit
 5. For test 10: verify PLAN gate (Phase B) stops before Phase C until CONFIRM
 6. For test 11: verify skip-confirmation mode proceeds directly
-7. Compare the output against the Expected Behavior checklist
-8. Mark each item as pass/fail
-9. A test passes only if ALL expected behaviors are satisfied
+7. For test 12: verify pattern selection is explicit and justified
+8. For test 13: verify humanizer/polish/logic-check still work after prompt-pack removal
+9. Compare the output against the Expected Behavior checklist
+10. Mark each item as pass/fail
+11. A test passes only if ALL expected behaviors are satisfied
 
 ## Scoring
 
 | Score | Interpretation |
 |-------|---------------|
-| 11/11 | Skill is production-ready (v3.1 verified) |
-| 10/11 | Minor issue — review the failing test and adjust |
-| 8-9/11 | Moderate issues — likely need to adjust SKILL.md or an asset file |
-| 6-7/11 | Significant issues — structural problem in the workflow |
-| <=5/11 | Major revision needed |
+| 13/13 | Skill is production-ready (v3.3 verified) |
+| 12/13 | Minor issue — review the failing test and adjust |
+| 10-11/13 | Moderate issues — likely need to adjust SKILL.md or an asset file |
+| 7-9/13 | Significant issues — structural problem in the workflow |
+| <=6/13 | Major revision needed |
 
 ## Version History
 
@@ -339,6 +343,7 @@ introduce these errors before running the audit:
 | v2.1 | 1-11 | Added Source/Confidence traceability and PLAN gate tests |
 | v3.1 | 1-11 | Aligned to 3-phase workflow (GATHER/PLAN/WRITE_AUDIT), fixed file paths |
 | v3.2 | 1-11 | Strengthened Source/Confidence traceability in Tests 1-3, 9 |
+| v3.3 | 1-13 | Added pattern-library selection tests and removed prompt-pack dependency |
 
 ---
 
@@ -445,6 +450,64 @@ Notes:
 ### Pass/Fail
 - **PASS**: AI recognizes skip instruction and proceeds without stopping
 - **FAIL**: AI ignores instruction and stops for confirmation
+
+---
+
+## Test 12: PLAN Pattern Selection — No Single Invariant Template
+
+### Prompt
+```
+写方法学：模型是“文本+时序融合”用于轨道沉降分位数预测。
+
+研究笔记：
+- 文本数据：施工日志（中文）
+- 时序数据：多测点沉降序列
+- 文本先做词元化和向量化
+- 时序用图结构建模
+- 融合后做分位数预测（0.05/0.5/0.95）
+- 损失：quantile loss
+- 指标：PICP, PINAW, CWC
+```
+
+### Expected Behavior
+- [x] Phase B first selects a primary pattern (expected: `fusion-pattern` or `data-transformation-first`)
+- [x] PLAN gives short rationale and at least one fallback pattern
+- [x] Output does not claim an invariant universal section order across all own papers
+- [x] Section plan reflects selected overlay (text/time-series encoders -> fusion -> quantile objective)
+
+### Pass/Fail
+- **PASS**: Pattern choice is explicit, justified, and reflected in section order
+- **FAIL**: Uses a default one-size-fits-all template without pattern selection
+
+---
+
+## Test 13: Prompt-Pack Removal — Inlined Humanizer/Polish/Logic-Check Still Works
+
+### Prompt
+```
+Write methodology for my multimodal excavation risk model.
+
+Notes:
+- Inputs: monitoring time series + construction logs
+- Model: graph encoder + text encoder + attention fusion
+- Objective: risk level prediction
+- Loss: cross-entropy with class weighting
+- Metrics: accuracy, macro-F1
+
+After generating EN, apply humanizer and then polish Section 2.2 only.
+Also run a logic redline check.
+```
+
+### Expected Behavior
+- [x] Humanizer runs only because user explicitly requested it
+- [x] Humanizer keeps all technical facts unchanged (model, loss, metrics)
+- [x] Section-limited polish is applied only to requested subsection
+- [x] Logic redline check reports only critical issues (contradictions/term inconsistency/blocking grammar)
+- [x] No dependency on `assets/upstream_prompt_pack.md`
+
+### Pass/Fail
+- **PASS**: Inlined constraints fully cover humanizer/polish/logic-check behavior
+- **FAIL**: Operation fails or still requires external prompt-pack file
 
 ---
 

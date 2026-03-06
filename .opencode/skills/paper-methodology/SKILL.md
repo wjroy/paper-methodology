@@ -8,7 +8,7 @@ description: >
   Related Work, Discussion, or Abstract).
 ---
 
-# paper-methodology v3.1 (lean + gate-hardened)
+# paper-methodology v3.3 (pattern-library + inlined constraints)
 
 Purpose: produce publication-ready bilingual Methodology sections with strict
 anti-hallucination controls and minimal context overhead.
@@ -55,8 +55,9 @@ Read on-demand:
 - assets/methodspec_template.md (MethodSpec skeleton with traceability fields)
 - assets/term_glossary.yml (term checks / CN-EN mapping)
 - assets/notation.md (symbol/notation checks)
+- assets/methodology_patterns.yml (pattern library for PLAN selection)
+- assets/methodology_outline.md (base skeleton + pattern overlays)
 - assets/reference_papers/*.txt (only top relevant files)
-- assets/upstream_prompt_pack.md (reusable upstream prompt templates)
 
 Do not load all reference papers by default. Use selective retrieval.
 
@@ -106,7 +107,17 @@ replies or user explicitly asks to proceed with placeholders.
 
 Goal: create a single source of truth for CN and EN drafting.
 
-B1. Produce MethodSpec with these sections:
+B0. Select methodology pattern before writing MethodSpec.
+- Match current task to one primary pattern from assets/methodology_patterns.yml.
+- Record short rationale and 1-2 fallback patterns.
+- Never force a single invariant order across all own papers.
+
+B1. Build section plan from base skeleton + selected pattern overlay.
+- Use assets/methodology_outline.md as base skeleton.
+- Apply selected pattern overlay to adjust ordering/emphasis.
+- Keep module flow consistent with user notes and code/config.
+
+B2. Produce MethodSpec with these sections:
 1. Metadata
 2. Problem definition
 3. Framework overview
@@ -118,13 +129,13 @@ B1. Produce MethodSpec with these sections:
 9. Evaluation metrics
 10. Conflicts and gaps
 
-B2. For each hard-fact field in Sections 2-9 of the MethodSpec, include:
+B3. For each hard-fact field in Sections 2-9 of the MethodSpec, include:
 - Source: specific origin (e.g. "user notes", "@train.py#L42",
   "@config.yaml#L3", "hard_memory.json"). Use [TBD] if unknown.
 - Confidence: OK or NEEDS_VERIFY
 See assets/methodspec_template.md for the full field-by-field layout.
 
-B3. Present MethodSpec and enforce confirmation gate.
+B4. Present MethodSpec and enforce confirmation gate.
 Proceed only if user replies equivalent to CONFIRM/OK/proceed.
 
 Hard rule: No CN/EN drafting is allowed before this gate is satisfied, except
@@ -149,19 +160,27 @@ C1. Draft Chinese Methodology
 C2. Draft English Methodology
 - Mirror CN structure exactly
 - Present tense for method description
-- Moderate first-person usage according to style_profile
+- Prefer objective subject style from style_profile (typically "this study" / "this paper")
 - Equation placeholders: [Equation (N): ...]
 
 C3. Ask humanizer question (do not auto-apply)
 - "English version is ready. Apply de-AI humanizer pass?"
-- If user agrees, run Template 3 in assets/upstream_prompt_pack.md.
+- If user agrees, apply inlined de-AI constraints:
+  1) Keep all technical content unchanged (numbers/formulas/symbols/refs)
+  2) Remove filler/promotional/mechanical connectors
+  3) Keep text if already natural (return pass verdict)
 
 C3.1 Optional refinement operations (ask-first, never auto-apply):
-- Expand: if user requests expansion, ask which section, then run Template 5.
-- Compress: if user requests compression, ask which section, then run Template 6.
-- Polish: if user requests expression polish, ask which section, then run Template 7.
+- Expand: +5 to +15 words, add only logic-explicit details implied by source.
+- Compress: -5 to -15 words, keep all technical facts unchanged.
+- Polish: improve clarity/grammar/formality, keep terminology and references fixed.
 
 All refinement operations require explicit user confirmation before execution.
+
+C3.2 Minimal logic/redline check (before delivery)
+- Check only critical issues: contradictions, core term inconsistency,
+  and severe grammar blocking comprehension.
+- Do not report style-only issues in this pass.
 
 C4. Compact 6-pass audit (must run before delivery)
 1. Terminology consistency (glossary + hard_memory)
@@ -255,8 +274,8 @@ Risks:
 - If own papers are unavailable, still run full workflow using user inputs,
   memory assets, and domain conventions.
 - Keep prompts compact; avoid loading non-essential assets.
-- Reuse embedded upstream templates from assets/upstream_prompt_pack.md when
-  translation/humanizer/logic-check/citation-validation is requested.
+- Use inlined constraints in this file for rendering/humanizer/refinement/
+  logic-redline checks; avoid separate prompt-pack dependency.
 
 ## 8) Runtime Efficiency Rules
 

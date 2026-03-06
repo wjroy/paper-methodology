@@ -1,0 +1,133 @@
+version: "1.0"
+scope: "own papers (01-05) pattern library"
+selection_rule:
+  - "Select one primary pattern in PLAN; do not force a single invariant order."
+  - "Allow 1-2 fallback patterns when a method is hybrid."
+
+patterns:
+  - id: framework-first
+    description: "Start with a compact framework overview, then unpack modules in pipeline order."
+    applicable_when:
+      - "The method contains multiple modules and needs a top-level map first."
+      - "The paper provides an architecture figure and staged workflow."
+    typical_section_order:
+      - "Framework overview"
+      - "Module 1"
+      - "Module 2"
+      - "Module 3+"
+      - "Objective/loss and metrics"
+    preferred_opening_style: "Name the method, state objective, point to framework figure, briefly list modules."
+    preferred_subject_style: "Use objective subjects: this study / this paper / the proposed framework."
+    representative_own_papers:
+      - "01-own-PitGAN"
+      - "02-own-PI-ETGCN"
+      - "03-own-THGAN"
+      - "04-own-LLM-GNN"
+      - "05-own-TSFRA"
+    what_not_to_force:
+      - "Do not force numbered 3-4 steps in every opening paragraph."
+      - "Do not force a fixed physics->data->architecture order when modules are text/fusion/decision centric."
+
+  - id: physics-mechanism-first
+    description: "Expose mechanical basis early, then map it into model components and constraints."
+    applicable_when:
+      - "A mechanistic model is a core source of priors or constraints."
+      - "Interpretability depends on explicit wall-soil/soil-structure mechanics."
+    typical_section_order:
+      - "Framework overview"
+      - "Mechanical/physical formulation"
+      - "Data or graph construction tied to mechanics"
+      - "Model architecture"
+      - "Physics-informed objective"
+    preferred_opening_style: "State engineering mechanism and explain why model learning must respect it."
+    preferred_subject_style: "Use mechanism-led subjects: the mechanical model, the analytical solution, the coupling formulation."
+    representative_own_papers:
+      - "01-own-PitGAN"
+      - "02-own-PI-ETGCN"
+      - "03-own-THGAN"
+    what_not_to_force:
+      - "Do not add a physics section if the method has no explicit mechanical prior."
+      - "Do not overload with derivations unrelated to downstream modules."
+
+  - id: data-transformation-first
+    description: "Describe data generation/encoding/transformation before introducing network internals."
+    applicable_when:
+      - "Performance depends on nontrivial preprocessing, feature inversion, or modality encoding."
+      - "Data representation design is a major novelty point."
+    typical_section_order:
+      - "Framework overview"
+      - "Data generation/collection"
+      - "Preprocessing or representation transformation"
+      - "Model architecture"
+      - "Objective and evaluation"
+    preferred_opening_style: "Frame the method as a data-to-representation pipeline and then model learning."
+    preferred_subject_style: "Use process subjects: the dataset, the preprocessing module, the feature pipeline."
+    representative_own_papers:
+      - "01-own-PitGAN"
+      - "03-own-THGAN"
+      - "04-own-LLM-GNN"
+    what_not_to_force:
+      - "Do not push all training details into methodology when user requests case-study placement."
+      - "Do not force exhaustive preprocessing details if only lightweight cleaning exists."
+
+  - id: fusion-pattern
+    description: "Explicitly separate modality-specific encoders and then define fusion and interaction logic."
+    applicable_when:
+      - "The method integrates heterogeneous sources (text/time-series/graph/mechanics/expert inputs)."
+      - "Cross-modal or cross-risk interaction is central to contribution."
+    typical_section_order:
+      - "Framework overview"
+      - "Per-modality feature construction"
+      - "Fusion/interaction mechanism"
+      - "Spatiotemporal or decision module"
+      - "Objective and uncertainty/evaluation"
+    preferred_opening_style: "Highlight why single-modality modeling is insufficient and why fusion is required."
+    preferred_subject_style: "Use module subjects: the fusion module, the attention mechanism, the graph representation."
+    representative_own_papers:
+      - "02-own-PI-ETGCN"
+      - "03-own-THGAN"
+      - "04-own-LLM-GNN"
+      - "05-own-TSFRA"
+    what_not_to_force:
+      - "Do not force equal detail for every modality when one is auxiliary."
+      - "Do not claim multimodal fusion if only one modality is actually used."
+
+  - id: weighting-scoring-decision
+    description: "Center methodology on weighting, scoring, and risk decision logic rather than pure prediction architecture."
+    applicable_when:
+      - "Outputs are risk levels, ranking, or decision support indices."
+      - "The pipeline combines expert weighting with data-driven scoring."
+    typical_section_order:
+      - "Problem definition and decision target"
+      - "Framework overview"
+      - "Weighting/causal scoring modules"
+      - "Topological or ranking analysis"
+      - "Risk-level decision output"
+    preferred_opening_style: "State decision objective, monitored entities, and stage-wise assessment target."
+    preferred_subject_style: "Use decision subjects: risk level, score, weight, ranking criterion."
+    representative_own_papers:
+      - "05-own-TSFRA"
+    what_not_to_force:
+      - "Do not force deep-network architecture subsections when decision logic dominates."
+      - "Do not force benchmark-heavy predictive framing if task is assessment/ranking."
+
+  - id: constraint-loss-first
+    description: "Introduce objective constraints early to anchor how learning is guided and regularized."
+    applicable_when:
+      - "Model novelty is defined by physics-informed, quantile, or hybrid loss design."
+      - "Reliability/consistency depends on constraint terms, not only architecture blocks."
+    typical_section_order:
+      - "Framework overview"
+      - "Constraint source and formulation"
+      - "Architecture modules consuming the constraint"
+      - "Final objective and optimization"
+      - "Evaluation metrics tied to objective"
+    preferred_opening_style: "Emphasize what failure mode the constraint prevents and why it is needed."
+    preferred_subject_style: "Use objective subjects: the loss term, the regularizer, the quantile objective."
+    representative_own_papers:
+      - "01-own-PitGAN"
+      - "02-own-PI-ETGCN"
+      - "04-own-LLM-GNN"
+    what_not_to_force:
+      - "Do not invent new loss terms when user notes/code do not support them."
+      - "Do not place constraints before defining required symbols or variables."

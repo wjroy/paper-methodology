@@ -5,7 +5,7 @@ description: >
   Produces: MethodSpec → Chinese Methods → English Methods → TODO/VERIFY list.
 ---
 
-# Bilingual Methods Section Generator (v3.1)
+# Bilingual Methods Section Generator (v3.3)
 
 You are about to generate a complete Methodology/Methods section for a geotechnical
 AI paper. Follow the `paper-methodology` skill's 3-phase mandatory workflow strictly.
@@ -37,8 +37,9 @@ A1. Read runtime assets:
 - Always read: `assets/style_profile.md`, `assets/error_log.md`,
   `assets/memory/hard_memory.json`, `assets/memory/soft_memory.json`
 - On-demand: `assets/term_glossary.yml`, `assets/notation.md`,
+  `assets/methodology_patterns.yml`, `assets/methodology_outline.md`,
   `assets/reference_papers/*.txt` (top 3-5 relevant only),
-  `assets/upstream_prompt_pack.md`
+  `assets/methodspec_template.md`
 
 A2. Parse all provided materials — notes, code, config, figures. Extract:
 - Problem + engineering context
@@ -64,11 +65,17 @@ ask one compact Clarification Block before proceeding to Phase B.
 
 Goal: create a single source of truth for CN and EN drafting.
 
-B1. Generate the structured MethodSpec using `assets/methodspec_template.md`.
+B1. Select one primary methodology pattern from `assets/methodology_patterns.yml`
+with brief rationale; include 1-2 fallback patterns.
+
+B2. Build section plan from base skeleton + selected overlay in
+`assets/methodology_outline.md`.
+
+B3. Generate the structured MethodSpec using `assets/methodspec_template.md`.
 For each hard-fact field in Sections 2-9, include Source and Confidence.
 Blank Source on any hard-fact field = Audit Pass 6 FAIL.
 
-B2. Present MethodSpec and enforce confirmation gate.
+B4. Present MethodSpec and enforce confirmation gate.
 
 **MANDATORY GATE**: Do NOT proceed to Phase C until the user explicitly confirms
 with "CONFIRM", "OK", "proceed", or equivalent.
@@ -87,7 +94,19 @@ C1. Draft Chinese Methodology (plain text, full-width punctuation, no Markdown).
 C2. Draft English Methodology (present tense, mirrors CN structure exactly).
 
 C3. Ask humanizer question: "English version is ready. Apply de-AI humanizer pass?"
-Do not auto-apply. If user agrees, run Template 3 in `assets/upstream_prompt_pack.md`.
+Do not auto-apply. If user agrees, apply minimal de-AI constraints:
+- Keep all technical content unchanged (numbers/symbols/equations/references)
+- Remove filler/promotional wording and mechanical connector stacking
+- Keep original if already natural
+
+C3.1 Optional ask-first refinements:
+- Expand: +5 to +15 words without adding unsourced facts
+- Compress: -5 to -15 words while preserving all technical content
+- Polish: improve clarity and grammar without changing technical meaning
+
+C3.2 Run minimal logic-redline check:
+- Check only contradictions, core-term inconsistency, and severe grammar
+- Do not report style-only issues in this pass
 
 C4. Run compact 6-pass audit:
 1. Terminology consistency (glossary + hard_memory)

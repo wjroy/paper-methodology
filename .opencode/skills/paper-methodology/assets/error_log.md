@@ -73,37 +73,24 @@ When the user corrects your output, append a new entry using this format:
 - Context: reference_papers/09-other-MS-STGCN.txt
 - Rule: MS-STGCN fuses multi-source monitoring data (inclinometers, settlement gauges, etc.), not multi-scale features. Always expand "MS" as "Multi-Source" when referencing this paper.
 
-### TERMINOLOGY — "excavation pit" never appears in own papers
-- Date: 2026-03-06
-- Wrong: Rendering 基坑 as "excavation pit" in hard_memory and glossary
-- Correct: Use "deep excavation" or "excavation" (Papers 02-04), or "foundation pit" (Papers 01, 05). The term "excavation pit" was not found in any of the 5 own papers.
-- Context: hard_memory.json, term_glossary.yml — previously set "excavation pit" as the sole mapping for 基坑
-- Rule: 基坑 is context-dependent. Check the target paper's convention. Default to "deep excavation" for geotechnical-AI contexts.
-
-### STYLE — First-person "we/our/us" never used in own papers
-- Date: 2026-03-06
-- Wrong: soft_memory and style_profile claimed "moderate, 5-10 instances of 'we'" and listed preferred phrases like "We design", "We propose"
-- Correct: All 5 own papers use ZERO first-person pronouns. The self-reference is "this study" (4/5 papers) or "this paper" (Paper 01).
-- Context: soft_memory.json voice_preferences, style_profile.md §3
-- Rule: Never generate "we/our/us" in methodology output unless the user explicitly requests it. Always use "this study" or passive voice.
-
-### STYLE — "physics-first invariant" was overstated
-- Date: 2026-03-06
-- Wrong: soft_memory claimed "Physics model always precedes neural architecture. This is the invariant pattern across the own paper set."
-- Correct: Physics/mechanics precedes architecture in 3/5 papers (01, 02, 03). Papers 04 and 05 have no physics module. The actual invariant is: framework overview first, then module-by-module in pipeline order.
-- Context: soft_memory.json section_ordering_preference, style_profile.md §1
-- Rule: Do not force a physics section into methodology when the user's method has no physics/mechanics component.
-
-### TERMINOLOGY — "ground surface settlement" full form never used
-- Date: 2026-03-06
-- Wrong: hard_memory mapped 地表沉降 to "ground surface settlement"
-- Correct: Own papers consistently use "ground settlement" (without "surface")
-- Context: hard_memory.json, term_glossary.yml
-- Rule: Default to "ground settlement" for 地表沉降.
-
 <!-- 
-Example entries removed — superseded by real entries above.
--->### FORMATTING — Markdown bold leaked into plain text output
+Example entry (for reference — delete this comment block after first real entry):
+
+### TERMINOLOGY — Used "foundation pit" instead of "excavation pit"
+- Date: 2025-01-15
+- Wrong: "The foundation pit deformation is predicted by..."
+- Correct: "The excavation pit deformation is predicted by..."
+- Context: English methodology, Section 3.1
+- Rule: Always use "excavation pit" (not "foundation pit") for 基坑. See term_glossary.yml.
+
+### STYLE — Used "It is worth noting that" filler phrase
+- Date: 2025-01-15
+- Wrong: "It is worth noting that the model achieves higher accuracy..."
+- Correct: "The model achieves higher accuracy..."
+- Context: English methodology, Section 3.4
+- Rule: Never use "It is worth noting that" — it is a filler phrase. State the point directly.
+
+### FORMATTING — Markdown bold leaked into plain text output
 - Date: 2025-01-16
 - Wrong: "The **proposed framework** consists of..."
 - Correct: "The proposed framework consists of..."
