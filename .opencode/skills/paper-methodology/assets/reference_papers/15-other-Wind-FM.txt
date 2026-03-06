@@ -1,56 +1,92 @@
 Wind power prediction using foundation large time series models enhanced by time series prompt in exogenous and tuning forms.pdf
 提取的Method/Methodology部分:
 ========================================================================
+
 2. Methodology
+
 2.1. Time series prompt for exogenous variables
+
 2.1.1. Intuition
-Exogenous prompts are designed to introduce exogenous information into the foundation LTSMs and guide their output. In this form, weather prediction can be incorporated into the LTSMs to enhance the accuracy of wind power predictions. In LLMs, the construction of prompts comes naturally as users can build them based on their linguistic habits. However, in the field of time series, it is not feasible for humans to directly construct prompts that align with the time series of the target variable based on an understanding of temporal patterns. Therefore, a prompt embedding is utilized to map auxiliary exogenous time series directly into the embedding vector space of the target time series, thereby constructing the prompt. The overall process of constructing and using exogenous prompts is illustrated in Fig. 1 (a).
+
+Exogenous prompts are designed to introduce exogenous information into the foundation LTSMs and guide their output. In this form, weather prediction can be incorporated into the LTSMs to enhance the accuracy of wind power predictions. In LLMs, the construction of prompts comes naturally as users can build them based on their linguistic habits. However, in the field of time series, it is not feasible for humans to directly construct prompts that align with the time series of the target variable based on an understanding of temporal patterns.
+
+Therefore, a prompt embedding is utilized to map auxiliary exogenous time series directly into the embedding vector space of the target time series, thereby constructing the prompt. The overall process of constructing and using exogenous prompts is illustrated in Fig. 1 (a).
+
 Fig. 1. Construction of exogenous time series prompt. (a) Overall structure. (b) Prompt embedding.
 
 2.1.2. Method
-The prompt embedding consists of several steps. Initially, the exogenous time series are embedded and projected into a high-dimensional vector space. Subsequently, normalization bias (NB) is introduced concerning the reversible instance normalization (RevIN) [36] strategy of foundation LTSMs. Foundation LTSMs are typically pre-trained on time series data from multiple sources with varying distributions, so the models often adopt RevIN to make each input time series sample have a mean value of 0 and a standard deviation of 1 along the temporal axis and denormalize the output during every forward calculation. While this approach unifies the distribution of multi-source data, it can distort domain-specific patterns and cross-variable correlations when adapting to downstream tasks. When the target variable is in different value ranges, its relationship with exogenous variables differs, while RevIN disrupts the network’s ability to perceive the value range of the target variable. Therefore, informing the model with normalization information during prompt construction is crucial. After adding normalization bias to the exogenous embedding, a Multi-Layer Perceptron (MLP) is used to align the patterns of the target and exogenous variables and finally output prompt. The formula for the prompt construction is as follows:
-(1)
-where, 
- represents the input sequence of the target variable, 
- denotes the exogenous time series, 
- denotes the normalization bias for exogenous prompt, 
- is the exogenous prompt, and 
- denotes the embedding layer, which could be either an embedding of each time step or patch embedding according to the settings of LTSMs. A schematic illustration of the prompt embedding is shown in Fig. 1 (b). Unlike the embedding of target time series, the prompt embedding requires training specific to the downstream task, whereas the embedding of the target time series is already trained during the pre-training of the LTSM and can remain unadjusted for downstream tasks.
-After being constructed, the prompt is concatenated before the embedding sequence of the target variable, and both are then fed into the LTSM’s transformer blocks together. The calculation of the transformer blocks after embedding is expressed as follows:
-(2)
-where 
- is the number of transformer layers in the LTSM, 
- and 
- are the input of 
- layer and also the output of 
- layer, denoting the tokens corresponding to the target variable and the prompt respectively. For decoder-only foundation LTSMs, a prefix-form attention mask [37] is used for the prompt. Notably, according to the physical meaning of each output token in LTSMs, only the tokens corresponding to the target variable are retained in the final output since only the prediction of the target variable is of interest. This ensures that the model’s output shape and physical meaning remain consistent with the original LTSM, allowing the use of the original target-variable-based loss function. The attention mechanism enables the loss function to guide the integration of information from prompt tokens into the target variable tokens.
+
+The prompt embedding consists of several steps. Initially, the exogenous time series are embedded and projected into a high-dimensional vector space. Subsequently, normalization bias (NB) is introduced concerning the reversible instance normalization (RevIN) [36] strategy of foundation LTSMs.
+
+Foundation LTSMs are typically pre-trained on time series data from multiple sources with varying distributions, so the models often adopt RevIN to make each input time series sample have a mean value of 0 and a standard deviation of 1 along the temporal axis and denormalize the output during every forward calculation. While this approach unifies the distribution of multi-source data, it can distort domain-specific patterns and cross-variable correlations when adapting to downstream tasks.
+
+When the target variable is in different value ranges, its relationship with exogenous variables differs, while RevIN disrupts the network's ability to perceive the value range of the target variable. Therefore, informing the model with normalization information during prompt construction is crucial. After adding normalization bias to the exogenous embedding, a Multi-Layer Perceptron (MLP) is used to align the patterns of the target and exogenous variables and finally output prompt.
+
+The formula for the prompt construction is as follows:
+
+Prompt = MLP(E(Xe) + NB(Xt)) (1)
+
+where, Xt represents the input sequence of the target variable, Xe denotes the exogenous time series, NB(Xt) denotes the normalization bias for exogenous prompt, Prompt is the exogenous prompt, and E denotes the embedding layer, which could be either an embedding of each time step or patch embedding according to the settings of LTSMs. A schematic illustration of the prompt embedding is shown in Fig. 1 (b).
+
+Unlike the embedding of target time series, the prompt embedding requires training specific to the downstream task, whereas the embedding of the target time series is already trained during the pre-training of the LTSM and can remain unadjusted for downstream tasks.
+
+After being constructed, the prompt is concatenated before the embedding sequence of the target variable, and both are then fed into the LTSM's transformer blocks together. The calculation of the transformer blocks after embedding is expressed as follows:
+
+[Prompt; H^(0)] = [Prompt; E(Xt)] (2)
+[H_target^(l); H_prompt^(l)] = Transformer_l([H_target^(l-1); H_prompt^(l-1)]), l = 1,...,L (2)
+
+where L is the number of transformer layers in the LTSM, H_target^(l) and H_prompt^(l) are the input of l-th layer and also the output of (l-1)-th layer, denoting the tokens corresponding to the target variable and the prompt respectively.
+
+For decoder-only foundation LTSMs, a prefix-form attention mask [37] is used for the prompt. Notably, according to the physical meaning of each output token in LTSMs, only the tokens corresponding to the target variable are retained in the final output since only the prediction of the target variable is of interest. This ensures that the model's output shape and physical meaning remain consistent with the original LTSM, allowing the use of the original target-variable-based loss function. The attention mechanism enables the loss function to guide the integration of information from prompt tokens into the target variable tokens.
+
 2.2. Prompt tuning for time series
+
 2.2.1. Intuition
-In LLMs, guiding model generation through prompts is a powerful intuition, leading to the development of prompt tuning. Since LTSMs and LLMs are fundamentally similar in that they both predict subsequent tokens based on an understanding of preceding content, prompt tuning is expected to be effective in foundation LTSMs. Drawing on the concept of soft prompts from LLMs, continuous prompt tokens can be constructed in the vector space of LTSMs’ embedding. These prompts can be optimized to achieve optimal guidance for LTSMs on specific downstream tasks. This fine-tuning approach requires adjusting only the soft prompts while keeping the model backbone frozen. During inference, the optimized soft prompt can be added as a prefix to enable the LTSM to adapt to new tasks. Therefore, this is a PEFT method that has higher storage and computation efficiency compared to FFT. The overall approach of PT is illustrated in Fig. 2.
-Fig. 2
-Download: Download high-res image (211KB)
-Download: Download full-size image
+
+In LLMs, guiding model generation through prompts is a powerful intuition, leading to the development of prompt tuning. Since LTSMs and LLMs are fundamentally similar in that they both predict subsequent tokens based on an understanding of preceding content, prompt tuning is expected to be effective in foundation LTSMs.
+
+Drawing on the concept of soft prompts from LLMs, continuous prompt tokens can be constructed in the vector space of LTSMs' embedding. These prompts can be optimized to achieve optimal guidance for LTSMs on specific downstream tasks. This fine-tuning approach requires adjusting only the soft prompts while keeping the model backbone frozen. During inference, the optimized soft prompt can be added as a prefix to enable the LTSM to adapt to new tasks. Therefore, this is a PEFT method that has higher storage and computation efficiency compared to FFT.
+
+The overall approach of PT is illustrated in Fig. 2.
+
 Fig. 2. Prompt tuning for time series.
 
 2.2.2. Method
-Based on the experiences of P-Tuning v2 [35] and Prefix Tuning [33] in LLMs, simply adding soft prompts as a prefix at the embedding layer is not effective enough. The guidance from soft prompts is expected to be directly applied to each transformer layer. Therefore, a set of virtual tokens 
- is generated, and these tokens are converted into a series of prefixes 
- for the input sequence of each layer. Empirically, this process is completed by a reparameterization encoder (MLP). The prefix of each layer is calculated as follows:
-(3)
-where 
- denotes the number of virtual tokens, which is also the length of the prefix, and 
- is the reparameterization encoder for 
- layer. The MLP performs parallel encoding on the embedding of each virtual token.
+
+Based on the experiences of P-Tuning v2 [35] and Prefix Tuning [33] in LLMs, simply adding soft prompts as a prefix at the embedding layer is not effective enough. The guidance from soft prompts is expected to be directly applied to each transformer layer. Therefore, a set of virtual tokens P = {p1, p2, ..., pk} is generated, and these tokens are converted into a series of prefixes {prefix^(l)}_{l=1}^L for the input sequence of each layer.
+
+Empirically, this process is completed by a reparameterization encoder (MLP). The prefix of each layer is calculated as follows:
+
+prefix^(l) = MLP_l(P) (3)
+
+where k denotes the number of virtual tokens, which is also the length of the prefix, and MLP_l is the reparameterization encoder for l-th layer. The MLP performs parallel encoding on the embedding of each virtual token.
+
 Different from prompt tuning in LLMs or time series models [27], [38], [39], NB is incorporated to accommodate the characteristics of foundation LTSMs. The information from normalization can be encoded as a bias and added to the soft prompt to hint at the data patterns of the downstream dataset. The calculation of bias vector can be expressed as:
-(4)
-where 
- is the MLP calculating the normalization bias for the 
- layer. After getting prefix and normalization bias, the bias vector is added to each prefix token before entering the transformer layer. The calculation of the LTSM with PT becomes:
-(5)
+
+NB^(l) = MLP_l^NB(Xt) (4)
+
+where MLP_l^NB is the MLP calculating the normalization bias for the l-th layer.
+
+After getting prefix and normalization bias, the bias vector is added to each prefix token before entering the transformer layer. The calculation of the LTSM with PT becomes:
+
+[H^(l); prefix^(l) + NB^(l)] = Transformer_l([H^(l-1); prefix^(l-1) + NB^(l-1)]) (5)
+
 2.3. Implementation
+
 Timer [23], a pre-trained decoder-only foundation LTSM, was utilized to evaluate the performance of proposed methods. This model contains 67.40 million parameters and has been pre-trained on datasets from multiple domains, which comprise over 1 billion data points. Timer standardizes data from diverse sources using a single-series sequence (S3) format, which is a variant of Channel-independent (CI) [40], modeling each variable independently while ignoring cross-variable relationships. Timer employs a tokenization approach that splits time series into patches and treats patches as tokens.
-The SDWPF dataset [41] is utilized to validate the feasibility of prompts in the context of wind power prediction. This dataset includes two years of SCADA data with a sampling frequency of 30 minutes. For experimentation, the first five wind turbines were extracted from this dataset. The 2022 version of this dataset was also used in the pretraining of Timer; however, this paper employs the 2024 version of the dataset, which has different sampling frequency. The SDWPF dataset includes meteorological data from the area surrounding the wind farm and wind speed measurements taken by the turbines themselves. Wind power predictions typically use regional wind speed forecasts to assist in power predictions. However, to eliminate the prediction error of wind speeds and the conversion error from regional wind speeds to turbine-local wind speeds, the experiment adopts turbine-measured wind speeds instead of wind speed predictions as the exogenous variable by default. Although this approach may overstate the metrics, the effectiveness of the proposed method can still be validated by comparing the relative performance of the metrics across different methods since all methods utilize the same exogenous variable. As for the meteorological wind speed, it was employed as an inaccurate exogenous variable containing noise to aid power prediction in some experiments, in order to verify the robustness of the methods.
-In the experiment, the data of each wind turbine is split into 70 %, 10 %, and 20 % portions, from which the training, validation, and test samples are generated respectively. Timer and the prompt embedding use a patch size of 96, a historical power sequence length of 288 (equivalent to 3 tokens), and a prediction length of 96. The length of the wind speed sequence used for prompt matches that of the power sequence, but it lags by 96 time steps. The PT adopted a prefix length of 10. The reparameterization, normalization bias for prefix and prompt embedding utilized a single-hidden-layer MLP with a hidden size of 256. This configuration resulted in 8.96 million trainable parameters in PT which account for 13.3 % of Timer’s parameter count, and 0.63 million parameters for exogenous prompt embedding. Moreover, the experiment considers scenarios involving the combined use of constructed prompts with PT. Under such circumstances, the virtual tokens of PT are positioned before the prompt, with expression as follows:
-(6)
-As for training configurations, this paper remains consistent with Timer [23], where the number of epochs is 10, the batch size is 2048, and the learning rate is 
-. Two benchmarks, TimeXer [42] and TiDE [43] are introduced in experiments for comparison. The historical input length, patch length and prediction length of the two benchmarks keep the same with proposed method, and other hyperparameters are set to the default settings in TimeXer’s github repository.
+
+The SDWPF dataset [41] is utilized to validate the feasibility of prompts in the context of wind power prediction. This dataset includes two years of SCADA data with a sampling frequency of 30 minutes. For experimentation, the first five wind turbines were extracted from this dataset. The 2022 version of this dataset was also used in the pretraining of Timer; however, this paper employs the 2024 version of the dataset, which has different sampling frequency.
+
+The SDWPF dataset includes meteorological data from the area surrounding the wind farm and wind speed measurements taken by the turbines themselves. Wind power predictions typically use regional wind speed forecasts to assist in power predictions. However, to eliminate the prediction error of wind speeds and the conversion error from regional wind speeds to turbine-local wind speeds, the experiment adopts turbine-measured wind speeds instead of wind speed predictions as the exogenous variable by default.
+
+Although this approach may overstate the metrics, the effectiveness of the proposed method can still be validated by comparing the relative performance of the metrics across different methods since all methods utilize the same exogenous variable. As for the meteorological wind speed, it was employed as an inaccurate exogenous variable containing noise to aid power prediction in some experiments, in order to verify the robustness of the methods.
+
+In the experiment, the data of each wind turbine is split into 70%, 10%, and 20% portions, from which the training, validation, and test samples are generated respectively. Timer and the prompt embedding use a patch size of 96, a historical power sequence length of 288 (equivalent to 3 tokens), and a prediction length of 96. The length of the wind speed sequence used for prompt matches that of the power sequence, but it lags by 96 time steps. The PT adopted a prefix length of 10.
+
+The reparameterization, normalization bias for prefix and prompt embedding utilized a single-hidden-layer MLP with a hidden size of 256. This configuration resulted in 8.96 million trainable parameters in PT which account for 13.3% of Timer's parameter count, and 0.63 million parameters for exogenous prompt embedding.
+
+Moreover, the experiment considers scenarios involving the combined use of constructed prompts with PT. Under such circumstances, the virtual tokens of PT are positioned before the prompt, with expression as follows:
+
+Input = [Virtual_Tokens; Prompt; Target_Embedding] (6)
+
+As for training configurations, this paper remains consistent with Timer [23], where the number of epochs is 10, the batch size is 2048, and the learning rate is 0.001. Two benchmarks, TimeXer [42] and TiDE [43] are introduced in experiments for comparison. The historical input length, patch length and prediction length of the two benchmarks keep the same with proposed method, and other hyperparameters are set to the default settings in TimeXer's github repository.

@@ -1,85 +1,127 @@
 A cloud model-based approach for risk analysis of excavation system.pdf
 提取的Method/Methodology部分:
 ========================================================================
+
 2. Methodology
+
 2.1. Framework of risk perception and management
-Fig. 1 displayed the framework concerning on risk evaluation and management of excavation engineering. The risk evaluation and risk management are different from each other. Take this study as an example, a cloud model-based approach is developed and utilized to perceive the risk level of excavation system. It is risk evaluation. Countermeasures are adopted based on the results of risk analysis, which is the risk management. As seen in Fig. 1, there are two databases, namely project database and measurement database. The project database mainly is the collection of material concerning on project, such as geological conditions, construction scheme, designs and construction drawings. Geological conditions are the significant section for underground space engineering. Different stratums pose various requirements on construction technologies. The information for geological conditions is obtained from geological investigation report. In this report, measured data concerning on soil parameters are obtained. The recommended soil parameters aided in the design of underground apace structures. Construction scheme are the detailed steps for the implementation of construction technology since there are sequence of procedures on excavation construction. The design and construction drawings provide the views of underground structures in different perspectives. As for the measured database, it mainly includes the measured data for influential factors on excavation engineering, such as lateral wall deflection, ground surface settlement, support axial force. There are many monitoring equipment devices, such as total station, electronic level and oblique tube, which are used to monitor the response of excavation during construction. Moreover, the onsite engineers are required to take note of construction situation of engineering. The multi-source data from project and measured database help to establish the risk status evaluation approach concerning on excavation engineering. The risk status perceptions for excavation system were implemented via the application of developed approach. Risk evaluation results provide the reference for project managers taking corresponded risk mitigation measures, which mainly includes emergency measures, strengthen monitored frequencies of influential factors.
+
+Fig. 1 displayed the framework concerning on risk evaluation and management of excavation engineering. The risk evaluation and risk management are different from each other. Take this study as an example, a cloud model-based approach is developed and utilized to perceive the risk level of excavation system. It is risk evaluation. Countermeasures are adopted based on the results of risk analysis, which is the risk management.
+
+As seen in Fig. 1, there are two databases, namely project database and measurement database. The project database mainly is the collection of material concerning on project, such as geological conditions, construction scheme, designs and construction drawings. Geological conditions are the significant section for underground space engineering. Different stratums pose various requirements on construction technologies. The information for geological conditions is obtained from geological investigation report. In this report, measured data concerning on soil parameters are obtained. The recommended soil parameters aided in the design of underground apace structures. Construction scheme are the detailed steps for the implementation of construction technology since there are sequence of procedures on excavation construction. The design and construction drawings provide the views of underground structures in different perspectives.
+
+As for the measured database, it mainly includes the measured data for influential factors on excavation engineering, such as lateral wall deflection, ground surface settlement, support axial force. There are many monitoring equipment devices, such as total station, electronic level and oblique tube, which are used to monitor the response of excavation during construction. Moreover, the onsite engineers are required to take note of construction situation of engineering. The multi-source data from project and measured database help to establish the risk status evaluation approach concerning on excavation engineering.
+
+The risk status evaluation approach is established based on cloud model in Section 2.2. The correlation analysis between influential factors and evaluation results are also conducted to identify the high sensitivity factors in Section 2.3.
+
 2.2. Risk status evaluation approach for excavation system
+
 Developed approach comprises three phases: multi-sources information collection, development of the benchmark cloud model (BCM) and identified cloud model (ICM) and calculating the similar membership degree between BCM and ICM to determine the risk status level of excavation systems.
+
 Phase 1: Multi-sources information collection. In this phase, the influential factors should be determined based on the engineering practice, previous case histories. The measured data from multi-sources (geotechnical investigation report, safety construction record, filed inspections) are collected. For instance, data for geological factors were accessed from the geological investigation report, while data for measured items were accessed from monitored devices. The other factor, such as dynamic load near excavation, is required construction engineer to provide the score according to construction situation of excavation. These measured data for influential factors are directly input to the developed approach.
+
 Phase 2: Construct the BCM and ICM. The BCM is built based on the engineering practice. In addition, the number of cloud drops and type of cloud generator were defined. ICM is obtained based on the developed approach via multi-source information aggregation. In this process, the variables are assumed as normal distribution, which is the basic assumption for cloud model. The two stages weights determination is developed to fuse the information from factors. Exij, Enij and Heij of the corresponding influential factors in all risk status levels were synthesised to obtain ICM.
+
 Phase 3: Determine risk levels of excavation systems. Similar membership degree between the BCM and ICM was calculated. The level with the highest normalized similar membership degree was assigned as the risk level of excavation system.
+
 Risk status evaluation approach is developed based on cloud model. Descriptions about cloud model is presented in Appendix. A in the supplementary materials. The two stage weights determination method is introduced to aggregate the multi-sources information from excavation system. In the cloud model, there are two kinds of cloud generator, named normal forward cloud generator and normal backward cloud generator. In this study, a normal forward cloud generator (NFCG) was applied. The steps about the developed approach are illustrated:
+
 Step 1: Risk interval divisions of influential factors. Three numerical characteristic values: expectation (Ex), entropy (En), and hyper-entropy (He) are determined based on risk interval divisions of factors. Three numerical characteristic values for risk intervals are determined:
-(1)
-where (Exij, Enij, Heij) are the three numerical characteristic values for jth influential factor in ith risk interval. xij(L) and xij(R) are the lower and upper boundary values for ith risk interval. α is the adjusting coefficient. 
-.
-Step 2: Random numbers' generation. Random numbers 
- were generated based on (Exij, Enij, Heij). Random numbers are in a normal distribution which is presented [49]:
-(2)
+
+Exij = (xij(L) + xij(R)) / 2 (1)
+Enij = (xij(R) - xij(L)) / (2*sqrt(3)) (1)
+Heij = α (1)
+
+where (Exij, Enij, Heij) are the three numerical characteristic values for jth influential factor in ith risk interval. xij(L) and xij(R) are the lower and upper boundary values for ith risk interval. α is the adjusting coefficient.
+
+Step 2: Random numbers' generation. Random numbers En'ij and He'ij were generated based on (Exij, Enij, Heij). Random numbers are in a normal distribution which is presented [49]:
+
+En'ij ~ N(Enij, Heij^2) (2)
+He'ij ~ N(Heij, Heij^2) (2)
+
 Step 3: Calculate membership degree of measured data for the jth influential factor. Membership degree of measured data is important to fix weights of influential factors. Eq. (3) is adopted to calculate the membership degree.
-(3)
-where 
- is the membership degree of measured data.
-Step 4: Normalize the membership degree in the evaluated matrix (EM). The normalization of membership degree in the evaluated matrix is a prior step to determine the weights of influential factors. There are m risk intervals with n influential factors, EM is constructed using Eq. (4). Risk intervals are denoted as G1, G2, …, Gm and influential factors are denoted as X1, X2, …, Xn. The factors consist of positive criteria (PC) or negative criteria (NC). Elements in the EM are decided by the criterion type using the normalization technique in Eq. (5).
-(4)
-where 
- is the membership degree of the jth influential factor.
-(5)
+
+μij = exp(-(x - Exij)^2 / (2*(En'ij)^2)) (3)
+
+where μij is the membership degree of measured data.
+
+Step 4: Normalize the membership degree in the evaluated matrix (EM). The normalization of membership degree in the evaluated matrix is a prior step to determine the weights of influential factors. There are m risk intervals with n influential factors, EM is constructed using Eq. (4). Risk intervals are denoted as G1, G2, ..., Gm and influential factors are denoted as X1, X2, ..., Xn. The factors consist of positive criteria (PC) or negative criteria (NC). Elements in the EM are decided by the criterion type using the normalization technique in Eq. (5).
+
+EM = [μij]m×n (4)
+
+where μij is the membership degree of the jth influential factor.
+
+For PC: xij(t) = (μij - min(μij)) / (max(μij) - min(μij)) (5)
+For NC: xij(t) = (max(μij) - μij) / (max(μij) - min(μij)) (5)
+
 where xij(t) is the normalized membership degree.
+
 Step 5: Determined weights of influential factors. Calculate the proportion of the membership degree for factors. The corresponded equation is presented:
-(6)
+
+δij = xij(t) / Σxij(t) (6)
+
 where δij is the proportion of jth factor under ith risk interval.
+
 Entropy of influential factors are determined [47,48]:
-(7)
-where 
-. If 
-.
+
+ρj = -1/ln(m) * Σ(δij * ln(δij)) (7)
+
+where ρj is the entropy. If δij = 0, then δij * ln(δij) = 0.
+
 Weights of influential factors are assigned [47]:
-(8)
-where 
- is the weight of the jth influential factor, (1-ρj) is the redundancy of entropy.
+
+ωj = (1 - ρj) / Σ(1 - ρj) (8)
+
+where ωj is the weight of the jth influential factor, (1-ρj) is the redundancy of entropy.
+
 Step 6: Determined weights of risk intervals. Standard deviation in each risk interval is presented:
-(9)
-where 
- is the standard deviation of ith risk interval. And 
-.
+
+σi = sqrt(Σ(xij(t) - mean(xij))^2 / n) (9)
+
+where σi is the standard deviation of ith risk interval. And ηi = 1/σi.
+
 Weights of different risk intervals are assigned:
-(10)
-where 
- is the weight of ith risk interval.
+
+wi = ηi / Σηi (10)
+
+where wi is the weight of ith risk interval.
+
 Step 7: Synthetize (Exij, Enij, Heij) for all factors in different risk levels. The corresponding formulas are presented [52]:
-(11)
-where 
- is the weight of jth influential factor. 
- is the synthetized numerical characteristic in ith risk interval. 
-are determined based on Eq. (1), while 
- is calculated through followed equation.
-(12)
-where 
- and 
- are the minimum and maximum boundary values of risk intervals. Moreover, 
- if 
- if 
-.
-Step 8: Synthetize 
- for different risk levels to obtain the comprehensive 
-, the corresponded equation is displayed:
-(13)
-where 
- are the comprehensive numerical characteristic values for evaluated system, which is termed identified cloud model (ICM). 
- is the weight of ith risk interval. m is number of risk intervals for influential factors. 
+
+Exi = Σ(ωj * Exij) (11)
+Eni = sqrt(Σ(ωj^2 * Enij^2)) (11)
+Hei = Σ(ωj * Heij) (11)
+
+where ωj is the weight of jth influential factor. (Exi, Eni, Hei) is the synthetized numerical characteristic in ith risk interval. Exij, Enij, Heij are determined based on Eq. (1), while Heij is calculated through followed equation.
+
+Heij = α * (xij,max - xij,min) / 6 (12)
+
+where xij,min and xij,max are the minimum and maximum boundary values of risk intervals. Moreover, Heij = α if xij,max = xij,min.
+
+Step 8: Synthetize (Exi, Eni, Hei) for different risk levels to obtain the comprehensive (Ex, En, He), the corresponded equation is displayed:
+
+Ex = Σ(wi * Exi) (13)
+En = sqrt(Σ(wi^2 * Eni^2)) (13)
+He = Σ(wi * Hei) (13)
+
+where (Ex, En, He) are the comprehensive numerical characteristic values for evaluated system, which is termed identified cloud model (ICM). wi is the weight of ith risk interval. m is number of risk intervals for influential factors.
+
 Step 9: Calculate the degree of similar between the BCM and ICM. The steps are illustrated in Appendix. B in the supplementary materials. The similar membership degree between BCM and ICM are determined [52]:
-(14)
-where q is the number of cloud drops. 
- is the membership degree of ith cloud drop in jth risk level. 
- is the similar membership degree of cloud drops for jth risk level.
+
+γj = (1/q) * Σ(μij) (14)
+
+where q is the number of cloud drops. μij is the membership degree of ith cloud drop in jth risk level. γj is the similar membership degree of cloud drops for jth risk level.
+
 Step 10: Determine the risk status of research object. In this study, the research object is excavation system. In other words, the risk levels of excavation subsystems are obtained. Normalization of similar membership degree at all levels is presented in Eq. (15). The normalization aims to make the results of all subsystems in the same scale. The maximum value of γj at the corresponding level is assigned to the jth risk level.
-(15)
-where γj is the normalization of similar membership degree of cloud drops at the jth risk level.
+
+γj' = γj / Σγj (15)
+
+where γj' is the normalization of similar membership degree of cloud drops at the jth risk level.
+
 2.3. Correlation analysis
+
 Correlation analysis is a mathematical tool used to evaluate the relationship between results and influential factors. Thus, the relative importance (high sensitivity) of factors on the results is determined. In this study, Pearson correlation coefficient (PCC) is adopted as an effective parameter to evaluate the correlation relationship between influential factors and results quantitatively, which is expressed as [51]:
-(16)
-where ρ is the value of PCC, κ is the number of research objects, xj is the measured value of jth factor, and 
- is the maximum for the normalized similar membership degree (NSMD). 
- is the NSMD.
+
+ρ = cov(xj, NSMD) / (σxj * σNSMD) (16)
+
+where ρ is the value of PCC, κ is the number of research objects, xj is the measured value of jth factor, and NSMD is the maximum for the normalized similar membership degree (NSMD). NSMD is the NSMD.

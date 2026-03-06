@@ -1,11 +1,129 @@
 Estimating Probabilities from Scarce Data: A Hybrid Approach Using Bayesian Program Learning and Large Language Models.pdf
 提取的Method/Methodology部分:
 ========================================================================
-3 Methodology  3.1 Research Framework  This study employs two methodologies: BPL and LLM. The research framework is delineated in Fig. 2, with the core procedural steps outlined below, and detailed elaborations provided in the subsections that follow.  Step 1: Identify and evaluate risks to obtain a risk register for a selected project.  Step 2: Design a Generative Pre-trained Transformer (GPT) agent for probability estimation by interacting with the GPT builder.  Step 3: Prompt the GPT agent to estimate the probability utilizing the BPL technique by calling from Python with designed code.  Step 4: Update the probabilities of the risk events.  Step 5: Training and validation.
-These steps mirror the conventional process utilized in data mining technology: Step 1 pertains to data collection; Step 2 involves data preprocessing; Step 3 is dedicated to data analysis; Step 4 focuses on the presentation of data insights and data updating; and Step 5 is training and validation.  3.2 Step 1: Identify and Evaluate Risks  This step employs conventional methodologies of risk identification and assessment to systematically ascertain and evaluate potential risks. Predominant techniques utilized in this process include brainstorming sessions, the Delphi method, collaborative group studies, and some structural techniques such as Fault Tree Analysis (FTA), Event Tree Analysis (ETA), Failure Modes and Effects Analysis (FMEA), and Hazard and Operability Study (HAZOP). Each method contributes to a comprehensive examination and identification of risk events from multiple perspectives, ensuring a robust and thorough assessment.  This step culminates with the creation of a risk register that meticulously documents each identified risk event, thereby delineating associated causes, potential
-11  consequences, initial probability estimations, proposed mitigation strategies, and revised probabilities after considering mitigation impacts. An example of a risk register is provided in Table 1. It is also worth noting that, in practice, a risk matrix is widely accepted to indicate risk levels.  3.3 Step 2: Design A GPT Agent for Probability Estimation  The purpose of this step is to design a GPT plugin as an agent in the ChatGPT store. The initial configuration and settings are implemented by interacting with the GPT builder based on ChatGPT 5.1. The interface of the designed Bayesian Probability Estimator is shown in Fig. 3. This subsection formalizes the design as a reproducible configuration procedure.  Fig. 3: The designed GPT agent of Bayesian Probability Estimator.  Task Description: The primary function of this GPT agent is to estimate the probability of specified risk events.  Constraints:  i. This GPT plugin only gives a result of estimated probability and provides evidence. ii. Refuse all other questions not related to probability estimation. iii. Each probability estimate is an exact value, not an interval. iv. No conclusion paragraph. v. Be factual, no fabrication.  Input and Output Specifications:  i. Inputs to the agent are descriptions of either a risk event or mitigation strategy, formatted as "Risk event 1:..." or "Mitigation 1:...", respectively (Fig. 4). ii. The corresponding output is a precise probability value P for the risk event or an updated probability P′ based on the mitigation.
-12  iii. One risk event and one corresponding mitigation forms one program, as shown in Fig. 4. Once another program is prompted, the probability of former risk event will be updated as P′′. iv. One program is considered as one shot that will be used in Step 3 for Bayesian Program Learning under few-shot learning. v. If the input consists of more than two risk events, the output is presented in a table format, listing the updated probabilities. An example of an output table is shown in Table 2.
-3.4 Step 3: Prompt the GPT Agent to Estimate Probability  The GPT agent described previously is capable of acquiring the probability values of risk events; however, this mechanism may be opaque. Although GPT may provide supporting evidence, it cannot consistently guarantee the accuracy of its outcomes. Subsequently, we intend to refine the algorithm within the GPT plugin to ensure that the computed probability values conform to a specific mathematical distribution, 13  thereby enhancing the reliability of these estimates (Fig. 5). This enhancement involves the application of prompt engineering and fine-tuning techniques to achieve more credible results.thereby enhancing the reliability of these estimates (Fig. 5). This enhancement involves the application of prompt engineering and fine-tuning techniques to achieve more credible results.The key technique that must be used in the GPT plugin is BPL, which is a further developed learning algorithm based on Bayes’ theorem. Developed to emulate humanlike learning capabilities, BPL focuses on how humans can effectively generalize from limited examples. In BPL, learning is conceptualized as a form of program synthesis, aiming to deduce an underlying program that generates observed data. It is then interpreted as the process of belief revision based on new evidence. The fundamental equation in BPL is:P(Program|Data) = P(Program)P(Program)  P(Data) , #(1)  where P(Program|Data) is the posterior probability of a program given the data, which represents the updated belief about the distribution of programs; P(Program) is the likelihood of the data given a specific program, which quantifies how likely the observed data is given a particular program; P(Program) is the prior probability of a program, which represents our beliefs about the distribution of programs before observing any data; and P(Data) is the evidence or marginal likelihood, which normalizes the probability distribution.  Further to this, a transformed illustration in this study of probability estimation is:  P(Mitigation) = P(Risk event)P(Risk event)  P(Mitigation) , #(2)#  where the risk event is the program and the mitigation is the data. Thus, the key technique is to assume every risk event as a program corresponding to a probability distribution, and then derive the parameters via machine learning utilizing the Bayesian approach.  Following this, it is essential to define the data distributions with appropriate assumptions. For prior distribution P(Risk event), it may be posited that certain patterns or shifts occur in one project. The Beta distribution frequently serves as a suitable choice in such instances due to its flexibility, governed by its two parameters, α and β, which can vary substantially across different scenarios (Fig. 6). These
-14  parameters are set based on prior knowledge or assumptions. The probability density function (PDF) for the Beta distribution is given by:  f(x; α, β) = xα−1(1 − x)β−1  B(α, β) , #(3)  where B(α, β) is the Beta function, which serves as a normalization constant, ensuring the total probability integrates to 1.  Fig. 6: Beta distribution with different parameters.  The Beta distribution is chosen due to its well-known flexibility in modeling bounded probability values (i.e., between 0 and 1), a key requirement in estimating risk event likelihoods. It also enjoys widespread use in construction modeling applications [50], demonstrating its applicability to construction project uncertainty modeling. Furthermore, the Beta distribution offers practical advantages over other flexible families (e.g., Pearson distribution systems, Johnson distribution systems) in terms of mathematical tractability and interpretability. Its parameters, α and β, are easily updated through Bayesian inference, and its familiarity among risk analysis practitioners supports clearer communication and implementation.  The likelihood function P(Risk event) is proposed as a Binomial distribution. The likelihood of observing a specific number of risk events, given the probability p, is calculated using the Binomial distribution's probability mass function (PMF):  P(Mitigation = k; n, p) = (n k )pk(1 − p)n−k, #(4)  where k is the number of successes (true), n is the total number of trials, and p is the probability of success on each trial.  The evidence likelihood P(Mitigation) is then calculated as the sum of the likelihood of the risk events under all possible programs weighted by their prior probability:  P(Mitigation) = ∑  Risk event  P(Risk event)P(Risk event). #(5)
-15  3.5 Step 4: Update the Probabilities of Risk Events  Step 3 implements the core probabilistic reasoning mechanism and Step 4 illustrates the dynamic updating. It is noted that the Bayesian update is computed deterministically in Python with designed code after the logic explanation in the following subsections.  The distribution B(α′, β′) represents the posterior distribution P(Mitigation), where α′ and β′ are the updates in the learning process. Using Bayesian inference, the model updates its beliefs about which risk events are likely responsible for the observed mitigations. The posterior parameters of the Beta distribution (α′, β′) after observing the mitigations are as follows:  Update for α′  α′ = α + β. #(6)  Update for β′  β′ = β + (n − k). #(7)  The learning process is generally the optimization process to obtain optimal parameters (α′, β′), which is usually the gradient descent. We utilize the GPT builder to complete this process by designing the structural coding. For estimation, this can involve simulating from the posterior distributions of the risk events given new input mitigations. Here, we use the posterior mean calculation—the mean of the Beta distribution—which represents the updated estimate of the probability for each risk event, and is calculated as follows:  P(Mitigation) = α′  α′ + β′ . #(8)  The mean of the Beta distribution is calculated to estimate the most likely probability of observing a risk event, incorporating both prior beliefs and new mitigations. It simplifies the posterior distribution into a central value that is easy to communicate and use for decision-making. Typically, decision-makers require a clear, actionable figure on which to base their judgments, and the mean offers a direct representation of the expected probability of an event.  In summary, each risk event ultimately receives an updated probability value that reflects the influence of all mitigation measures (Fig. 7). Specifically, the probability of each risk event is determined by the comprehensive effect of all risk events and all mitigation measures.  Fig. 7: The process and logic of probability updating.
-16  The above process is designed with code in Python 3.12.6-based Jupyter Notebook, and then Python calls the GPT agent to achieve the automatic calculation. The Python workflow performs the following stages for each risk item:  i. Send textual input to GPT agent and receive structured data with k, n, p0.  ii. Apply Beta–Binomial update in Python and compute α′, β′, and posterior mean.  iii. Record results, including workshop probability, GPT prior, and Bayesian posterior.  This pipeline eliminates any ambiguity in how probabilities are derived and transforms the GPT agent from a black-box generator into a constrained semantic extractor embedded within a transparent mathematical system.  3.6 Step 5: Training and Validation  To strengthen the generalizability of the proposed GPT–Bayesian framework, we train and validate it by collecting 300 data entries of risk events. They are obtained from Google search by the keywords “risk register” and “construction”; only those with clear risk events, mitigations, and probabilities are included. Finally, 69 qualified risk registers are collected, yielding 300 data entries. This dataset is randomly partitioned into 70% for training and 30% for testing.  During training, the GPT Bayesian Probability Estimator is exposed to the 210 risk events (70% of the data) to calibrate prompt structures, improve semantic-to-evidence extraction consistency, and optimize the conversion of textual risk narratives into structured Bayesian evidence (k, n, p0). No model weights are modified; instead, the training phase refines rule-based constraints to ensure accurate, stable outputs and appropriate interpretation of mitigation effects.  For validation, the remaining 90 risk events (30% of the data) are processed without any further prompt tuning, and model performance is evaluated using the following criteria:  i. Semantic Extraction Accuracy: Agreement between GPT-inferred probabilities and published benchmark probabilities measured by Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE).  ii. Posterior Consistency: Stability of Beta–Binomial posterior means under repeated trials and small perturbations of (k, n).  iii. Calibration Reliability: Comparison of predicted probabilities with empirical frequencies using Brier score and reliability diagrams assessing over- or underconfidence.  This process ends once the authors evaluate a reasonable output. The combined criteria confirm whether the GPT–Bayesian estimator (1) interprets risk descriptions consistently, (2) produces mathematically coherent posterior probabilities, and (3) generalizes beyond the specific structure of the training registers.
+
+3 Methodology
+
+3.1 Research Framework
+
+This study employs two methodologies: BPL and LLM. The research framework is delineated in Fig. 2, with the core procedural steps outlined below, and detailed elaborations provided in the subsections that follow.
+
+Step 1: Identify and evaluate risks to obtain a risk register for a selected project.
+
+Step 2: Design a Generative Pre-trained Transformer (GPT) agent for probability estimation by interacting with the GPT builder.
+
+Step 3: Prompt the GPT agent to estimate the probability utilizing the BPL technique by calling from Python with designed code.
+
+Step 4: Update the probabilities of the risk events.
+
+Step 5: Training and validation.
+
+These steps mirror the conventional process utilized in data mining technology: Step 1 pertains to data collection; Step 2 involves data preprocessing; Step 3 is dedicated to data analysis; Step 4 focuses on the presentation of data insights and data updating; and Step 5 is training and validation.
+
+3.2 Step 1: Identify and Evaluate Risks
+
+This step employs conventional methodologies of risk identification and assessment to systematically ascertain and evaluate potential risks. Predominant techniques utilized in this process include brainstorming sessions, the Delphi method, collaborative group studies, and some structural techniques such as Fault Tree Analysis (FTA), Event Tree Analysis (ETA), Failure Modes and Effects Analysis (FMEA), and Hazard and Operability Study (HAZOP). Each method contributes to a comprehensive examination and identification of risk events from multiple perspectives, ensuring a robust and thorough assessment.
+
+This step culminates with the creation of a risk register that meticulously documents each identified risk event, thereby delineating associated causes, potential consequences, initial probability estimations, proposed mitigation strategies, and revised probabilities after considering mitigation impacts. An example of a risk register is provided in Table 1. It is also worth noting that, in practice, a risk matrix is widely accepted to indicate risk levels.
+
+3.3 Step 2: Design A GPT Agent for Probability Estimation
+
+The purpose of this step is to design a GPT plugin as an agent in the ChatGPT store. The initial configuration and settings are implemented by interacting with the GPT builder based on ChatGPT 5.1. The interface of the designed Bayesian Probability Estimator is shown in Fig. 3. This subsection formalizes the design as a reproducible configuration procedure.
+
+Fig. 3: The designed GPT agent of Bayesian Probability Estimator.
+
+Task Description: The primary function of this GPT agent is to estimate the probability of specified risk events.
+
+Constraints:
+
+i. This GPT plugin only gives a result of estimated probability and provides evidence.
+ii. Refuse all other questions not related to probability estimation.
+iii. Each probability estimate is an exact value, not an interval.
+iv. No conclusion paragraph.
+v. Be factual, no fabrication.
+
+Input and Output Specifications:
+
+i. Inputs to the agent are descriptions of either a risk event or mitigation strategy, formatted as "Risk event 1:..." or "Mitigation 1:...", respectively (Fig. 4).
+ii. The corresponding output is a precise probability value P for the risk event or an updated probability P′ based on the mitigation.
+iii. One risk event and one corresponding mitigation forms one program, as shown in Fig. 4. Once another program is prompted, the probability of former risk event will be updated as P′′.
+iv. One program is considered as one shot that will be used in Step 3 for Bayesian Program Learning under few-shot learning.
+v. If the input consists of more than two risk events, the output is presented in a table format, listing the updated probabilities. An example of an output table is shown in Table 2.
+
+3.4 Step 3: Prompt the GPT Agent to Estimate Probability
+
+The GPT agent described previously is capable of acquiring the probability values of risk events; however, this mechanism may be opaque. Although GPT may provide supporting evidence, it cannot consistently guarantee the accuracy of its outcomes. Subsequently, we intend to refine the algorithm within the GPT plugin to ensure that the computed probability values conform to a specific mathematical distribution, thereby enhancing the reliability of these estimates (Fig. 5). This enhancement involves the application of prompt engineering and fine-tuning techniques to achieve more credible results.
+
+The key technique that must be used in the GPT plugin is BPL, which is a further developed learning algorithm based on Bayes' theorem. Developed to emulate humanlike learning capabilities, BPL focuses on how humans can effectively generalize from limited examples. In BPL, learning is conceptualized as a form of program synthesis, aiming to deduce an underlying program that generates observed data. It is then interpreted as the process of belief revision based on new evidence.
+
+The fundamental equation in BPL is:
+
+P(Program|Data) = P(Program)P(Data|Program) / P(Data), #(1)
+
+where P(Program|Data) is the posterior probability of a program given the data, which represents the updated belief about the distribution of programs; P(Data|Program) is the likelihood of the data given a specific program, which quantifies how likely the observed data is given a particular program; P(Program) is the prior probability of a program, which represents our beliefs about the distribution of programs before observing any data; and P(Data) is the evidence or marginal likelihood, which normalizes the probability distribution.
+
+Further to this, a transformed illustration of Bayes' theorem is used to calculate the updated probabilities. This approach allows the GPT plugin to provide probability estimations that are not only based on the language model's understanding but also grounded in a principled probabilistic framework. The prior distribution P(Risk event) is proposed as a Beta distribution, where the parameters are set based on prior knowledge or assumptions.
+
+The probability density function (PDF) for the Beta distribution is given by:
+
+f(x; α, β) = x^(α−1)(1 − x)^(β−1) / B(α, β), #(3)
+
+where B(α, β) is the Beta function, which serves as a normalization constant, ensuring the total probability integrates to 1.
+
+Fig. 6: Beta distribution with different parameters.
+
+The Beta distribution is chosen due to its well-known flexibility in modeling bounded probability values (i.e., between 0 and 1), a key requirement in estimating risk event likelihoods. It also enjoys widespread use in construction modeling applications [50], demonstrating its applicability to construction project uncertainty modeling. Furthermore, the Beta distribution offers practical advantages over other flexible families (e.g., Pearson distribution systems, Johnson distribution systems) in terms of mathematical tractability and interpretability. Its parameters, α and β, are easily updated through Bayesian inference, and its familiarity among risk analysis practitioners supports clearer communication and implementation.
+
+The likelihood function P(Data|Risk event) is proposed as a Binomial distribution. The likelihood of observing a specific number of risk events, given the probability p, is calculated using the Binomial distribution's probability mass function (PMF):
+
+P(Mitigation = k; n, p) = C(n,k) * p^k * (1 − p)^(n−k), #(4)
+
+where k is the number of successes (true), n is the total number of trials, and p is the probability of success on each trial.
+
+The evidence likelihood P(Mitigation) is then calculated as the sum of the likelihood of the risk events under all possible programs weighted by their prior probability:
+
+P(Mitigation) = Σ_Risk event P(Data|Risk event)P(Risk event). #(5)
+
+3.5 Step 4: Update the Probabilities of Risk Events
+
+Step 3 implements the core probabilistic reasoning mechanism and Step 4 illustrates the dynamic updating. It is noted that the Bayesian update is computed deterministically in Python with designed code after the logic explanation in the following subsections.
+
+The distribution B(α′, β′) represents the posterior distribution P(Risk event|Mitigation), where α′ and β′ are the updates in the learning process. Using Bayesian inference, the model updates its beliefs about which risk events are likely responsible for the observed mitigations.
+
+The posterior parameters of the Beta distribution (α′, β′) after observing the mitigations are as follows:
+
+Update for α′:
+α′ = α + k. #(6)
+
+Update for β′:
+β′ = β + (n − k). #(7)
+
+The learning process is generally the optimization process to obtain optimal parameters (α′, β′), which is usually the gradient descent. We utilize the GPT builder to complete this process by designing the structural coding.
+
+For estimation, this can involve simulating from the posterior distributions of the risk events given new input mitigations. Here, we use the posterior mean calculation—the mean of the Beta distribution—which represents the updated estimate of the probability for each risk event, and is calculated as follows:
+
+P(Risk event|Mitigation) = α′ / (α′ + β′). #(8)
+
+The mean of the Beta distribution is calculated to estimate the most likely probability of observing a risk event, incorporating both prior beliefs and new mitigations. It simplifies the posterior distribution into a central value that is easy to communicate and use for decision-making. Typically, decision-makers require a clear, actionable figure on which to base their judgments, and the mean offers a direct representation of the expected probability of an event.
+
+In summary, each risk event ultimately receives an updated probability value that reflects the influence of all mitigation measures (Fig. 7). Specifically, the probability of each risk event is updated iteratively as each mitigation measure is applied.
+
+The above process is designed with code in Python 3.12.6-based Jupyter Notebook, and then Python calls the GPT agent to achieve the automatic calculation. The Python workflow performs the following stages for each risk item:
+
+i. Send textual input to GPT agent and receive structured data with k, n, p0.
+ii. Apply Beta–Binomial update in Python and compute α′, β′, and posterior mean.
+iii. Record results, including workshop probability, GPT prior, and Bayesian posterior.
+
+This pipeline eliminates any ambiguity in how probabilities are derived and transforms the GPT agent from a black-box generator into a constrained semantic extractor embedded within a transparent mathematical system.
+
+3.6 Step 5: Training and Validation
+
+To strengthen the generalizability of the proposed GPT–Bayesian framework, we train and validate it by collecting 300 data entries of risk events. They are obtained from Google search by the keywords "risk register" and "construction"; only those with clear risk events, mitigations, and probabilities are included. Finally, 69 qualified risk registers are collected, yielding 300 data entries. This dataset is randomly partitioned into 70% for training and 30% for testing.
+
+During training, the GPT Bayesian Probability Estimator is exposed to the 210 risk events (70% of the data) to calibrate prompt structures, improve semantic-to-evidence extraction consistency, and optimize the conversion of textual risk narratives into structured Bayesian evidence (k, n, p0). No model weights are modified; instead, the training phase refines rule-based constraints to ensure accurate, stable outputs and appropriate interpretation of mitigation effects.
+
+For validation, the remaining 90 risk events (30% of the data) are processed without any further prompt tuning, and model performance is evaluated using the following criteria:
+
+i. Semantic Extraction Accuracy: Agreement between GPT-inferred probabilities and published benchmark probabilities measured by Mean Absolute Error (MAE) and Root Mean Square Error (RMSE).
+ii. Calibration Assessment: Reliability of probability estimates evaluated through calibration plots and Brier score analysis.
+iii. Consistency Verification: Stability of outputs across multiple prompt iterations for identical risk scenarios.

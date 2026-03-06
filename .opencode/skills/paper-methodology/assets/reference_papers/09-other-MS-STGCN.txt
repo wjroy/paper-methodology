@@ -1,270 +1,150 @@
 Spatio-temporal graph convolutional networks with multi-source fusion for predicting excavation deformation.pdf
+
 提取的Method/Methodology部分:
 ========================================================================
+
 2. Methodology
+
 2.1. Graph theory
-In graph convolutional networks (GCN), graphs can be used to
-represent relationships between data points. A graph is a data structure
-defined as G = (V, E, A), where V = {v1, v2, ...vN} represents the set of
-nodes, the number of nodes |V| = N, and E represents the set of edges.
-Two nodes vi, vj ∈ V connected by eij = ( vi, vj) are called neighbors. The
-topological structure of graph G is typically represented by an adja­
-cency matrix A ∈ RN×N, where element Aij represents the connection
-relationship between nodes i and j. For an undirected graph, the adja­
-cency matrix has the symmetric property Aij = Aji.
+
+In graph convolutional networks (GCN), graphs can be used to represent relationships between data points. A graph is a data structure defined as G = (V, E, A), where V = {v1, v2, ...vN} represents the set of nodes, the number of nodes |V| = N, and E represents the set of edges. Two nodes vi, vj ∈ V connected by eij = (vi, vj) are called neighbors.
+
+The topological structure of graph G is typically represented by an adjacency matrix A ∈ R^(N×N), where element Aij represents the connection relationship between nodes i and j. For an undirected graph, the adjacency matrix has the symmetric property Aij = Aji.
+
 2.2. Graph convolution
-To address the challenge posed by the irregularity of graphstructured data, two main approaches have been proposed: spatialbased methods and spectral-based methods. Spatial-based methods
-aim to transform graph nodes into a grid-like structure, enabling the
-direct application of conventional convolution operations [37]. While
-intuitive, these methods struggle to define a consistent receptive field
-across diverse graph topologies. In contrast, spectral-based methods
-define convolution in the framework of graph Fourier transforms [38],
-offering a more rigorous mathematical foundation and being inherently
-adaptable to arbitrary graph structures. Subsequent works significantly
-reduced the computational complexity of spectral approaches through
-polynomial approximations [39,40], thus making them applicable to
-large-scale graphs. The STGCN framework adopted in this study is built
-upon such optimized spectral graph convolution techniques.
-Spectral GCN extend classical signal processing theory to graphstructured data, allowing the convolution operation to be defined in
-the non-Euclidean domain. In this framework, the graph Laplacian
-matrix is decomposed spectrally to enable the definition of the graph
-Fourier transform. The Laplacian matrix L = D0− A can be decomposed
-as L = UΛUT, where U is the normalized eigenvector matrix of the graph
-Laplacian L, also known as the graph Fourier basis, and Λ is the diagonal
-eigenvalue matrix. Based on this decomposition, we can project the
-graph signal x from the vertex domain to the frequency domain: ̂x= UTx
-, and transform it back through the inverse transform: x = Ûx. Using this
-framework, spectral graph convolution is defined as a filtering operation
-in the frequency domain, as shown in Eq. (1):
-Θ*G x = Θ(L)x = Θ( UΛUT)x = UΘ(Λ)UTx (1)
-where *G is the graph convolution operator, defined as the multiplica­
-tion operation between the signal x ∈ R and the kernel function Θ. The
-filter Θ(Λ) is a diagonal matrix. However, computing the graph Fourier
-transform requires eigendecomposition of the Laplacian matrix, which is
-computationally expensive for large graphs. To solve this, researchers
-use approximation methods, particularly Chebyshev polynomial ap­
-proximations.
-where Tk is the k-th order Chebyshev polynomial, and Λ̃ is the
-normalized eigenvalue matrix. Based on this approximation, graph
-convolution can be rewritten as Eq. (3):
-Θ*G x = Θ(L)x ≈ ∑
-K− 1
-k=0
-θkTk(̃ L)x (3)
-This method cleverly avoids eigen decomposition, reducing the
-computational complexity from O(n2) to O(K|E|), where |E| is the
-number of edges in the graph, and K is the order of the polynomial.
-Kipf and Welling [40] further simplified this framework by propos­
-ing a first-order approximation (K = 1) and setting λmax ≈ 2 (λmax is the
-maximum eigenvalue of the Laplacian matrix), resulting in a more
-concise form of graph convolution, as shown in Eq. (4):
-Θ*G x ≈ θ0x − θ1( D− 1/2WD− 1/2)x (4)
-where θ0 and θ1 are the two shared parameters of the kernel. W is the
-weight matrix. By introducing residual connections (W̃ = W + I) and
-parameter redefinition (θ = θ0 = − θ1), the GCN model widely used
-today is arrived at:
-H(l+1) = σ(D̃− 1/2W̃ D̃− 1/2H(l)W(l)) (5)
-where H(l) ∈ R is the feature matrix of the l-th layer,W(l) ∈ R is the
-learnable weight matrix of the l-th layer, W̃ = W +I is the adjacency
-matrix with added self-connections, D̃ is the corresponding degree ma­
-trix, and σ is a non-linear activation function.
-To facilitate a clearer understanding of the proposed model, Fig. 1
-illustrates how each node aggregates information from its neighbors (k
-= 1 or k = 2) during the graph convolution process. Through aggrega­
-tion and transformation operations, new node representations are
-generated based on the features of the node itself and its local
-neighborhood.
+
+To address the challenge posed by the irregularity of graph-structured data, two main approaches have been proposed: spatial-based methods and spectral-based methods. Spatial-based methods aim to transform graph nodes into a grid-like structure, enabling the direct application of conventional convolution operations [37]. While intuitive, these methods struggle to define a consistent receptive field across diverse graph topologies.
+
+In contrast, spectral-based methods define convolution in the framework of graph Fourier transforms [38], offering a more rigorous mathematical foundation and being inherently adaptable to arbitrary graph structures. Subsequent works significantly reduced the computational complexity of spectral approaches through polynomial approximations [39,40], thus making them applicable to large-scale graphs. The STGCN framework adopted in this study is built upon such optimized spectral graph convolution techniques.
+
+Spectral GCN extend classical signal processing theory to graph-structured data, allowing the convolution operation to be defined in the non-Euclidean domain. In this framework, the graph Laplacian matrix is decomposed spectrally to enable the definition of the graph Fourier transform. The Laplacian matrix L = D - A can be decomposed as L = UΛU^T, where U is the normalized eigenvector matrix of the graph Laplacian L, also known as the graph Fourier basis, and Λ is the diagonal eigenvalue matrix.
+
+Based on this decomposition, we can project the graph signal x from the vertex domain to the frequency domain: x̂ = U^T x, and transform it back through the inverse transform: x = Ux̂. Using this framework, spectral graph convolution is defined as a filtering operation in the frequency domain, as shown in Eq. (1):
+
+Θ *_G x = Θ(L)x = Θ(UΛU^T)x = UΘ(Λ)U^T x    (1)
+
+where *_G is the graph convolution operator, defined as the multiplication operation between the signal x ∈ R and the kernel function Θ. The filter Θ(Λ) is a diagonal matrix. However, computing the graph Fourier transform requires eigendecomposition of the Laplacian matrix, which is computationally expensive for large graphs. To solve this, researchers use approximation methods, particularly Chebyshev polynomial approximations.
+
+where Tk is the k-th order Chebyshev polynomial, and Λ̃ is the normalized eigenvalue matrix. Based on this approximation, graph convolution can be rewritten as Eq. (3):
+
+Θ *_G x = Θ(L)x ≈ Σk=0 to K-1 θk Tk(L̃)x    (3)
+
+This method cleverly avoids eigen decomposition, reducing the computational complexity from O(n²) to O(K|E|), where |E| is the number of edges in the graph, and K is the order of the polynomial.
+
+Kipf and Welling [40] further simplified this framework by proposing a first-order approximation (K = 1) and setting λmax ≈ 2 (λmax is the maximum eigenvalue of the Laplacian matrix), resulting in a more concise form of graph convolution, as shown in Eq. (4):
+
+Θ *_G x ≈ θ0x - θ1(D^(-1/2) W D^(-1/2))x    (4)
+
+where θ0 and θ1 are the two shared parameters of the kernel. W is the weight matrix. By introducing residual connections (W̃ = W + I) and parameter redefinition (θ = θ0 = -θ1), the GCN model widely used today is arrived at:
+
+H^(l+1) = σ(D̃^(-1/2) W̃ D̃^(-1/2) H^(l) W^(l))    (5)
+
+where H^(l) ∈ R is the feature matrix of the l-th layer, W^(l) ∈ R is the learnable weight matrix of the l-th layer, W̃ = W + I is the adjacency matrix with added self-connections, D̃ is the corresponding degree matrix, and σ is a non-linear activation function.
+
+To facilitate a clearer understanding of the proposed model, Fig. 1 illustrates how each node aggregates information from its neighbors (k = 1 or k = 2) during the graph convolution process. Through aggregation and transformation operations, new node representations are generated based on the features of the node itself and its local neighborhood.
+
 2.3. STGCN
-Based on graph convolution, a complete STGCN is constructed by
-combining temporal convolution, which simultaneously captures the
-spatial dependencies and temporal dynamics of the data. In STGCN,
-temporal convolution is implemented through standard 1D CNN, with
-convolution kernels specifically designed to operate only along the
-temporal dimension. For input features X ∈ RB×C×N×T, the temporal
-convolution operation is defined as:
-T (X) = σ( ∑K− 1
-k=0
-Wk⋅X:,:,:,t+p− k + b) (6)
-where Wk is the convolution kernel weight, K is the size of the convo­
-lution kernel in the temporal dimension, typically set to 3. p = (K - 1)/2
-represents the padding size, and b is the bias term. This implementation
-sets the convolution kernel size to (1, K), ensuring convolution occurs
-only along the temporal dimension while using symmetric padding to
-maintain the output sequence length consistent with the input.
-Combining GCN and temporal convolution, the spatio-temporal
-convolution operation is designed as the basic unit of STGCN. The
-spatio-temporal convolution block adopts a “temporal-spa­
-tial–temporal” three-layer structure, formally represented as:
-H = T 2(G (T 1(X)) ) (7)
-where T 1 represents the first temporal convolution layer, G is the
-graph convolution layer, and T 2 is the second temporal convolution
-layer. The first temporal convolution layer extracts temporal features
-from each node, then the graph convolution layer integrates spatial
-correlation information, and finally the second temporal convolution
-layer further processes the temporal features that have incorporated
-spatial information. With residual connections, the complete expression
-of the spatio-temporal convolution block is:
-Y = σ(H + F(X)) (8)
+
+Based on graph convolution, a complete STGCN is constructed by combining temporal convolution, which simultaneously captures the spatial dependencies and temporal dynamics of the data. In STGCN, temporal convolution is implemented through standard 1D CNN, with convolution kernels specifically designed to operate only along the temporal dimension.
+
+For input features X ∈ R^(B×C×N×T), the temporal convolution operation is defined as:
+
+T(X) = σ(Σk=0 to K-1 Wk · X:,:,:,t+p-k + b)    (6)
+
+where Wk is the convolution kernel weight, K is the size of the convolution kernel in the temporal dimension, typically set to 3. p = (K - 1)/2 represents the padding size, and b is the bias term. This implementation sets the convolution kernel size to (1, K), ensuring convolution occurs only along the temporal dimension while using symmetric padding to maintain the output sequence length consistent with the input.
+
+Combining GCN and temporal convolution, the spatio-temporal convolution operation is designed as the basic unit of STGCN. The spatio-temporal convolution block adopts a "temporal-spatial-temporal" three-layer structure, formally represented as:
+
+H = T²(G(T¹(X)))    (7)
+
+where T¹ represents the first temporal convolution layer, G is the graph convolution layer, and T² is the second temporal convolution layer. The first temporal convolution layer extracts temporal features from each node, then the graph convolution layer integrates spatial correlation information, and finally the second temporal convolution layer further processes the temporal features that have incorporated spatial information.
+
+With residual connections, the complete expression of the spatio-temporal convolution block is:
+
+Y = σ(H + F(X))    (8)
+
 2.4. Feature attention mechanism
-Inspired by the human visual system’s ability to selectively focus on
-important information, attention mechanisms have been widely adopted
-in deep learning. In multi-source data fusion, they enable dynamic
-weighting of features based on input context, allowing the model to
-emphasize task-relevant information while suppressing noise and
-redundancy [41,42]. The feature attention mechanism proposed in this
-study learns the importance of each input feature dimension and assigns
-corresponding weights to the original input features, enabling finegrained and adaptive feature weighting. Its mathematical formulation
-is as follows:
-α = Softmax(fatt(X)) (9)
-Xʹ = X ⊙ α (10)
-where fatt is the feature attention network, typically implemented
-through a multi-layer perceptron:
-fatt(X) = W2⋅ReLU(W1⋅X + b1) + b2 (11)
-α represents the calculated attention weights, and ⊙ denotes
-element-wise multiplication. The Softmax function ensures that the sum
-of all feature weights equals 1, forming a probability distribution. This
-feature attention mechanism can dynamically adjust feature importance
-based on input data. Attention weights also offer interpretability by
-revealing the contribution of each feature to the prediction. Fig. 2 il­
-lustrates a multilayer perceptron architecture with an attention mech­
-anism, comprising an input layer, hidden layers, Softmax processing,
-and an output layer. This architecture adjusts feature importance
-through attention weights α, enabling effective fusion and representa­
-tion of different features.
+
+Inspired by the human visual system's ability to selectively focus on important information, attention mechanisms have been widely adopted in deep learning. In multi-source data fusion, they enable dynamic weighting of features based on input context, allowing the model to emphasize task-relevant information while suppressing noise and redundancy [41,42].
+
+The feature attention mechanism proposed in this study learns the importance of each input feature dimension and assigns corresponding weights to the original input features, enabling fine-grained and adaptive feature weighting. Its mathematical formulation is as follows:
+
+α = Softmax(f_att(X))    (9)
+
+X' = X ⊙ α    (10)
+
+where f_att is the feature attention network, typically implemented through a multi-layer perceptron:
+
+f_att(X) = W₂ · ReLU(W₁ · X + b₁) + b₂    (11)
+
+α represents the calculated attention weights, and ⊙ denotes element-wise multiplication. The Softmax function ensures that the sum of all feature weights equals 1, forming a probability distribution. This feature attention mechanism can dynamically adjust feature importance based on input data. Attention weights also offer interpretability by revealing the contribution of each feature to the prediction.
+
+Fig. 2 illustrates a multilayer perceptron architecture with an attention mechanism, comprising an input layer, hidden layers, Softmax processing, and an output layer. This architecture adjusts feature importance through attention weights α, enabling effective fusion and representation of different features.
+
 2.5. Multi-source data fusion
-Multi-source data fusion integrates information from different sen­
-sors or data sources to achieve more comprehensive system under­
-standing than single-source approaches [26,43,44]. Feature-level fusion
-is most common in deep learning as it preserves raw data characteristics
-while enabling models to learn inter-feature relationships [45–48].
-Common fusion strategies range from simple concatenation, which
-directly combines feature vectors along the feature dimension while
-preserving all information but increasing computational complexity, to
-element-wise operations such as addition and multiplication. While
-addition fusion may cause information cancellation between features,
-multiplication fusion provides an inherent gating mechanism but re­
-mains sensitive to zero values. More sophisticated attention-based
-fusion approaches dynamically assess the importance of different
-feature sources [49]. This method first calculates a set of attention
-weights αi associated with each feature vector Fi, where ∑n i=1αi = 1.
-These weights reflect the relative contribution of each feature source to
-the current task or context. The final fused feature Fatt is obtained
-through weighted aggregation of the original features, expressed as
-Fatt = ∑n i=1αiFi. This adaptive, data-driven approach enables the model
-to optimize feature combinations for specific instances, enhancing in­
-formation utility. It excels in multi-source data scenarios with high
-heterogeneity and strong complementarity.
+
+Multi-source data fusion integrates information from different sensors or data sources to achieve more comprehensive system understanding than single-source approaches [26,43,44]. Feature-level fusion is most common in deep learning as it preserves raw data characteristics while enabling models to learn inter-feature relationships [45-48].
+
+Common fusion strategies range from simple concatenation, which directly combines feature vectors along the feature dimension while preserving all information but increasing computational complexity, to element-wise operations such as addition and multiplication. While addition fusion may cause information cancellation between features, multiplication fusion provides an inherent gating mechanism but remains sensitive to zero values.
+
+More sophisticated attention-based fusion approaches dynamically assess the importance of different feature sources [49]. This method first calculates a set of attention weights αi associated with each feature vector Fi, where Σi=1 to n αi = 1. These weights reflect the relative contribution of each feature source to the current task or context. The final fused feature F_att is obtained through weighted aggregation of the original features, expressed as F_att = Σi=1 to n αi Fi. This adaptive, data-driven approach enables the model to optimize feature combinations for specific instances, enhancing information utility. It excels in multi-source data scenarios with high heterogeneity and strong complementarity.
+
 3. MS-STGCN
+
 3.1. Problem definition and framework
-In multi-source spatio-temporal prediction problems, the focus is on
-sequence prediction tasks with rich spatio-temporal characteristics and
-multi-source data features. Given multi-source spatio-temporal data
-X = X(t− T+1), X(t− T+2), ..., X(t), where X(t) ∈ RN×D×F represents the
-observed data at time step t, N denotes the number of spatial points, D
-denotes the number of depth layers, and F represents the feature
-dimension (from different data sources). The prediction task is to learn a
-mapping function f, such that:
-Ŷ (t+1) = f(X ; Θ) (12)
-where Ŷ (t+1) is the prediction result for time step t + 1, and Θ represents
-the model parameters.
-The MS-STGCN framework is an end-to-end deep learning frame­
-work that implements a mapping from original multi-source heteroge­
-neous spatio-temporal data input to precise prediction output of target
-variables. The overall process of the framework is shown in Fig. 3. The
-processing flow of this framework covers the complete chain from data
-input to prediction output. First, heterogeneous data from different
-sources undergo standardization and synchronization processing to
-ensure data quality and consistency. Then, attention-based adaptive
-feature weighting and fusion are performed, enabling the model to
-automatically identify and emphasize important features. Based on the
-fused features, the system utilizes GCN to capture spatial topological
-dependencies, while simultaneously using temporal convolution to
-extract temporal evolution patterns, achieving joint extraction and deep
-fusion of spatio-temporal features through spatio-temporal convolution
-blocks. Finally, the prediction task is completed by generating predic­
-tion results based on the extracted high-quality spatio-temporal
-features.
+
+In multi-source spatio-temporal prediction problems, the focus is on sequence prediction tasks with rich spatio-temporal characteristics and multi-source data features. Given multi-source spatio-temporal data X = X(t-T+1), X(t-T+2), ..., X(t), where X(t) ∈ R^(N×D×F) represents the observed data at time step t, N denotes the number of spatial points, D denotes the number of depth layers, and F represents the feature dimension (from different data sources). The prediction task is to learn a mapping function f, such that:
+
+Ŷ(t+1) = f(X; Θ)    (12)
+
+where Ŷ(t+1) is the prediction result for time step t + 1, and Θ represents the model parameters.
+
+The MS-STGCN framework is an end-to-end deep learning framework that implements a mapping from original multi-source heterogeneous spatio-temporal data input to precise prediction output of target variables. The overall process of the framework is shown in Fig. 3. The processing flow of this framework covers the complete chain from data input to prediction output.
+
+First, heterogeneous data from different sources undergo standardization and synchronization processing to ensure data quality and consistency. Then, attention-based adaptive feature weighting and fusion are performed, enabling the model to automatically identify and emphasize important features. Based on the fused features, the system utilizes GCN to capture spatial topological dependencies, while simultaneously using temporal convolution to extract temporal evolution patterns, achieving joint extraction and deep fusion of spatio-temporal features through spatio-temporal convolution blocks. Finally, the prediction task is completed by generating prediction results based on the extracted high-quality spatio-temporal features.
+
 3.2. Construction of excavation monitoring point graph structure
-Excavation monitoring data exhibits clear spatial distribution char­
-acteristics, with inherent mutual connections between different moni­
-toring points. To effectively capture the spatial relationship patterns,
-this study constructs a graph structure that can encode the physical
-proximity and mutual influence relationships. In this graph structure,
-each node represents a specific monitoring point and a specific depth of
-monitoring location, while edges between monitoring points represent
-the topological structure of the monitoring system, primarily encoding
-two types of spatial relationships: the continuous variation of deflection
-along the depth dimension and the similarity of deflection at the same
-depth in different positions. Specifically, for the same inclinometer tube,
-connections are established between measurement points at adjacent
-depths, reflecting the strong continuity of wall deflection; for different
-monitoring points at the same depth, connections are established to
-capture the correlation of deformation in the horizontal direction.
-Additionally, self-connections are added to each node to ensure that a
-node’s own information is preserved during graph convolution.
-To define the graph convolution operation, this study uses the
-normalized Laplacian matrix method to preprocess the adjacency
-matrix:Ã = D− 1/2AD− 1/2, where A is the initial adjacency matrix, D is
-the degree matrix. This normalization approach effectively prevents
-feature scale changes during propagation, improving model training
-stability [50]. Fig. 4 shows the constructed graph structure, displaying
-the spatial connection network between excavation monitoring points
+
+Excavation monitoring data exhibits clear spatial distribution characteristics, with inherent mutual connections between different monitoring points. To effectively capture the spatial relationship patterns, this study constructs a graph structure that can encode the physical proximity and mutual influence relationships.
+
+In this graph structure, each node represents a specific monitoring point and a specific depth of monitoring location, while edges between monitoring points represent the topological structure of the monitoring system, primarily encoding two types of spatial relationships: the continuous variation of deflection along the depth dimension and the similarity of deflection at the same depth in different positions.
+
+Specifically, for the same inclinometer tube, connections are established between measurement points at adjacent depths, reflecting the strong continuity of wall deflection; for different monitoring points at the same depth, connections are established to capture the correlation of deformation in the horizontal direction. Additionally, self-connections are added to each node to ensure that a node's own information is preserved during graph convolution.
+
+To define the graph convolution operation, this study uses the normalized Laplacian matrix method to preprocess the adjacency matrix: Ã = D^(-1/2) A D^(-1/2), where A is the initial adjacency matrix, D is the degree matrix. This normalization approach effectively prevents feature scale changes during propagation, improving model training stability [50]. Fig. 4 shows the constructed graph structure, displaying the spatial connection network between excavation monitoring points.
+
 3.3. Multi-source feature attention fusion
-In order to effectively fuse multi-source heterogeneous monitoring
-data, this paper proposes a fusion strategy based on feature attention
-mechanism (MS-STGCN), and compares it with two traditional methods
-of feature independent projection and splicing (Concat-STGCN) and
-direct projection (DF-STGCN) in the experimental part. The feature
-fusion methods of the three methods are shown in Fig. 5.
-The MS-STGCN model adaptively learns feature importance weights
-using an attention mechanism derived from attention as Eq. (9). This
-approach first computes attention weights for each feature, reweights
-their contributions, and then performs feature projection as Eq. (13):
-Fproj = Wproj⋅Fʹ + bproj (13)
-Fʹ denotes the weighted features after attention mechanism alloca­
-tion, Fproj represents the projected features, Wproj and bproj are the pro­
-jection weight and bias, respectively. This strategy allows the model to
-adaptively learn the optimal feature combination weights based on the
-input data, thereby maximizing synergy and enhancing the model’s
-ability to represent complex and variable behaviors.
-The Concat-STGCN model designs an independent linear projection
-layer for each feature dimension and then concatenates the projected
-features:
-Fproj ,i = Wproj ,i⋅Fi + bproj ,i (14)
-Fconcat = [Fproj,1; Fproj,2; …; Fproj,n] (15)
-where Fi denote the i-th feature dimension, and Wproj ,i, bproj ,i denote the
-corresponding projection parameters. The operator “;” represents
-concatenation. This method preserves the relative independence of
-features. Although it provides a separate processing space for each
-feature, it increases model complexity and does not explicitly model
-feature interactions.
-The DF-STGCN model bypasses the attention calculation steps and
-directly projects the original features through a single linear layer:
-Fproj = Wproj⋅F + bproj (16)
-This approach treats all features as equally important, without
-explicit weight calculation, and encodes the relationships among fea­
-tures implicitly within the projection matrix.
+
+In order to effectively fuse multi-source heterogeneous monitoring data, this paper proposes a fusion strategy based on feature attention mechanism (MS-STGCN), and compares it with two traditional methods of feature independent projection and splicing (Concat-STGCN) and direct projection (DF-STGCN) in the experimental part. The feature fusion methods of the three methods are shown in Fig. 5.
+
+The MS-STGCN model adaptively learns feature importance weights using an attention mechanism derived from attention as Eq. (9). This approach first computes attention weights for each feature, reweights their contributions, and then performs feature projection as Eq. (13):
+
+F_proj = W_proj · F' + b_proj    (13)
+
+F' denotes the weighted features after attention mechanism allocation, F_proj represents the projected features, W_proj and b_proj are the projection weight and bias, respectively. This strategy allows the model to adaptively learn the optimal feature combination weights based on the input data, thereby maximizing synergy and enhancing the model's ability to represent complex and variable behaviors.
+
+The Concat-STGCN model designs an independent linear projection layer for each feature dimension and then concatenates the projected features:
+
+F_proj,i = W_proj,i · Fi + b_proj,i    (14)
+
+F_concat = [F_proj,1; F_proj,2; ...; F_proj,n]    (15)
+
+where Fi denote the i-th feature dimension, and W_proj,i, b_proj,i denote the corresponding projection parameters. The operator ";" represents concatenation. This method preserves the relative independence of features. Although it provides a separate processing space for each feature, it increases model complexity and does not explicitly model feature interactions.
+
+The DF-STGCN model bypasses the attention calculation steps and directly projects the original features through a single linear layer:
+
+F_proj = W_proj · F + b_proj    (16)
+
+This approach treats all features as equally important, without explicit weight calculation, and encodes the relationships among features implicitly within the projection matrix.
+
 3.4. STGCN network architecture
-Based on the constructed graph structure, a comprehensive frame­
-work MS-STGCN is proposed. As shown in Fig. 6, MS-STGCN includes
-five key components: data processing, multi-source feature fusion,
-spatio-temporal graph construction, STGCN, and CDW deflection pre­
-diction. The data processing stage organizes the original CDW deflection
-data and support axial force data into structured time series. Through a
-sliding window method to extract training samples, the model can learn
-the temporal contextual information in the data. The multi-source data
-fusion stage introduces a feature attention mechanism, breaking
-through the limitations of traditional fixed-weight fusion methods and
-achieving data-driven, dynamic feature importance evaluation and
-weighting [46]. The STGCN network adopts a “temporal-spa­
-tial–temporal” sandwich structure, achieving coordinated capture of
-temporal evolution patterns and spatial propagation modes [51]. The
-model also employs batch normalization and residual connections to
-improve training stability and expressive ability [52]. MS-STGCN ach­
-ieves an end-to-end mapping from original heterogeneous monitoring
-data to deflection prediction, with stronger multi-source data processing
-and spatio-temporal modeling capabilities compared to traditional
-methods. Additionally, MS-STGCN adopts a deep learning paradigm,
-automatically learning complex nonlinear mapping relationships from
-data, avoiding cumbersome manual feature engineering, and enhancing
-the model’s intelligence and application convenience.
+
+Based on the constructed graph structure, a comprehensive framework MS-STGCN is proposed. As shown in Fig. 6, MS-STGCN includes five key components: data processing, multi-source feature fusion, spatio-temporal graph construction, STGCN, and CDW deflection prediction.
+
+The data processing stage organizes the original CDW deflection data and support axial force data into structured time series. Through a sliding window method to extract training samples, the model can learn the temporal contextual information in the data.
+
+The multi-source data fusion stage introduces a feature attention mechanism, breaking through the limitations of traditional fixed-weight fusion methods and achieving data-driven, dynamic feature importance evaluation and weighting [46].
+
+The STGCN network adopts a "temporal-spatial-temporal" sandwich structure, achieving coordinated capture of temporal evolution patterns and spatial propagation modes [51]. The model also employs batch normalization and residual connections to improve training stability and expressive ability [52].
+
+MS-STGCN achieves an end-to-end mapping from original heterogeneous monitoring data to deflection prediction, with stronger multi-source data processing and spatio-temporal modeling capabilities compared to traditional methods. Additionally, MS-STGCN adopts a deep learning paradigm, automatically learning complex nonlinear mapping relationships from data, avoiding cumbersome manual feature engineering, and enhancing the model's intelligence and application convenience.

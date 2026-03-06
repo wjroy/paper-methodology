@@ -9,7 +9,7 @@
   "critical_terms": {
     "_note": "Contains only non-drifting terminology constraints and anti-mistranslation rules. Variant preference is handled by term_glossary.yml + style_profile.md.",
     "基坑": {
-      "allowed_variants": ["deep excavation", "excavation", "foundation pit", "excavation pit"],
+      "allowed_variants": ["deep excavation", "excavation", "foundation pit"],
       "forbidden_mistranslations": ["tunnel", "shield tunnel"],
       "note": "Context-dependent term. Choose variant by local engineering context and keep subsection consistency."
     },

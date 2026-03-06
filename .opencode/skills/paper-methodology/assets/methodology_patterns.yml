@@ -111,14 +111,20 @@ patterns:
       - "Weighting/causal scoring modules"
       - "Topological or ranking analysis"
       - "Risk-level decision output"
-    preferred_opening_style: "State decision objective, monitored entities, and stage-wise assessment target."
+    preferred_opening_style: "State decision objective, monitored entities, and stage-wise assessment target. Often uses (1)(2)(3) to enumerate main phases."
     preferred_subject_style: "Use decision subjects: risk level, score, weight, ranking criterion."
-    technical_explanation_style: "indicator/weight construction -> scoring/centrality mapping -> decision output"
+    technical_explanation_style: "Step X: marker for sub-steps (e.g., FAHP Step 2-4) -> indicator/weight construction -> scoring/centrality mapping -> decision output. Paragraphs may be denser (50-80 words) due to mathematical derivations."
+    distinctive_features:
+      - "Frequent 'Step X:' markers for multi-stage decision processes"
+      - "Higher equation density (weight calculations, matrix operations)"
+      - "Shorter paragraphs with stepwise logic chains"
     representative_own_papers:
       - "05-own-TSFRA"
     what_not_to_force:
       - "Do not force deep-network architecture subsections when decision logic dominates."
       - "Do not force benchmark-heavy predictive framing if task is assessment/ranking."
+      - "Do not force tutorial-style explanations for standard mathematical methods (FAHP, DEMATEL) — compact technical register is preferred."
+      - "Do not force paragraph length >80 words when stepwise mathematical derivations are required."
 
   - id: constraint-loss-first
     description: "Introduce objective constraints early to anchor how learning is guided and regularized."

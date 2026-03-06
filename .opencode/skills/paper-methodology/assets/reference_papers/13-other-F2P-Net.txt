@@ -1,173 +1,210 @@
 F2P-Net: A Hybrid Prompt-Enhanced Dual-Branch Cooperative Network for Industrial Surface Defect Segmentation with Limited Data.pdf
 提取的Method/Methodology部分:
 ========================================================================
+
 3. Method
+
 3.1. Overall structure
+
 As illustrated in Fig. 2, the overall framework consists of three principal components. The feature encoding module (ViCNet), the automated geometric prompt and cross-hierarchical multi-scale feature fusion decoding module (AFDec), and the edge-enhanced fine-tuning module (EVPT). To aid clarity and facilitate the subsequent exposition, we first outline the functional roles and workflows of each module (detailed implementations are provided in Sections 3.2-3.4).
-Fig. 2. Overall framework of F2P-Net. In the top left of the diagram is our proposed auxiliary encoder, whose feature pyramid extracts image representations at four different depths (stages). These are fused with the ViT features in the global attention layer of the primary encoder. The grey section at the bottom illustrates our improved efficient fine-tuning module. In the top right is the model’s decoder, which produces segmentation masks for defect regions and their corresponding Pixel‑AUROC scores.
 
-ViCNet (see Section 3.2) comprises a Transformer-based primary encoder and a lightweight CNN auxiliary encoder. The primary encoder is responsible for extracting global semantic and cross-level feature representations, whereas the auxiliary encoder captures local, multi-scale detailed information. To reconcile global perception with local detail, the multi-scale details extracted by the auxiliary encoder are explicitly embedded into the attention layers of the primary encoder, thereby maintaining a cooperative representation of semantics and fine-grained details at each layer. AFDec (see Section 3.3) consumes the multi-level features produced by ViCNet and employs an automated geometric prompt encoder to generate strongly supervised geometric positional information that guides defect shape and boundary delineation. During decoding, these geometric prompts are fused with image features via cross-attention; AFDec then carries out cross-level, multi-scale upsampling and fusion operations to produce high-precision, pixel-level defect segmentation outputs. In EVPT (see Section 3.4), the EVP submodule initially derives explicit visual edge cues from the input image, which are then combined with a learnable Industrial-Token to produce an edge-enhanced hybrid visual prompt. This hybrid visual prompt is injected into the Transformer blocks of the primary encoder as prompt vectors to fine-tune the primary encoder’s sensitivity to edge information during training and inference, thereby improving the clarity and localisation accuracy of defect boundaries.
+Fig. 2. Overall framework of F2P-Net. In the top left of the diagram is our proposed auxiliary encoder, whose feature pyramid extracts image representations at four different depths (stages). These are fused with the ViT features in the global attention layer of the primary encoder. The grey section at the bottom illustrates our improved efficient fine-tuning module. In the top right is the model's decoder, which produces segmentation masks for defect regions and their corresponding Pixel‑AUROC scores.
+
+ViCNet (see Section 3.2) comprises a Transformer-based primary encoder and a lightweight CNN auxiliary encoder. The primary encoder is responsible for extracting global semantic and cross-level feature representations, whereas the auxiliary encoder captures local, multi-scale detailed information. To reconcile global perception with local detail, the multi-scale details extracted by the auxiliary encoder are explicitly embedded into the attention layers of the primary encoder, thereby maintaining a cooperative representation of semantics and fine-grained details at each layer.
+
+AFDec (see Section 3.3) consumes the multi-level features produced by ViCNet and employs an automated geometric prompt encoder to generate strongly supervised geometric positional information that guides defect shape and boundary delineation. During decoding, these geometric prompts are fused with image features via cross-attention; AFDec then carries out cross-level, multi-scale upsampling and fusion operations to produce high-precision, pixel-level defect segmentation outputs.
+
+In EVPT (see Section 3.4), the EVP submodule initially derives explicit visual edge cues from the input image, which are then combined with a learnable Industrial-Token to produce an edge-enhanced hybrid visual prompt. This hybrid visual prompt is injected into the Transformer blocks of the primary encoder as prompt vectors to fine-tune the primary encoder's sensitivity to edge information during training and inference, thereby improving the clarity and localisation accuracy of defect boundaries.
+
 The following describes the collaborative interactions and workflow among the modules. Firstly, image data are fed in parallel into both the ViCNet and the EVPT. Within the ViCNet, a primary encoder and an auxiliary encoder work in concert to extract both global semantic features and local detailed features. Then, we embed the local detail features within the global attention layers of the primary encoder. Simultaneously, in the EVPT, after receiving the original image, the EVP module generates explicit visual prompts that accentuate the defective edges. Then, the explicit visual prompts combined with a learnable Industrial-Token yield an edge-enhanced hybrid visual prompt. Subsequently, the obtained hybrid visual prompt is embedded into all transformer blocks of the primary encoder, ultimately generating an image feature that embodies both global semantics and local details. Next, during the decoding stage, strongly supervised geometric positional information derived from the automated geometric prompt encoder is integrated with the image features through a cross-attention mechanism. Finally, the framework achieves precise delineation of the boundaries of defect regions by drawing on cross-level, multi-scale features encoded by the primary encoder.
-3.2. ViCNet
-ViCNet is a hierarchical feature encoding network that adopts a primary-secondary cooperative learning mechanism. The dual-branch architecture enables cross-scale feature fusion, where multi-scale feature representations from a lightweight auxiliary encoder are progressively injected into the hierarchical layers of a computationally intensive primary encoder, specifically amplifying defect-aware feature responses for micro-scale industrial anomalies.
-In terms of specific design intention, ViCNet employs a ViT-Large encoder pre-trained on the extensive segmentation dataset SA-1B as its primary backbone, explicitly leveraging the inherent segmentation priors embedded within the foundational vision model. Unlike conventional practices that leverage foundation models (e.g., CLIP [42] and ResNet [46]) primarily for their generalised feature extraction capabilities, we intentionally select the SAM [39] as our base model because of its intrinsic edge consciousness, a property inherently learned from 11 million high-fidelity masks in the SA-1B dataset. This strategic choice is motivated by two critical observations. First, edge structures (e.g., gradient discontinuities and contour convexity) demonstrate robust physical invariance across industrial environments. This invariance ensures edge feature stable extraction of defect region under varying imaging conditions. Second, SAM’s prompt-guided mask decoder [39] explicitly decouples edge geometry from semantic contexts through its architectural design. Unlike conventional CNN- or transformer-based features that conflate geometric and semantic information, this disentanglement enhances the cross-domain transferability of edge priors, making SAM particularly suited for industrial defect segmentation.
-In terms of specific implementation, the heavy-duty primary encoder is a ViT-L-based transformer architecture consisting of 24 blocks. We freeze its entire backbone to preserve the generalisation capabilities of this large model. Although the ViT-Large primary encoder excels in capturing global features, long-range dependencies, and contextual semantics, which enables precise detection of larger defects such as cracks and scratches, it overlooks small-scale defects such as pits or corrosion due to insufficient attention. Therefore, we introduce an extremely lightweight CNN-based auxiliary encoder that extracts multi-scale defect features to address this limitation. Unlike approaches that perform feature fusion solely at shallow or deep layers, the multi-scale features are embedded across multiple hierarchical levels, including the shallow, intermediate, and deep layers. Thereby capturing the diverse scales and intricate details characteristic of industrial images. This dual-encoder strategy not only preserves critical information across various resolutions but also lays the foundation for subsequent processing stages. The specific implementation steps are as follows. Firstly, the auxiliary encoder provides four feature maps 
- from different depths. Then, for each selected global attention layer 
-, we perform the following steps of ViT (at layers 5, 11, 17, and 23).
-1) linear projection:
-(1)
-where 
- is a learned projection matrix that maps CNN features to the same dimensionality as the ViT features.
-2) fusion:
-(2)
-where 
-​ is the global attention feature from ViT at the corresponding layer.
-This fusion is designed to integrate the global context from the ViT backbone with local details from the auxiliary branch, thereby enhancing the segmentation of small-scale industrial defects. For our auxiliary encoder, we employ a lightweight ResNet-18 as the auxiliary encoder. The rationale behind this choice is that the auxiliary encoder's role is to supplement the main ViT encoder with shallow, local features, rather than acting as a second heavy-duty feature extractor. We hypothesize that a lightweight network is sufficient for this purpose, offering a better trade-off between performance and computational efficiency. To validate this design choice, we conduct an ablation study on the depth of the auxiliary encoder, with the detailed results and analysis presented in Table 5.
-3.3. AFDec
-The decoder, motivated by the unique challenges of industrial surface-defect detection, is designed to precisely adapt SAM’s general-purpose segmentation capability to the specialised requirements of this domain. Our primary objective is to achieve high-precision, pixel-level localisation of defects, since industrial defects typically manifest as subtle texture variations whose boundaries are blurred and difficult to delineate.
-Although the standard SAM model provides a solid foundation, it exhibits three principal limitations in our application. First, the strongly supervised geometric prompts required during training (points and boxes) demand extensive annotation effort. Second, it relies solely on features from the encoder’s final layer, which may lack the low-level detail necessary to capture fine defect boundaries. Third, its output mechanism is designed for general multi-object segmentation and mask-quality (IoU) prediction and is not directly optimised for the pixel-level anomaly-classification task that is critical in industrial inspection. To address these issues, we propose an Automated G-Prompt, a multi-scale feature fusion module, and a Learnable Industrial-Token and Pixel-AUROC head specifically tailored for industrial scenarios.
-3.3.1. Automated geometric prompt
-Effectively leveraging limited defect features critically depends on strong supervision prompt information. Accurate and reliable prompts enable the model to rapidly and precisely identify defect regions. Providing corresponding geometric prompts is essential for training the F2P-Net network. Inspired by the SAM [39] model for automated mask generation. In order to acquire the corresponding strong geometric (points and bounding boxes) supervision signals for model training. Therefore, in our framework, the sparse geometric prompts, such as points and bounding boxes, are directly derived from the ground truth masks. Let 
- be the original ground truth mask. Our prompt generation process is implemented via two primary operations, object extraction and geometric prompt derivation (point and bounding box prompts). The process can be formalised as follows. Using connected component analysis with an 
--connectivity (e.g., 
-), we partition the mask 
- into 
- disjoint regions (excluding the background):
-(3)
-where each region 
-​ is defined as
-(4)
-subject to an area constraint: 
-with 
-​ as an absolute area threshold (e.g., 20 pixels) and 
- as a relative threshold ratio (e.g., 0.001) if enabled. If the number of regions exceeds the maximum 
-​ (e.g., 20), a random subset is selected:
-(5)
-for each selected region 
-, we choose 
-random points. Typically, 
-. Denote the set of point coordinates for the region 
- as:
-(6)
-the overall point prompt set is as follows:
-(7)
-for each 
-, the minimal bounding box is defined by the extreme coordinates:
-(8)
-thus, the bounding box 
-is given in the 
- format:
-(9)
-the set of all box prompts is as follows:
-(10)
-given a set of target prompt types 
-, the final outputs are defined as:
-(11)
-3.3.2. Multi-scale feature fusion
-Accurate segmentation of industrial defects requires a synergistic understanding of both the global surface context and localised, fine-grained anomalies. Reliance solely on the final image feature (
-), as in the original SAM, risks the loss of fine boundary information. SAM-HQ [44] demonstrated the efficacy of combining early- and late-stage encoder features, validating that fusing local detail with global context improves segmentation quality.
-Building on this insight, we further propose that, given the diverse scales and morphologies of industrial defects, a more comprehensive hierarchical feature representation will yield substantial gains. Accordingly, a multi-scale feature fusion decoder (MFF-Decoder) is presented, which innovatively integrates feature maps from four different depths of the ViCNet encoder (
-,​ 
-, 
-, 
-) to aggregate multi-scale information. This multi-scale fusion strategy is specifically tailored to industrial scenarios: shallow features (
-,​ 
-) provide high-resolution detail that is essential for delineating sharp defect edges and fine textures, whereas deeper features (
-, 
-) capture higher-level semantic context that helps the model distinguish true defects from complex but normal background textures. By performing an element-wise summation of these features, we construct a richer, more robust aggregated feature tensor 
- for the decoder. Compared with the two-stage feature fusion adopted in SAM-HQ, our design more comprehensively addresses the needs of industrial defect detection across a wide range of sizes and appearances. The detailed implementation process is as follows. Let 
-,​ 
-,​ 
-,​ and 
- denote the multi-scale feature maps obtained from ViCNet after fusing the CNN-assisted features, and let 
-​ denote the final image feature from ViCNet. In addition, let 
-denote the prompt features extracted by the SAM’s prompt encoder. The decoder stage is then formalised as follows.
-1) A two-layer decoder function 
- is applied to the concatenation of the final image feature and the prompt features:
-(12)
-2) An aggregation tensor 
-is initialised with the same dimensions as 
-​:
-(13)
-where 
- denotes a convolutional operation applied to each feature map.
-3) The final segmentation mask 
- is produced via element-wise multiplication of the decoder output 
- and the aggregated feature 
-(14)
-where 
- indicates element-wise multiplication.
-4) To obtain pixel-level predictions, a convolution is applied to the aggregated feature 
- followed by sigmoid activation:
-(15)
-where 
- is the sigmoid function.
-3.3.3. Learnable industrial-token and pixel-AUROC head
-To further tailor the decoding process to our specific domain, we introduce a new, learnable Industrial-Token. Our motivation is to create a specialized component that can learn the unique characteristics of industrial defects without disrupting SAM's powerful pre-trained knowledge. As illustrated in Fig. 3. By keeping the original SAM decoder parameters frozen, we preserve its strong generalization and zero-shot segmentation priors. The Industrial Token functions alongside SAM’s native IoU output token and constitutes the primary module adjusted during training. By separating responsibilities, the Industrial Token is dedicated to encoding domain-specific information, for example the characteristic shapes, textures and boundary properties of industrial defects. This dual-token approach effectively bridges SAM's general segmentation capabilities with the specific requirements of our task, enabling more precise boundary refinement than using a general-purpose token alone. Furthermore, by retaining only the highest-confidence mask prediction, we streamline the output, effectively suppressing potential false positives that arise from SAM's multi-object segmentation paradigm when applied to single-defect industrial scenarios.
-Fig 3
-Download: Download high-res image (181KB)
-Download: Download full-size image
-Fig. 3. Network structure of decoder. The flames in the figure represent the trainable part, the snowflakes represent freezing during training, and “conv.trans” represents the inverted convolution.
 
-A critical adaptation is to redesign the model’s segmentation head to better support pixel-wise defect detection. The standard SAM decoder predicts an IoU score to rank mask quality. However, the success criterion in industrial inspection is fundamentally a pixel-level classification problem, typically evaluated by metrics like Pixel-AUROC. Therefore, to align our model's optimization objective directly with the final evaluation metric, we reconfigure SAM's mask quality head into a dedicated pixel-wise anomaly classification head. This "pixel-pre head" leverages the aggregated feature 
- to generate a dense, pixel-level prediction of anomaly scores. This design ensures that the model is explicitly trained to localize defects with pixel-level accuracy, which is a more stringent and relevant objective for industrial applications than predicting the overall quality of a mask. This transformation makes our decoder's output directly interpretable as an anomaly map and optimizes the network for the precise task it is intended to solve.
+3.2. ViCNet
+
+ViCNet is a hierarchical feature encoding network that adopts a primary-secondary cooperative learning mechanism. The dual-branch architecture enables cross-scale feature fusion, where multi-scale feature representations from a lightweight auxiliary encoder are progressively injected into the hierarchical layers of a computationally intensive primary encoder, specifically amplifying defect-aware feature responses for micro-scale industrial anomalies.
+
+In terms of specific design intention, ViCNet employs a ViT-Large encoder pre-trained on the extensive segmentation dataset SA-1B as its primary backbone, explicitly leveraging the inherent segmentation priors embedded within the foundational vision model. Unlike conventional practices that leverage foundation models (e.g., CLIP [42] and ResNet [46]) primarily for their generalised feature extraction capabilities, we intentionally select the SAM [39] as our base model because of its intrinsic edge consciousness, a property inherently learned from 11 million high-fidelity masks in the SA-1B dataset.
+
+This strategic choice is motivated by two critical observations. First, edge structures (e.g., gradient discontinuities and contour convexity) demonstrate robust physical invariance across industrial environments. This invariance ensures edge feature stable extraction of defect region under varying imaging conditions. Second, SAM's prompt-guided mask decoder [39] explicitly decouples edge geometry from semantic contexts through its architectural design. Unlike conventional CNN- or transformer-based features that conflate geometric and semantic information, this disentanglement enhances the cross-domain transferability of edge priors, making SAM particularly suited for industrial defect segmentation.
+
+In terms of specific implementation, the heavy-duty primary encoder is a ViT-L-based transformer architecture consisting of 24 blocks. We freeze its entire backbone to preserve the generalisation capabilities of this large model. Although the ViT-Large primary encoder excels in capturing global features, long-range dependencies, and contextual semantics, which enables precise detection of larger defects such as cracks and scratches, it overlooks small-scale defects such as pits or corrosion due to insufficient attention. Therefore, we introduce an extremely lightweight CNN-based auxiliary encoder that extracts multi-scale defect features to address this limitation.
+
+Unlike approaches that perform feature fusion solely at shallow or deep layers, the multi-scale features are embedded across multiple hierarchical levels, including the shallow, intermediate, and deep layers. Thereby capturing the diverse scales and intricate details characteristic of industrial images. This dual-encoder strategy not only preserves critical information across various resolutions but also lays the foundation for subsequent processing stages. The specific implementation steps are as follows.
+
+Firstly, the auxiliary encoder provides four feature maps {F1, F2, F3, F4} from different depths. Then, for each selected global attention layer Lk, we perform the following steps of ViT (at layers 5, 11, 17, and 23).
+
+1) linear projection:
+Fk' = Wk * Fk (1)
+
+where Wk is a learned projection matrix that maps CNN features to the same dimensionality as the ViT features.
+
+2) fusion:
+Vk = Vk + Fk' (2)
+
+where Vk is the global attention feature from ViT at the corresponding layer.
+
+This fusion is designed to integrate the global context from the ViT backbone with local details from the auxiliary branch, thereby enhancing the segmentation of small-scale industrial defects. For our auxiliary encoder, we employ a lightweight ResNet-18 as the auxiliary encoder. The rationale behind this choice is that the auxiliary encoder's role is to supplement the main ViT encoder with shallow, local features, rather than acting as a second heavy-duty feature extractor. We hypothesize that a lightweight network is sufficient for this purpose, offering a better trade-off between performance and computational efficiency. To validate this design choice, we conduct an ablation study on the depth of the auxiliary encoder, with the detailed results and analysis presented in Table 5.
+
+3.3. AFDec
+
+The decoder, motivated by the unique challenges of industrial surface-defect detection, is designed to precisely adapt SAM's general-purpose segmentation capability to the specialised requirements of this domain. Our primary objective is to achieve high-precision, pixel-level localisation of defects, since industrial defects typically manifest as subtle texture variations whose boundaries are blurred and difficult to delineate.
+
+Although the standard SAM model provides a solid foundation, it exhibits three principal limitations in our application. First, the strongly supervised geometric prompts required during training (points and boxes) demand extensive annotation effort. Second, it relies solely on features from the encoder's final layer, which may lack the low-level detail necessary to capture fine defect boundaries. Third, its output mechanism is designed for general multi-object segmentation and mask-quality (IoU) prediction and is not directly optimised for the pixel-level anomaly-classification task that is critical in industrial inspection.
+
+To address these issues, we propose an Automated G-Prompt, a multi-scale feature fusion module, and a Learnable Industrial-Token and Pixel-AUROC head specifically tailored for industrial scenarios.
+
+3.3.1. Automated geometric prompt
+
+Effectively leveraging limited defect features critically depends on strong supervision prompt information. Accurate and reliable prompts enable the model to rapidly and precisely identify defect regions. Providing corresponding geometric prompts is essential for training the F2P-Net network. Inspired by the SAM [39] model for automated mask generation. In order to acquire the corresponding strong geometric (points and bounding boxes) supervision signals for model training.
+
+Therefore, in our framework, the sparse geometric prompts, such as points and bounding boxes, are directly derived from the ground truth masks. Let M be the original ground truth mask. Our prompt generation process is implemented via two primary operations, object extraction and geometric prompt derivation (point and bounding box prompts). The process can be formalised as follows.
+
+Using connected component analysis with an 8-connectivity (e.g., N8), we partition the mask M into N disjoint regions (excluding the background):
+
+M = ∪_{i=1}^N Ri (3)
+
+where each region Ri is defined as
+
+Ri = {p | p is connected to pi under N8 and M(p) = 1} (4)
+
+subject to an area constraint: Area(Ri) ≥ max(Amin, r * Area(M)) with Amin as an absolute area threshold (e.g., 20 pixels) and r as a relative threshold ratio (e.g., 0.001) if enabled. If the number of regions exceeds the maximum Nmax (e.g., 20), a random subset is selected:
+
+Rselected = RandomSubset({Ri}_{i=1}^N, Nmax) (5)
+
+for each selected region Ri, we choose K random points. Typically, K = 1. Denote the set of point coordinates for the region Ri as:
+
+Pi = {p_i^1, p_i^2, ..., p_i^K} (6)
+
+the overall point prompt set is as follows:
+
+Pprompt = ∪_{i=1}^{|Rselected|} Pi (7)
+
+for each Ri, the minimal bounding box is defined by the extreme coordinates:
+xmin = min_{p∈Ri} x(p), xmax = max_{p∈Ri} x(p) (8)
+ymin = min_{p∈Ri} y(p), ymax = max_{p∈Ri} y(p) (8)
+
+thus, the bounding box Bi is given in the [xmin, ymin, xmax, ymax] format:
+
+Bi = [xmin, ymin, xmax, ymax] (9)
+
+the set of all box prompts is as follows:
+
+Bprompt = {Bi}_{i=1}^{|Rselected|} (10)
+
+given a set of target prompt types T ∈ {{point}, {box}, {point, box}}, the final outputs are defined as:
+
+Prompts = {Pprompt if 'point' ∈ T, Bprompt if 'box' ∈ T} (11)
+
+3.3.2. Multi-scale feature fusion
+
+Accurate segmentation of industrial defects requires a synergistic understanding of both the global surface context and localised, fine-grained anomalies. Reliance solely on the final image feature (Fimg), as in the original SAM, risks the loss of fine boundary information. SAM-HQ [44] demonstrated the efficacy of combining early- and late-stage encoder features, validating that fusing local detail with global context improves segmentation quality.
+
+Building on this insight, we further propose that, given the diverse scales and morphologies of industrial defects, a more comprehensive hierarchical feature representation will yield substantial gains. Accordingly, a multi-scale feature fusion decoder (MFF-Decoder) is presented, which innovatively integrates feature maps from four different depths of the ViCNet encoder (F1, F2, F3, F4) to aggregate multi-scale information.
+
+This multi-scale fusion strategy is specifically tailored to industrial scenarios: shallow features (F1, F2) provide high-resolution detail that is essential for delineating sharp defect edges and fine textures, whereas deeper features (F3, F4) capture higher-level semantic context that helps the model distinguish true defects from complex but normal background textures. By performing an element-wise summation of these features, we construct a richer, more robust aggregated feature tensor Fagg for the decoder. Compared with the two-stage feature fusion adopted in SAM-HQ, our design more comprehensively addresses the needs of industrial defect detection across a wide range of sizes and appearances.
+
+The detailed implementation process is as follows. Let F1, F2, F3, and F4 denote the multi-scale feature maps obtained from ViCNet after fusing the CNN-assisted features, and let Fimg denote the final image feature from ViCNet. In addition, let Fprompt denote the prompt features extracted by the SAM's prompt encoder. The decoder stage is then formalised as follows.
+
+1) A two-layer decoder function D is applied to the concatenation of the final image feature and the prompt features:
+
+Mdecoder = D(Concat(Fimg, Fprompt)) (12)
+
+2) An aggregation tensor Fagg is initialised with the same dimensions as Mdecoder:
+
+Fagg = Σ_{l=1}^4 Conv_l(Resize(Fl, Mdecoder)) (13)
+
+where Conv_l denotes a convolutional operation applied to each feature map.
+
+3) The final segmentation mask Mfinal is produced via element-wise multiplication of the decoder output Mdecoder and the aggregated feature Fagg:
+
+Mfinal = Mdecoder ⊙ Fagg (14)
+
+where ⊙ indicates element-wise multiplication.
+
+4) To obtain pixel-level predictions, a convolution is applied to the aggregated feature Fagg followed by sigmoid activation:
+
+Ppixel = σ(Conv(Fagg)) (15)
+
+where σ is the sigmoid function.
+
+3.3.3. Learnable industrial-token and pixel-AUROC head
+
+To further tailor the decoding process to our specific domain, we introduce a new, learnable Industrial-Token. Our motivation is to create a specialized component that can learn the unique characteristics of industrial defects without disrupting SAM's powerful pre-trained knowledge. As illustrated in Fig. 3. By keeping the original SAM decoder parameters frozen, we preserve its strong generalization and zero-shot segmentation priors.
+
+Fig. 3. Network structure of decoder. The flames in the figure represent the trainable part, the snowflakes represent freezing during training, and "conv.trans" represents the inverted convolution.
+
+The Industrial Token functions alongside SAM's native IoU output token and constitutes the primary module adjusted during training. By separating responsibilities, the Industrial Token is dedicated to encoding domain-specific information, for example the characteristic shapes, textures and boundary properties of industrial defects. This dual-token approach effectively bridges SAM's general segmentation capabilities with the specific requirements of our task, enabling more precise boundary refinement than using a general-purpose token alone. Furthermore, by retaining only the highest-confidence mask prediction, we streamline the output, effectively suppressing potential false positives that arise from SAM's multi-object segmentation paradigm when applied to single-defect industrial scenarios.
+
+A critical adaptation is to redesign the model's segmentation head to better support pixel-wise defect detection. The standard SAM decoder predicts an IoU score to rank mask quality. However, the success criterion in industrial inspection is fundamentally a pixel-level classification problem, typically evaluated by metrics like Pixel-AUROC. Therefore, to align our model's optimization objective directly with the final evaluation metric, we reconfigure SAM's mask quality head into a dedicated pixel-wise anomaly classification head.
+
+This "pixel-pre head" leverages the aggregated feature Fagg to generate a dense, pixel-level prediction of anomaly scores. This design ensures that the model is explicitly trained to localize defects with pixel-level accuracy, which is a more stringent and relevant objective for industrial applications than predicting the overall quality of a mask. This transformation makes our decoder's output directly interpretable as an anomaly map and optimizes the network for the precise task it is intended to solve.
+
 In our implementation, the Mask (which is generated jointly by the decoder and the fused features) and the pixel-pre-head (which outputs the pixel-level scores used for calculating the Pixel-AUROC) exist as two parallel prediction heads. During the training phase, both heads are supervised simultaneously, each with its own corresponding loss term. We combine these losses via a weighted sum to obtain a scalar total loss. This scalar value is then backpropagated, meaning that the gradients update the shared encoder as well as the parameters of the respective prediction heads (including the three-layer MLP and the Industrial-Token-related parameters).
+
 3.4. EVPT
+
 The proposed EVPT module is an efficient fine-tuning strategy that integrates edge enhancement into the visual prompt tuning process to adapt large-scale pre-trained models for industrial defect segmentation tasks. The primary goal of EVPT is to improve the model's sensitivity to defect boundaries and small-scale features, which are often challenging to delineate due to complex industrial textures.
+
 3.4.1. Explicit visual prompting
-In segmentation tasks, edge cues serve as a vital constraint that guides the extraction of features [40]. We adopt EVP to enhance the performance of our defect detection model. Defect regions, such as scratches, pits, and abrasions, typically exhibit high-frequency components in the frequency domain. In industrial defect inspection, the approach of applying a Fourier transform to time-domain signals and conducting signal processing in the frequency domain has been shown to be effective [41]. Therefore, we incorporate the image’s high-frequency components as an intermediate input, encoding them as a prompt. In our model, EVP plays a crucial role. The input natural image is transformed via the two-dimensional discrete Fourier transform, as shown in Equation (16), resulting in a frequency domain representation.
-(16)
-here, 
- denotes the pixel value in the spatial domain, where 
- and 
- represent the row and column coordinates, respectively. 
- corresponds to the value in the frequency domain, with 
- and 
- as the frequency coordinates, and 
- and 
- indicate the number of rows and columns in the image. We apply a high-pass filter in the frequency domain, as defined in Equations (17) and (18), to further isolate the high-frequency components critical for defect detection. This method of isolating high-frequency components is fundamentally equivalent to tracking the target signal by computing the residual between the original signal features and the boundary-measured output [37].
-(17)
-(18)
-where 
- denotes the Euclidean distance from the frequency point 
- to the center of the spectrum and where 
-​ represents the cut-off frequency.
-(19)
-Using Equation (19), we transform the extracted high-frequency image features from the frequency domain back to the spatial (time) domain. The resulting high-frequency feature information aids the model in enhancing its detection and perception of defect edge characteristics while preserving the original image data. In industrial surface defect detection, especially for metal workpieces, defects such as scratches and pits exhibit distinct high-frequency features. Enhancing the model's sensitivity to these high-frequency edge details can significantly improve its ability to locate and detect defect regions. Fig. 4 illustrates the overall EVP module. Notably, rather than pre-sharpening the image before feeding it into the model, we treat the high-frequency features as a high-dimensional visual prompt. This approach avoids interference with the original image while improving the model’s capacity to capture high-frequency information.
-Fig 4
-Download: Download high-res image (187KB)
-Download: Download full-size image
+
+In segmentation tasks, edge cues serve as a vital constraint that guides the extraction of features [40]. We adopt EVP to enhance the performance of our defect detection model. Defect regions, such as scratches, pits, and abrasions, typically exhibit high-frequency components in the frequency domain. In industrial defect inspection, the approach of applying a Fourier transform to time-domain signals and conducting signal processing in the frequency domain has been shown to be effective [41]. Therefore, we incorporate the image's high-frequency components as an intermediate input, encoding them as a prompt.
+
+In our model, EVP plays a crucial role. The input natural image is transformed via the two-dimensional discrete Fourier transform, as shown in Equation (16), resulting in a frequency domain representation.
+
+F(u,v) = Σ_{x=0}^{M-1} Σ_{y=0}^{N-1} f(x,y) * e^{-j2π(ux/M + vy/N)} (16)
+
+here, f(x,y) denotes the pixel value in the spatial domain, where x and y represent the row and column coordinates, respectively. F(u,v) corresponds to the value in the frequency domain, with u and v as the frequency coordinates, and M and N indicate the number of rows and columns in the image. We apply a high-pass filter in the frequency domain, as defined in Equations (17) and (18), to further isolate the high-frequency components critical for defect detection.
+
+This method of isolating high-frequency components is fundamentally equivalent to tracking the target signal by computing the residual between the original signal features and the boundary-measured output [37].
+
+H(u,v) = 1 if D(u,v) > D0, 0 otherwise (17)
+D(u,v) = sqrt((u-M/2)^2 + (v-N/2)^2) (18)
+
+where D(u,v) denotes the Euclidean distance from the frequency point (u,v) to the center of the spectrum and where D0 represents the cut-off frequency.
+
+f'(x,y) = IDFT(F(u,v) * H(u,v)) (19)
+
+Using Equation (19), we transform the extracted high-frequency image features from the frequency domain back to the spatial (time) domain. The resulting high-frequency feature information aids the model in enhancing its detection and perception of defect edge characteristics while preserving the original image data.
+
 Fig. 4. EVP module structure display diagram. FFT and IFFT denote the Fast Fourier Transform and its inverse, respectively, while the red circle indicates the cut-off frequency.
 
+In industrial surface defect detection, especially for metal workpieces, defects such as scratches and pits exhibit distinct high-frequency features. Enhancing the model's sensitivity to these high-frequency edge details can significantly improve its ability to locate and detect defect regions. Fig. 4 illustrates the overall EVP module. Notably, rather than pre-sharpening the image before feeding it into the model, we treat the high-frequency features as a high-dimensional visual prompt. This approach avoids interference with the original image while improving the model's capacity to capture high-frequency information.
+
 3.4.2. Edge-enhanced visual prompt tuning
-Edge‑enhanced visual prompt tuning is primarily used to migrate large segmentation models from traditional domains to industrial applications by fine‑tuning only a few parameters to achieve domain adaptation. The module first extracts explicit edge information from the input images (Fig. 5) by applying EVP to generate edge features that highlight critical boundary details. These edge features serve as explicit prompts, which contain fine-grained spatial information about defect boundaries. Simultaneously, the input images are also subjected to a standard VPT [38] mechanism to construct the latent parameter space, which is updated during training. Additionally, the learnable Industrial-Token from the decoder is constructed into a parameter space similar to a multi-layer perceptron through adapter dimensionality reduction, nonlinear activation, and linear dimensionality increase. Then, a high-quality feature with the same dimension as EVP is formed by concatenating it in the new dimension. Ultimately, the prompt generator fuses these VPT-derived parameters with the EVP explicit prompts and high-quality features, creating a hybrid prompt. This integration is designed to enhance the model’s sensitivity to subtle edge features while preserving the robustness of the global visual priors provided by the pre-trained model. During fine-tuning, the composite prompt is injected into the transformer-based architecture. The model optimises its feature representations through adaptive learning, effectively aligning spatial semantics with the precise boundary information from EVP. This adaptive fine-tuning process enables the model to emphasise key defect edges while suppressing irrelevant background noise, resulting in more accurate segmentation outputs. By explicitly incorporating edge information, the EVPT module directs the model’s attention to the transitional regions between defect and non-defect areas. This boundary-aware attention mechanism improves the delineation of defect regions and enhances the overall spatial semantic consistency across the feature hierarchy. By retaining the general visual features learned by the backbone from large-scale pre-training and adapting the latent parameter space through updates, the model is effectively tailored to the industrial domain.
-Fig 5
-Download: Download high-res image (371KB)
-Download: Download full-size image
+
+Edge‑enhanced visual prompt tuning is primarily used to migrate large segmentation models from traditional domains to industrial applications by fine‑tuning only a few parameters to achieve domain adaptation. The module first extracts explicit edge information from the input images (Fig. 5) by applying EVP to generate edge features that highlight critical boundary details. These edge features serve as explicit prompts, which contain fine-grained spatial information about defect boundaries.
+
 Fig. 5. The figure illustrates the details of EVPT. Where EVP represents our edge-explicit visual prompts, and the numbers indicate the dimensions of the features.
 
+Simultaneously, the input images are also subjected to a standard VPT [38] mechanism to construct the latent parameter space, which is updated during training. Additionally, the learnable Industrial-Token from the decoder is constructed into a parameter space similar to a multi-layer perceptron through adapter dimensionality reduction, nonlinear activation, and linear dimensionality increase. Then, a high-quality feature with the same dimension as EVP is formed by concatenating it in the new dimension.
+
+Ultimately, the prompt generator fuses these VPT-derived parameters with the EVP explicit prompts and high-quality features, creating a hybrid prompt. This integration is designed to enhance the model's sensitivity to subtle edge features while preserving the robustness of the global visual priors provided by the pre-trained model. During fine-tuning, the composite prompt is injected into the transformer-based architecture. The model optimises its feature representations through adaptive learning, effectively aligning spatial semantics with the precise boundary information from EVP.
+
+This adaptive fine-tuning process enables the model to emphasise key defect edges while suppressing irrelevant background noise, resulting in more accurate segmentation outputs. By explicitly incorporating edge information, the EVPT module directs the model's attention to the transitional regions between defect and non-defect areas. This boundary-aware attention mechanism improves the delineation of defect boundaries, particularly in scenarios where defects are subtle or where the contrast between defective and normal regions is low.
+
 The EVPT module integrates edge-enhanced visual prompts with conventional visual prompt tuning to enable efficient fine-tuning for industrial defect segmentation. This method enhances the model's adaptability to complex industrial surface textures and significantly improves the accuracy of defect boundary segmentation. The performance improvements in metrics such as the IoU and pixel-level area under the receiver operating characteristic curve (Pixel-AUROC) validate the effectiveness of incorporating explicit edge features during fine-tuning.
+
 3.5. Loss function
+
 Pixel-AUROC is a critical metric for achieving precise segmentation. Our model predicts each pixel as a positive or negative sample for pixel-level segmentation. We introduce binary cross-entropy loss with logits to optimise this process, as defined in Equation (20).
-(20)
-here, 
-​, and 
- represents the total number of pixels.
-Additionally, we employ Dice loss, which is used to measure the overlap between the predicted probability 
- and the ground truth label 
-, and is defined as follows in Equation (21).
-(21)
-here, 
- is the probability of the pixel being the foreground, 
- is the ground truth label (0 or 1), and 
- is a small constant. To address the issue of pixel class imbalance (with a large proportion of background pixels), we introduce focal loss (Equation 22) to apply weighting to the hard-to-classify samples.
-(22)
-here, 
- is the modulation factor (typically set to 2), and 
-​.
+
+LBCE = -1/N * Σ[y_i * log(σ(p_i)) + (1-y_i) * log(1-σ(p_i))] (20)
+
+here, p_i = Mfinal(i), y_i ∈ {0,1}, and N represents the total number of pixels.
+
+Additionally, we employ Dice loss, which is used to measure the overlap between the predicted probability p_i and the ground truth label y_i, and is defined as follows in Equation (21).
+
+LDice = 1 - (2 * Σ(p_i * y_i) + ε) / (Σ(p_i^2) + Σ(y_i^2) + ε) (21)
+
+here, p_i is the probability of the pixel being the foreground, y_i is the ground truth label (0 or 1), and ε is a small constant.
+
+To address the issue of pixel class imbalance (with a large proportion of background pixels), we introduce focal loss (Equation 22) to apply weighting to the hard-to-classify samples.
+
+LFocal = -1/N * Σ[(1-p_i)^γ * y_i * log(p_i)] (22)
+
+here, γ is the modulation factor (typically set to 2), and p_i = σ(p_i).
+
 In summary, we combine these losses through weighted aggregation as follows:
-(23)
-In Equation (23), 
-, 
-, and 
- are the hyperparameters that control the weights of the respective losses, which are set to 1, 20, and 10 in our experiments. The implementation steps of F2P-Net are presented in Algorithm 1.
+
+Ltotal = λ1 * LBCE + λ2 * LDice + λ3 * LFocal (23)
+
+In Equation (23), λ1, λ2, and λ3 are the hyperparameters that control the weights of the respective losses, which are set to 1, 20, and 10 in our experiments. The implementation steps of F2P-Net are presented in Algorithm 1.

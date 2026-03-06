@@ -27,9 +27,13 @@ Major rule decisions:
   preference (not hard quota).
 - REMOVE: any assumption of one invariant section order or single fixed
   CN->EN term mapping across all tasks.
-- UNCERTAIN: exact passive/active ratio and connector frequency distribution,
-  especially because `05-own-TSFRA.txt` is line-compressed extraction and should
-  not be over-interpreted as a strict style template.
+- CONFIRMED (post-cleaning): 05-own-TSFRA follows the same core style (objective
+  subject, present tense, opening framework paragraph) but with denser equation
+  chains and shorter paragraphs (50-80 words) due to its decision-centric nature.
+  "Step X:" markers are characteristic of weighting-scoring-decision pattern.
+- Note: Paragraph length varies by pattern type — prediction models (01-04) tend
+  toward 80-120 words, decision/assessment models (05) may be 50-80 words due to
+  stepwise mathematical derivations.
 
 ## 1. Structural Preferences
 

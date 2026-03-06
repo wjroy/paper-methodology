@@ -239,7 +239,7 @@ Before running this test, add the following entry to `error_log.md`:
 - Wrong: "The foundation pit deformation is predicted by..."
 - Correct: "The excavation pit deformation is predicted by..."
 - Context: English methodology, Section 3.1
-- Rule: Always use "excavation pit" (not "foundation pit") for 基坑.
+- Rule: Always use "deep excavation" (not "excavation pit") for 基坑.
 
 ### STYLE — Used "It is worth noting that" filler phrase
 - Date: 2025-01-16
