@@ -1,187 +1,150 @@
 # paper-methodology Skill
 
-OpenCode/Cursor skill for generating bilingual (Chinese + English) Methodology sections for SCI papers in the geotechnical AI domain.
+OpenCode skill for generating bilingual (Chinese + English) Methodology/Methods
+sections for SCI papers in geotechnical AI.
 
-## Domain Scope
+## What This Skill Does
 
-- **Geotechnical engineering**: excavation, tunnelling, foundation, underground construction
-- **AI/ML methods**: deep learning, GNN, GAN, LLM, physics-informed models, spatiotemporal prediction
+Given user notes plus real code/config, the skill runs a lightweight,
+gate-controlled workflow and outputs:
 
-## Installation
+1. MethodSpec (single source of truth)
+2. Chinese Methodology (plain text)
+3. English Methodology (plain text)
+4. TODO/VERIFY + audit summary
 
-### Option 1: Use this repository directly
+## Core Guarantees
 
-If you're working in this repository, the skill is already available at:
-```
-.opencode/skills/paper-methodology/
-```
+- MethodSpec-first (no prose before MethodSpec)
+- code/config > notes on conflicts
+- no fabrication of parameters, results, baselines, or citations
+- strict CN-EN structural/value alignment
+- compact runtime context (targeted asset loading only)
 
-OpenCode/Cursor will auto-discover it when you open this project.
+## Workflow (v3.3)
 
-### Option 2: Install to global skills directory
+The main workflow is fixed as three phases:
 
-Copy the skill to your global OpenCode skills directory:
+GATHER -> PLAN -> WRITE_AUDIT
 
-```bash
-# Windows
-cp -r .opencode/skills/paper-methodology ~/.config/opencode/skills/
+- GATHER: extract hard facts, detect conflicts/gaps
+- PLAN: choose methodology pattern, build section plan, generate MethodSpec
+- WRITE_AUDIT: draft CN+EN and run compact 6-pass audit
 
-# macOS/Linux
-cp -r .opencode/skills/paper-methodology ~/.config/opencode/skills/
-```
+Confirmation gate:
+- By default, Phase C runs only after user confirms MethodSpec.
+- Skip is allowed only with explicit instructions (e.g., "skip confirmation").
 
-Or use the OpenSkills CLI (if installed):
-```bash
-# From this repository root
-npx openskills install .opencode/skills/paper-methodology
-```
+## Pattern Library and Outline
 
-## Usage
+Pattern library is used in PLAN to avoid a one-size-fits-all template:
 
-### Trigger Keywords
+- `assets/methodology_patterns.yml`
+  - framework-first
+  - physics-mechanism-first
+  - data-transformation-first
+  - fusion-pattern
+  - weighting-scoring-decision
+  - constraint-loss-first
 
-The skill activates when you use phrases like:
-- "写方法学" / "write methodology"
-- "methods section" / "方法学章节"
-- "从脚本生成方法段" / "generate methods from code"
-- "bilingual methods"
+Outline file provides only base skeleton + overlay linkage:
 
-### Quick Start
+- `assets/methodology_outline.md`
 
-Use the one-click command:
-```
-/methods-bilingual
+## MethodSpec Traceability
 
-[Paste your research notes or provide code paths]
-```
+MethodSpec traceability is mandatory:
 
-Or directly prompt:
-```
-帮我写一篇关于[你的研究主题]的方法学章节。
+- Every hard-fact field (Sections 2-9) must include:
+  - `Source`
+  - `Confidence` (OK / NEEDS_VERIFY)
+- Blank source is an audit FAIL.
+- `[TBD]` must be mirrored in Conflicts/Gaps and TODO/VERIFY.
 
-研究笔记：
-- [你的笔记内容]
+Template:
 
-代码路径：
-- model.py
-- config.yaml
-```
+- `assets/methodspec_template.md`
 
-### What You Need to Provide
+## Runtime Assets (Current)
 
-**Minimum required** (at least one):
-- Research notes or outline (can be rough, bullet-point)
-- Code repository path or key scripts
+Always read:
 
-**Optional** (improves quality):
-- Target journal/conference name
-- Architecture diagrams
-- Parameter tables
-- Draft of other sections for context
+- `assets/style_profile.md`
+- `assets/error_log.md`
+- `assets/memory/hard_memory.json`
+- `assets/memory/soft_memory.json`
 
-### Output
+Read on-demand:
 
-The skill produces 4 sequential outputs:
+- `assets/methodspec_template.md`
+- `assets/term_glossary.yml`
+- `assets/notation.md`
+- `assets/methodology_patterns.yml`
+- `assets/methodology_outline.md`
+- `assets/reference_papers/*.txt` (top relevant subset only)
 
-1. **MethodSpec** — Structured specification for review
-2. **Chinese Methodology** — Plain text, Word-ready
-3. **English Methodology** — Plain text, Word-ready
-4. **TODO/VERIFY List** — Gaps, conflicts, missing citations
+Note:
 
-## Key Features
+- `assets/upstream_prompt_pack.md` is no longer used at runtime.
+- Required minimum rendering/humanizer/redline rules are inlined in
+  `SKILL.md` and `methods-bilingual.md`.
 
-### Anti-Hallucination
-- Never fabricates datasets, parameters, hyperparameters, or citations
-- Code/config values override notes when conflicts occur
-- All gaps explicitly flagged as `[TBD]` or `[TODO]`
-
-### Bilingual Consistency
-- CN and EN versions generated from single MethodSpec
-- Identical structure, equation numbering, figure references
-- Aligned terminology via 200+ term glossary
-
-### Word-Ready Output
-- Plain text, no Markdown formatting
-- Full-width Chinese punctuation
-- Equation placeholders for Word equation editor
-
-### Optional Humanizer
-- Ask-first de-AI pass for English version
-- Preserves all technical terms and numerical values
-- Reduces AI writing patterns while maintaining accuracy
-
-## File Structure
+## Repository Structure (Current)
 
 ```
 .opencode/
 ├── skills/paper-methodology/
-│   ├── SKILL.md                    # Main skill definition
+│   ├── SKILL.md
 │   └── assets/
-│       ├── reference_papers/       # 9 source papers (3 own + 6 other)
-│       ├── methodology_outline.md  # Flexible section hierarchy
-│       ├── style_guide_methodology.md  # Writing rules + de-AI word list
-│       ├── term_glossary.yml       # 200+ CN-EN term pairs
-│       ├── notation.md             # Symbol conventions
-│       └── checklist.md            # Verification checklist
+│       ├── memory/
+│       │   ├── hard_memory.json
+│       │   └── soft_memory.json
+│       ├── reference_papers/
+│       ├── methodology_patterns.yml
+│       ├── methodology_outline.md
+│       ├── methodspec_template.md
+│       ├── style_profile.md
+│       ├── term_glossary.yml
+│       ├── notation.md
+│       └── error_log.md
 ├── commands/
-│   └── methods-bilingual.md        # One-click command template
+│   └── methods-bilingual.md
 └── regression/
-    └── paper-methodology-tests.md  # 5 test cases
+    └── paper-methodology-tests.md
 ```
 
 ## Testing
 
-Run the 5 regression tests in `.opencode/regression/paper-methodology-tests.md`:
+Regression tests are maintained in:
 
-1. Normal input — excavation surrogate model
-2. Missing details — no learning rate specified
-3. Notes vs code conflict — batch size mismatch
-4. Citation needed — unverifiable reference
-5. Optional humanizer — user requests de-AI pass
+- `.opencode/regression/paper-methodology-tests.md`
 
-Each test has clear pass/fail criteria.
+Current suite size: 13 tests, covering:
 
-## Customization
+- core workflow behavior
+- style/error-log consistency
+- MethodSpec Source/Confidence traceability
+- PLAN confirmation gate and skip-gate behavior
+- pattern library selection
+- inlined humanizer/polish/redline behavior (without prompt-pack dependency)
 
-### Adding New Reference Papers
+## Usage
 
-1. Place full-text `.txt` file in `assets/reference_papers/`
-2. Follow naming: `NN-{own|other}-ShortName.txt`
-3. Update `assets/reference_papers/README.md`
-4. If new terms introduced, add to `assets/term_glossary.yml`
+Use command:
 
-### Extending Term Glossary
+```
+/methods-bilingual
+```
 
-Edit `assets/term_glossary.yml` to add new CN-EN term pairs. Categories:
-- geotechnical_engineering
-- neural_network_fundamentals
-- gan, graph_neural_network
-- attention_and_transformer, llm
-- spatiotemporal, training_and_evaluation
-- data_processing, statistical_ml, physics_informed
+Then provide:
 
-### Modifying Style Rules
+- notes (plain-language method details)
+- code/config paths (if available)
+- optional target journal
 
-Edit `assets/style_guide_methodology.md` to adjust:
-- Prose structure conventions
-- Tense and voice rules
-- Anti-AI word substitutions
-- Chinese-specific formatting
+## Scope and Limits
 
-## Limitations
-
-- **Domain-specific**: Only for geotechnical AI papers
-- **Methodology only**: Does not generate Introduction, Discussion, or Abstract
-- **Plain text output**: Equations must be formatted in Word manually
-- **Citation verification**: Cannot auto-fetch BibTeX; user must provide
-
-## Credits
-
-Integrates best practices from:
-- [awesome-ai-research-writing](https://github.com/Leey21/awesome-ai-research-writing) — SCI writing prompts
-- [humanizer](https://github.com/blader/humanizer) — De-AI writing patterns
-- [ml-paper-writing](https://github.com/Orchestra-Research/AI-Research-SKILLs) — Anti-hallucination rules
-
-## License
-
-This skill is for academic research use. Reference papers remain copyright of their respective authors.
+- Domain: geotechnical AI only
+- Section scope: Methodology/Methods only
+- Output: plain text (Word-ready)
+- Citations: unverifiable references remain `[CITATION NEEDED]`

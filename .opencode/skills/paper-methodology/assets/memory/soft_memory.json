@@ -72,11 +72,11 @@
   },
 
   "cross_reference_preferences": {
-    "equation_format_en": "Equation (N)",
+    "equation_format_en": "Equation (N) / Eq. (N) (journal-dependent)",
     "equation_format_cn": "公式 (N)",
     "section_format_en": "Section X.Y",
     "section_format_cn": "第 X.Y 节",
-    "figure_format_en": "Figure X",
+    "figure_format_en": "Fig. X / Figure X (journal-dependent)",
     "figure_format_cn": "图 X",
     "table_format_en": "Table X",
     "table_format_cn": "表 X",

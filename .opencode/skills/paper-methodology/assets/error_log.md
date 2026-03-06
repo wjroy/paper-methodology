@@ -73,3 +73,23 @@ When the user corrects your output, append a new entry using this format:
 - Context: reference_papers/09-other-MS-STGCN.txt
 - Rule: MS-STGCN fuses multi-source monitoring data (inclinometers, settlement gauges, etc.), not multi-scale features. Always expand "MS" as "Multi-Source" when referencing this paper.
 
+### STYLE — Overusing first-person "we" in English Methods
+- Date: 2026-03-06
+- Wrong: Setting Methods voice as moderate first-person usage (e.g., "we propose", "we design")
+- Correct: Use rare-to-none first-person in Methods; prefer "this study", "this paper", or "the proposed framework"
+- Context: own papers 01-05 methodology sections
+- Rule: Do not enforce "we" usage in Methods. Treat first-person as rare-to-none unless user explicitly requests otherwise.
+
+### STRUCTURAL — Forcing physics-first as invariant order
+- Date: 2026-03-06
+- Wrong: "Physics/mechanics always precedes architecture for all own papers"
+- Correct: Select a pattern from methodology_patterns.yml; use base skeleton + overlay
+- Context: own papers 04 (LLM-GNN) and 05 (TSFRA) do not follow physics-first structure
+- Rule: Never claim a universal invariant section order across all own papers.
+
+### TERMINOLOGY — Locking context-dependent CN terms to a single EN variant
+- Date: 2026-03-06
+- Wrong: Hard-locking 基坑 to one EN variant and rejecting alternatives
+- Correct: Use context-dependent variants (deep excavation / excavation / foundation pit / excavation pit)
+- Context: own papers 01-05 use multiple valid variants
+- Rule: For context-dependent terms, enforce "no mistranslation" instead of single-variant lock.

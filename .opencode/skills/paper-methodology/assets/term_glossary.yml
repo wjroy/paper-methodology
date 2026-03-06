@@ -10,12 +10,13 @@
 geotechnical_engineering:
   # --- Excavation & Foundation ---
   - cn: 基坑
-    en: excavation pit
+    en: deep excavation / excavation / foundation pit / excavation pit
     abbr: null
-    note: not "foundation pit" in modern usage
+    note: context-dependent; do not mistranslate to tunnel-related terms
   - cn: 围护结构
-    en: retaining structure
+    en: retaining wall / retaining structure / retaining system
     abbr: null
+    note: use "retaining wall" when referring to wall components explicitly
   - cn: 地下连续墙
     en: diaphragm wall
     abbr: null
@@ -67,7 +68,7 @@ geotechnical_engineering:
     en: grouting pressure
     abbr: null
   - cn: 地表沉降
-    en: ground surface settlement
+    en: ground settlement
     abbr: null
   - cn: 隧道收敛
     en: tunnel convergence
@@ -169,8 +170,9 @@ geotechnical_engineering:
     en: risk assessment
     abbr: null
   - cn: 风险等级
-    en: risk grade / risk level
+    en: risk level
     abbr: null
+    note: prefer "risk level" in own-paper style
   - cn: 指标体系
     en: indicator system
     abbr: null
@@ -684,8 +686,9 @@ physics_informed:
     en: physics-informed neural network
     abbr: PINN
   - cn: 物理约束
-    en: physics constraint
+    en: physics-informed constraint / physical constraint / mechanical prior
     abbr: null
+    note: select by context (loss regularization vs mechanism prior)
   - cn: 物理引导
     en: physics-guided
     abbr: null
@@ -973,7 +976,7 @@ risk_assessment:
     en: risk assessment
     abbr: null
   - cn: 风险等级
-    en: risk grade / risk level
+    en: risk level
     abbr: null
   - cn: 风险概率
     en: risk probability

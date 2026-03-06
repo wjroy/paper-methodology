@@ -3,6 +3,9 @@
 Purpose: provide a reusable section-planning scaffold without forcing a single
 invariant order for all papers.
 
+Scope boundary: this file defines only structure skeleton + pattern overlay
+hooks. It does not own terminology mapping, style tuning, or memory rules.
+
 ## A. Base Skeleton
 
 Use this as the default scaffold in PLAN, then apply one selected overlay from

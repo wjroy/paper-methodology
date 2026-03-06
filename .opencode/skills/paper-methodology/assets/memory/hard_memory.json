@@ -7,7 +7,7 @@
   },
 
   "critical_terms": {
-    "_note": "CN-EN term pairs that the user has explicitly confirmed or that appear consistently in published papers. These override alternative translations.",
+    "_note": "CN-EN term rules confirmed from own papers. For context-dependent terms, keep approved variants and avoid mistranslations rather than forcing a single fixed rendering.",
     "基坑": {
       "default": "excavation pit",
       "alternatives": ["deep excavation", "excavation", "foundation pit"],

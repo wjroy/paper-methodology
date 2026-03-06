@@ -32,7 +32,8 @@ Priority rule:
 - Method descriptions: present tense.
 - Prior published work: past tense allowed.
 - English voice target: about 60/40 active/passive.
-- English first-person: generally avoid "we"; prefer "this study" / "this paper".
+- English first-person: rare-to-none for "we" in Methods; prefer
+  "this study" / "this paper" / "the proposed framework".
 - Chinese first-person preference: use "本文" / "本研究", avoid "我们".
 
 ## 4. Vocabulary Preferences
@@ -83,6 +84,16 @@ CN->EN rendering rule (upstream-aligned):
 - Section: "as described in Section X.Y"
 - Figure: "as illustrated in Fig. X" or "as shown in Figure X" (journal-dependent)
 - Table: "as summarized in Table X"
+
+## 7.1 Term Variant Policy (context-dependent)
+
+- Do not force a single EN variant when own papers use multiple valid forms.
+- Prefer context-dependent rendering for key terms:
+  - 基坑 -> deep excavation / excavation / foundation pit / excavation pit
+  - 围护结构 -> retaining wall / retaining structure / retaining system
+  - 地表沉降 -> ground settlement
+  - 风险等级 -> risk level
+  - 物理约束 -> physics-informed constraint / physical constraint / mechanical prior
 
 Chinese equivalents:
 - 如公式 (N) 所示
