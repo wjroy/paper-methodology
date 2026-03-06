@@ -245,12 +245,12 @@ Before running this test, add the following entry to `error_log.md`:
 - Context: English methodology, Section 3.5
 - Rule: Never use "It is worth noting that" — it is a filler phrase.
 
-### FORMATTING — Used "Eq." abbreviation instead of "Equation"
+### FORMATTING — Markdown bold leaked into plain text output
 - Date: 2025-01-17
-- Wrong: "as defined in Eq. (3)"
-- Correct: "as defined in Equation (3)"
-- Context: English methodology, throughout
-- Rule: Always write "Equation" in full, never abbreviate to "Eq."
+- Wrong: "The **proposed framework** consists of..."
+- Correct: "The proposed framework consists of..."
+- Context: English methodology, Section 3.1
+- Rule: Output must be plain text. No Markdown formatting (bold, italic, headings, bullets).
 ```
 
 ### Prompt
@@ -271,7 +271,7 @@ Notes:
 - [x] Phase A reads `error_log.md` and identifies 3 logged errors
 - [x] EN version uses "excavation pit" (not "foundation pit") for 基坑
 - [x] EN version does NOT contain "It is worth noting that"
-- [x] EN version uses "Equation (N)" not "Eq. (N)" for equation references
+- [x] EN version does NOT contain Markdown formatting (bold/italic/bullets)
 - [x] Audit Pass 5 (Error-log Compliance) reports all PASS
 
 ### Pass/Fail
