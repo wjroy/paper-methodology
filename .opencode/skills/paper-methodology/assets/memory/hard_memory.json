@@ -8,11 +8,19 @@
 
   "critical_terms": {
     "_note": "CN-EN term pairs that the user has explicitly confirmed or that appear consistently in published papers. These override alternative translations.",
-    "基坑": "excavation pit",
-    "围护结构": "retaining structure",
+    "基坑": {
+      "default": "excavation pit",
+      "alternatives": ["deep excavation", "excavation", "foundation pit"],
+      "note": "Context-dependent. 'deep excavation' and 'excavation' are preferred in Papers 02-04; 'foundation pit' appears in Papers 01, 05. See term_glossary.yml."
+    },
+    "围护结构": {
+      "default": "retaining structure",
+      "alternatives": ["retaining wall", "retaining system"],
+      "note": "Context-dependent. 'retaining wall' is preferred in Papers 02-03 when referring to diaphragm walls specifically."
+    },
     "地下连续墙": "diaphragm wall",
     "盾构隧道": "shield tunnel",
-    "地表沉降": "ground surface settlement",
+    "地表沉降": "ground settlement",
     "弹性地基梁": "beam on elastic foundation",
     "代理模型": "surrogate model",
     "生成对抗网络": "generative adversarial network (GAN)",
@@ -21,7 +29,11 @@
     "时空图卷积网络": "spatiotemporal graph convolutional network (STGCN)",
     "注意力机制": "attention mechanism",
     "物理信息神经网络": "physics-informed neural network (PINN)",
-    "物理约束": "physics constraint",
+    "物理约束": {
+      "default": "physics constraint",
+      "alternatives": ["physics-informed constraint", "physical constraint", "mechanical prior"],
+      "note": "Context-dependent. Prefer 'physics-informed constraint' when used with loss terms or regularization."
+    },
     "数据驱动": "data-driven",
     "邻接矩阵": "adjacency matrix",
     "消融实验": "ablation study",
@@ -44,7 +56,7 @@
     "格兰杰因果": "Granger Causality",
     "时间注意力": "temporal attention",
     "风险评估": "risk assessment",
-    "风险等级": "risk grade",
+    "风险等级": "risk level",
     "云模型": "Cloud Model",
     "贝叶斯推断": "Bayesian inference",
     "分位数预测": "quantile prediction",

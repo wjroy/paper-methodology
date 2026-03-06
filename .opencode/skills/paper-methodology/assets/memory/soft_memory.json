@@ -16,16 +16,16 @@
     "opening_sentence_note": "Each paragraph opens with a sentence stating its purpose, e.g., 'The [COMPONENT] module is designed to [PURPOSE].'",
     "closing_sentence_style": "mixed",
     "closing_sentence_note": "No single dominant pattern. Sometimes transition, sometimes summary, sometimes equation reference.",
-    "internal_flow": "motivation_then_formulation_then_definition",
-    "internal_flow_note": "1. WHY this is needed (1-2 sentences) -> 2. Equation/formulation -> 3. Variable definitions"
+    "internal_flow": "purpose_method_detail",
+    "internal_flow_note": "Purpose/context -> method/approach -> technical detail/formulation (loose 3-beat, not rigid)"
   },
 
   "voice_preferences": {
     "active_passive_ratio": "60:40",
     "first_person_en": {
-      "frequency": "moderate",
-      "count_per_section": "5-10 instances of 'we'",
-      "preferred_phrases": ["We design", "We propose", "We employ", "We adopt"]
+      "frequency": "none",
+      "count_per_section": "0",
+      "note": "All 5 own papers use zero instances of 'we'. Use 'this study' / 'this paper' instead."
     },
     "first_person_cn": {
       "frequency": "rare",
@@ -36,12 +36,13 @@
 
   "connector_preferences": {
     "high_frequency": [
-      {"en": "Specifically", "cn": "具体而言"},
-      {"en": "To this end", "cn": "为此"},
-      {"en": "In particular", "cn": "特别地"},
-      {"en": "As illustrated in Figure X", "cn": "如图 X 所示"}
+      {"en": "To [verb] ...", "cn": "为了..."},
+      {"en": "As shown/illustrated in Figure X", "cn": "如图 X 所示"},
+      {"en": "Specifically", "cn": "具体而言"}
     ],
     "medium_frequency": [
+      {"en": "To this end", "cn": "为此"},
+      {"en": "In particular", "cn": "特别地"},
       {"en": "To be more specific", "cn": "更具体地"},
       {"en": "Accordingly", "cn": "因此"},
       {"en": "In this study", "cn": "本研究中"},
@@ -86,16 +87,8 @@
   },
 
   "section_ordering_preference": {
-    "pattern": "physics_first",
-    "typical_order": [
-      "Overall Framework",
-      "Physical/Mechanical Modeling",
-      "Data Generation/Processing",
-      "Model Architecture (with sub-subsections per component)",
-      "Loss Function and Training",
-      "Evaluation Metrics"
-    ],
-    "note": "Physics model always precedes neural architecture. This is the invariant pattern across the own paper set."
+    "_deprecated": true,
+    "note": "This section is deprecated. Use methodology_patterns.yml for pattern selection instead. Do not rely on a single invariant order."
   },
 
   "humanizer_preference": {
@@ -105,12 +98,13 @@
 
   "technical_verb_preferences": {
     "introducing_method": ["propose", "present"],
-    "using_technique": ["employ", "adopt"],
+    "using_technique": ["employ", "adopt", "utilize"],
     "achieving_results": ["achieve"],
     "designing_components": ["design"],
     "processing_data": ["process"],
     "extracting_features": ["extract"],
-    "avoid_verbs": ["utilize", "leverage", "put forward", "craft", "architect", "harvest", "glean", "garner", "attain"]
+    "avoid_verbs": ["put forward", "craft", "architect", "harvest", "glean", "garner", "attain"],
+    "note": "utilize and leverage appear in own papers (Papers 04-05), so they are acceptable."
   },
 
   "cn_formatting": {
