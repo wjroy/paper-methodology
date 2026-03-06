@@ -1,18 +1,23 @@
 ---
 description: >
-  Generate bilingual (CN + EN) Methodology section for a geotechnical AI paper.
+  Generate or refine bilingual (CN + EN) Methodology for a geotechnical AI paper.
   Uses the 3-phase workflow: GATHER → PLAN → WRITE_AUDIT.
+  Supports full-chapter generation and section-level refinement.
   Produces: MethodSpec → Chinese Methods → English Methods → TODO/VERIFY list.
 ---
 
-# Bilingual Methods Section Generator (v3.3)
+# Bilingual Methods Section Generator (v3.4)
 
-You are about to generate a complete Methodology/Methods section for a geotechnical
-AI paper. Follow the `paper-methodology` skill's 3-phase mandatory workflow strictly.
+You are about to run the `paper-methodology` workflow for a geotechnical AI paper.
+Follow the skill's 3-phase mandatory workflow strictly, and first determine mode.
 
 ## Your Input
 
-Please provide the following (paste below or reference file paths):
+Choose one mode and provide matching inputs.
+
+### Mode A: Full-chapter generation (existing behavior)
+
+Provide the following (paste below or reference file paths):
 
 **1. Research notes or outline** (required):
 $ARGUMENTS
@@ -25,9 +30,31 @@ $ARGUMENTS
 **3. Target journal/conference** (optional):
 [e.g., Tunnelling and Underground Space Technology, Computers and Geotechnics]
 
+### Mode B: Section-level refinement (new)
+
+Use this template:
+
+- target_section_or_subsection: [e.g., 3.2 / 3.2.1 / "Loss Function"]
+- operation_type: [expand | rewrite | correct | bilingual-sync]
+- existing_section_text_cn: [paste existing CN subsection text or N/A]
+- existing_section_text_en: [paste existing EN subsection text or N/A]
+- added_notes: [new plain-language details]
+- added_code_or_config_paths: [list paths; optional but preferred]
+- optional_context: [adjacent paragraph or cross-reference anchors]
+
+Local-mode directive:
+- This is a local refinement request, not a full-chapter rewrite.
+- Update only target-related MethodSpec fields and target subsection prose.
+- Keep other sections unchanged unless minimal linked edits are required for
+  term/symbol/numbering/cross-reference consistency.
+
 ## Workflow
 
-Execute the paper-methodology skill's 3-phase mandatory workflow:
+Execute the paper-methodology skill's 3-phase mandatory workflow.
+
+Mode routing:
+- If user provides full notes without target subsection lock, run Mode A.
+- If user provides `target_section_or_subsection`, run Mode B (local scope lock).
 
 ### Phase A: GATHER
 
@@ -53,6 +80,10 @@ A2. Parse all provided materials — notes, code, config, figures. Extract:
 A3. Detect conflicts (notes vs code/config) and gaps (missing hard facts).
 Code/config always wins over notes. Log conflicts explicitly.
 
+If Mode B:
+- Extract and validate target-related facts only.
+- Keep non-target facts unchanged unless dependency repair is required.
+
 A4. Build lightweight Methodology Map:
 - Extract keywords from user content (open extraction)
 - Retrieve only top 3-5 relevant reference papers
@@ -75,6 +106,11 @@ B3. Generate the structured MethodSpec using `assets/methodspec_template.md`.
 For each hard-fact field in Sections 2-9, include Source and Confidence.
 Blank Source on any hard-fact field = Audit Pass 6 FAIL.
 
+If Mode B:
+- Update only MethodSpec entries linked to target section/subsection.
+- Do not regenerate unrelated MethodSpec content.
+- Keep Source/Confidence traceability for every updated field.
+
 B4. Present MethodSpec and enforce confirmation gate.
 
 **MANDATORY GATE**: Do NOT proceed to Phase C until the user explicitly confirms
@@ -92,6 +128,10 @@ Goal: draft CN and EN from MethodSpec, then run compact audit.
 C1. Draft Chinese Methodology (plain text, full-width punctuation, no Markdown).
 
 C2. Draft English Methodology (present tense, mirrors CN structure exactly).
+
+If Mode B:
+- Rewrite/expand/correct only the target CN/EN subsection.
+- Keep non-target sections unchanged by default.
 
 C3. Ask humanizer question: "English version is ready. Apply de-AI humanizer pass?"
 Do not auto-apply. If user agrees, apply minimal de-AI constraints:
@@ -118,6 +158,12 @@ C4. Run compact 6-pass audit:
    populated Source and Confidence. Blank Source = FAIL. Every [TBD] Source
    must have a matching entry in Section 10 and TODO/VERIFY.
 
+If Mode B, add local checks:
+- Scope integrity: no unintended edits outside target scope
+- Terminology/symbol/numbering consistency after local edit
+- CN/EN alignment for updated subsection
+- No unsourced values introduced
+
 Fix FAIL items before delivery. Put unresolved items in TODO/VERIFY.
 
 C5. Pre-delivery gate checklist:
@@ -132,6 +178,9 @@ If any gate is false, stop and repair before final output.
 ## Revision Policy
 
 - Small revision (<3 paragraphs, no structure change): revise directly.
+- Section-level refinement defaults to local update (Mode B).
+- If new details force chapter-level structure changes, escalate to large revision
+  with a Revision Plan first.
 - Large revision (>=3 paragraphs or structural): present Revision Plan first,
   then wait for user approval.
 
@@ -142,3 +191,8 @@ Produce all 4 outputs in sequence:
 2. Chinese Methodology (plain text)
 3. English Methodology (plain text)
 4. TODO/VERIFY List + Audit Summary
+
+Mode B output scope note:
+- Return updated MethodSpec entries for the target scope and the updated target
+  CN/EN subsection text.
+- Do not rewrite untouched sections.

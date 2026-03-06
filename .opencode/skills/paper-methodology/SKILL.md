@@ -8,7 +8,7 @@ description: >
   Related Work, Discussion, or Abstract).
 ---
 
-# paper-methodology v3.3 (pattern-library + inlined constraints)
+# paper-methodology v3.4 (pattern-library + inlined constraints)
 
 Purpose: produce publication-ready bilingual Methodology sections with strict
 anti-hallucination controls and minimal context overhead.
@@ -19,6 +19,10 @@ This version simplifies v2.x from a heavy 7-step pipeline into a compact
 GATHER -> PLAN -> WRITE_AUDIT
 
 Core principle: one source of truth (MethodSpec), then render CN/EN from it.
+
+This skill supports two execution scopes under the same 3-phase workflow:
+- Full-generation mode: generate a complete Methodology chapter.
+- Section-level refinement mode: update only a specified section/subsection.
 
 ## 1) Non-Negotiable Rules
 
@@ -42,6 +46,12 @@ Core principle: one source of truth (MethodSpec), then render CN/EN from it.
 6. Domain scope: geotechnical AI only. If outside scope, explicitly decline.
 
 7. Humanizer is ask-first. Ask user before any de-AI rewrite of EN text.
+
+8. Section-scope safety:
+- If user requests section/subsection-only update, do not default to full-chapter rewrite.
+- Do not add new facts when no new source (notes/code/config) is provided.
+- Do not break numbering, term mapping, equation references, or symbol consistency
+  after local edits.
 
 ## 2) Runtime Assets (Read only what is needed)
 
@@ -184,8 +194,78 @@ All refinement operations require explicit user confirmation before execution.
 
 C3.2 Minimal logic/redline check (before delivery)
 - Check only critical issues: contradictions, core term inconsistency,
-  and severe grammar blocking comprehension.
+  severe grammar blocking comprehension, and logic discontinuities that block
+  technical understanding.
+- Catch step jumps where a required intermediate operation is omitted in prose
+  (A -> C with no supportable B explanation).
+- Catch functionless module mentions (module named but role/output in pipeline
+  is unclear).
+- Catch formulas introduced without role/handoff explanation.
+- Catch fusion/weighting/loss/constraint mentions that state names only but do
+  not state pipeline purpose.
 - Do not report style-only issues in this pass.
+- Keep this check lightweight and repair-oriented (no verbose reviewer critique).
+
+C3.3 Logic-enrichment pass (inlined, targeted; before audit)
+- Purpose: make supportable implicit technical reasoning explicit and improve
+  local continuity between steps/modules.
+- This is NOT generic expansion and NOT a style rewrite.
+- Operate only on logic gaps detected in C3.2 and only when evidence exists in
+  MethodSpec and/or user-provided notes/code/config.
+- Allowed enrichments:
+  1) Add purpose sentence for a module/step,
+  2) Add compact input -> operation -> output statement,
+  3) Add explicit handoff clause to the next step/subsection,
+  4) Add one-line equation/module role explanation tied to pipeline function.
+- Hard constraints:
+  - No new facts, parameters, citations, modules, or results.
+  - Keep all values/symbols/references unchanged.
+  - Preserve own-paper style: precise, technical, compact, non-tutorial.
+  - If source support is insufficient, keep original text and add TODO/VERIFY
+    rather than guessing.
+
+### Section-level refinement mode (overlay; keep 3-phase workflow)
+
+Trigger this mode when user explicitly requests local refinement and provides:
+- Target section/subsection identifier (e.g., 3.2, 3.2.1, "Loss Function")
+- Existing section text (CN, EN, or both)
+- Added notes and/or added code/config paths
+- Operation type: expand | rewrite | correct | bilingual-sync
+
+R1. Scope lock:
+- Treat this as local update, not chapter rewrite.
+- Preserve all non-target sections by default.
+
+R2. Phase A behavior in local mode:
+- Extract only target-related facts from newly added sources.
+- Re-check conflicts by code/config > notes for target-related facts only.
+- Keep unchanged facts untouched.
+
+R3. Phase B behavior in local mode (MethodSpec-first still mandatory):
+- Update only MethodSpec hard-fact fields linked to the target section/subsection.
+- Keep non-target MethodSpec fields unchanged unless a dependency is required for
+  consistency (term/symbol/numbering/cross-reference).
+- For every updated hard-fact field, refresh Source and Confidence.
+
+R4. Phase C behavior in local mode:
+- Rewrite/expand only the target CN/EN section/subsection.
+- Keep all other sections unchanged by default.
+
+R5. Allowed linked edits outside target scope (minimal only):
+- Term normalization required by glossary mapping
+- Symbol/equation numbering and cross-reference repair
+- One-hop context bridge sentence when target paragraph no longer connects
+  logically to adjacent text
+
+R6. Alignment rules after local update:
+- CN and EN must stay section-aligned for the updated scope.
+- Terms, symbols, equation indices, figure/table references, and numeric values
+  must match across CN/EN.
+
+R7. Explicit prohibitions in local mode:
+- No full-chapter rewrite unless user explicitly requests it.
+- No unsourced detail injection when added sources do not support it.
+- No local edit that leaves global numbering/notation/cross-references broken.
 
 C4. Compact 6-pass audit (must run before delivery)
 1. Terminology consistency (glossary + hard_memory)
@@ -198,7 +278,21 @@ C4. Compact 6-pass audit (must run before delivery)
    b. Confidence is populated (OK or NEEDS_VERIFY). Blank = FAIL.
    c. Every Source: [TBD] has a matching entry in Section 10 and TODO/VERIFY.
    d. Every value in CN/EN prose is traceable back to the MethodSpec field
-      that sourced it. Unsourced value in prose = FAIL.
+        that sourced it. Unsourced value in prose = FAIL.
+
+C4.2 Lightweight logic continuity check (post-enrichment, mandatory):
+- Verify no unresolved step jumps remain in key pipeline descriptions.
+- Verify each newly mentioned module has a stated functional role and output.
+- Verify each equation/loss/fusion/constraint mention includes purpose or handoff.
+- Verify fixes remain source-grounded (no unsourced inserted value/module/result).
+- Report only PASS/FLAG/FAIL with short repair notes.
+
+C4.1 Additional checks for section-level refinement mode:
+- Scope integrity: only target section/subsection changed, except allowed minimal
+  linked edits.
+- Terminology/notation/numbering integrity after local update.
+- CN/EN synchronization for updated scope.
+- No unsourced value introduced by local edit.
 
 Fix FAIL items before delivery. Put unresolved items in TODO/VERIFY.
 
@@ -253,6 +347,13 @@ Traceability: PASS/FLAG/FAIL
 ## 6) Revision Policy
 
 Small revision (<3 paragraphs, no structure change): revise directly.
+
+Section-level refinement (default local update):
+- If user requests a target section/subsection update, perform local revision by
+  default and keep non-target sections unchanged.
+- If newly added facts force chapter-level structure changes (global renumbering,
+  reordered major modules, cross-section dependency expansion), escalate to Large
+  revision and present Revision Plan first.
 
 Large revision (>=3 paragraphs or structure/numbering/equation changes):
 present a Revision Plan first, then wait for user approval.

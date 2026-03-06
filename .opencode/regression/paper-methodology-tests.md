@@ -1,10 +1,12 @@
-# Regression Tests for paper-methodology Skill (v3.3)
+# Regression Tests for paper-methodology Skill (v3.5)
 
-> 13 test prompts with expected behaviors and pass/fail criteria.
+> 17 test prompts with expected behaviors and pass/fail criteria.
 > Tests 1-5: core workflow tests (updated for v3.3 where needed).
 > Tests 6-8: style profile, error log, and consistency checker tests.
 > Tests 9-11: Source/Confidence traceability and PLAN gate behavior tests.
 > Tests 12-13: pattern library selection and inlined prompt-pack capability tests.
+> Tests 14-15: section-level refinement scope-lock and MethodSpec sync tests.
+> Tests 16-17: logic-enrichment continuity and anti-hallucination guard tests.
 > Use these to verify the skill produces correct output under different conditions.
 
 ---
@@ -313,26 +315,30 @@ introduce these errors before running the audit:
 ## Running These Tests
 
 1. Start a new conversation with the paper-methodology skill loaded
-2. For tests 1-13: paste each test prompt exactly as shown
+2. For tests 1-17: paste each test prompt exactly as shown
 3. For test 7: first add the error log entries, then paste the prompt
 4. For test 8: generate from test 1, manually introduce errors, then run audit
 5. For test 10: verify PLAN gate (Phase B) stops before Phase C until CONFIRM
 6. For test 11: verify skip-confirmation mode proceeds directly
 7. For test 12: verify pattern selection is explicit and justified
 8. For test 13: verify humanizer/polish/logic-check still work after prompt-pack removal
-9. Compare the output against the Expected Behavior checklist
-10. Mark each item as pass/fail
-11. A test passes only if ALL expected behaviors are satisfied
+9. For test 14: verify local refinement updates only target subsection
+10. For test 15: verify MethodSpec + CN/EN sync under local code-based update
+11. For test 16: verify logic-enrichment makes implicit chain explicit
+12. For test 17: verify logic-enrichment does not invent unsupported facts
+13. Compare the output against the Expected Behavior checklist
+14. Mark each item as pass/fail
+15. A test passes only if ALL expected behaviors are satisfied
 
 ## Scoring
 
 | Score | Interpretation |
 |-------|---------------|
-| 13/13 | Skill is production-ready (v3.3 verified) |
-| 12/13 | Minor issue — review the failing test and adjust |
-| 10-11/13 | Moderate issues — likely need to adjust SKILL.md or an asset file |
-| 7-9/13 | Significant issues — structural problem in the workflow |
-| <=6/13 | Major revision needed |
+| 17/17 | Skill is production-ready (v3.5 verified) |
+| 16/17 | Minor issue — review the failing test and adjust |
+| 13-15/17 | Moderate issues — likely need to adjust SKILL.md or an asset file |
+| 10-12/17 | Significant issues — structural problem in the workflow |
+| <=9/17 | Major revision needed |
 
 ## Version History
 
@@ -344,6 +350,8 @@ introduce these errors before running the audit:
 | v3.1 | 1-11 | Aligned to 3-phase workflow (GATHER/PLAN/WRITE_AUDIT), fixed file paths |
 | v3.2 | 1-11 | Strengthened Source/Confidence traceability in Tests 1-3, 9 |
 | v3.3 | 1-13 | Added pattern-library selection tests and removed prompt-pack dependency |
+| v3.4 | 1-15 | Added section-level refinement tests (scope lock + MethodSpec/CN-EN sync) |
+| v3.5 | 1-17 | Added logic-enrichment tests (reasoning continuity + no unsupported facts) |
 
 ---
 
@@ -508,6 +516,143 @@ Also run a logic redline check.
 ### Pass/Fail
 - **PASS**: Inlined constraints fully cover humanizer/polish/logic-check behavior
 - **FAIL**: Operation fails or still requires external prompt-pack file
+
+---
+
+## Test 14: Section-Level Refinement — Expand 3.2 Only
+
+### Prompt
+```
+Refine methodology section 3.2 only (expand mode). Do not rewrite other sections.
+
+target_section_or_subsection: 3.2
+operation_type: expand
+
+existing_section_text_cn:
+3.2 特征提取模块采用双分支结构，分别处理时序监测信号和施工日志文本，随后在共享表示空间中进行融合。
+
+existing_section_text_en:
+3.2 The feature extraction module adopts a dual-branch design to process
+time-series monitoring signals and construction-log text, followed by fusion in a
+shared representation space.
+
+added_notes:
+- 时序分支先做 1D convolution 再做 temporal attention
+- 文本分支采用 domain vocabulary filtering，去除低信息词
+- 融合前对两分支输出进行 layer normalization
+
+added_code_or_config_paths:
+- model/fusion_encoder.py
+- config/model.yaml
+```
+
+### Expected Behavior
+- [x] Runs section-level refinement mode (local scope lock)
+- [x] MethodSpec updates only fields linked to Section 3.2 (feature extraction/fusion)
+- [x] CN and EN both update Section 3.2 with aligned technical details
+- [x] Sections outside 3.2 are unchanged, except minimal allowed consistency fixes
+- [x] No unsourced values are introduced; all new details are traceable to notes/code/config
+- [x] Style remains consistent with existing chapter tone
+
+### Pass/Fail
+- **PASS**: Only Section 3.2 (and minimal linked fixes) changes; traceability and style consistency preserved
+- **FAIL**: Any broad chapter rewrite, or Section 3.2 update contains unsourced details
+
+---
+
+## Test 15: Section-Level Refinement — Code-Driven Correction + CN/EN Sync
+
+### Prompt
+```
+Please correct subsection 3.4 using the new config. Keep the rest unchanged.
+
+target_section_or_subsection: 3.4
+operation_type: correct
+
+existing_section_text_cn:
+3.4 损失函数由重建损失和物理约束损失组成，权重分别设为 1.0 与 0.1。
+
+existing_section_text_en:
+3.4 The loss function consists of a reconstruction loss and a physics-constraint
+loss, with weights set to 1.0 and 0.1, respectively.
+
+added_notes:
+- 旧稿中的物理损失权重写错了
+
+added_code_or_config_paths:
+- configs/train.yaml  # lambda_phys: 0.25
+```
+
+### Expected Behavior
+- [x] Uses code/config value (`lambda_phys: 0.25`) over note text
+- [x] Updates target MethodSpec loss-related entries and Source/Confidence fields
+- [x] Corrects both CN and EN subsection 3.4 to the same value (0.25)
+- [x] Keeps other subsections unchanged unless minimal numbering/term repair is required
+- [x] Audit flags PASS for terminology/symbol/numbering/CN-EN alignment in updated scope
+- [x] Source/Confidence traceability explicitly covers the corrected weight
+
+### Pass/Fail
+- **PASS**: MethodSpec and CN/EN subsection 3.4 are synchronized to code-backed value with no unintended edits elsewhere
+- **FAIL**: Value remains inconsistent, source is missing, or unrelated sections are rewritten
+
+---
+
+## Test 16: Logic-Enrichment — Make Implicit Reasoning Chain Explicit
+
+### Prompt
+```
+Write methodology subsection 3.3 for my multimodal settlement predictor.
+
+Notes:
+- Inputs: monitoring time series and construction logs
+- Model: temporal encoder + text encoder + fusion layer
+- Output: next-step settlement prediction
+- Loss: weighted MAE + smoothness constraint
+
+Use compact technical style.
+```
+
+### Expected Behavior
+- [x] Draft does not stop at module listing; it explains each module's functional role
+- [x] At least one local input -> operation -> output chain is explicit
+- [x] Includes handoff logic from encoded features to fusion, and from fusion to prediction head
+- [x] Loss/constraint is described with pipeline purpose (what behavior it enforces)
+- [x] Formula/module mentions are connected to role and not isolated
+- [x] Tone remains compact and technical (not tutorial-like)
+
+### Pass/Fail
+- **PASS**: Reasoning continuity is visibly improved (purpose, transformation, and handoff are explicit) while style remains concise
+- **FAIL**: Output still reads as disconnected module list or abrupt step jumps
+
+---
+
+## Test 17: Logic-Enrichment Safety — No Unsupported Fact Injection
+
+### Prompt
+```
+Write methodology for a risk prediction model using:
+- graph encoder
+- temporal decoder
+- weighted loss
+
+Known facts only:
+- metric: RMSE
+- optimizer: Adam
+
+Do not ask for extra info; proceed with placeholders if needed.
+```
+
+### Expected Behavior
+- [x] Logic-enrichment pass improves continuity using only provided facts
+- [x] No fabricated hyperparameters (e.g., lr, batch size, hidden size) are introduced
+- [x] No fabricated modules, citations, datasets, or results are introduced
+- [x] Missing values remain [TBD]/[VERIFY] and appear in TODO/VERIFY
+- [x] MethodSpec Source/Confidence traceability remains intact for enriched prose
+- [x] CN and EN remain aligned after enrichment
+
+### Pass/Fail
+- **PASS**: Logic becomes clearer without adding unsupported facts; traceability remains valid
+- **FAIL**: Any new unsupported value/module/citation/result appears in enriched text
 
 ---
 

@@ -26,6 +26,27 @@ Priority rule:
 - Always add a where block after equation placeholders.
 - Preferred definition verbs: "denotes", "represents", "is defined as".
 - Define symbols in first-appearance order.
+- Do not present equations as isolated objects; always state their functional role
+  in the current pipeline step (what the equation computes and why it is needed).
+
+## 2.1 Logic-Explicit Technical Writing (own-paper aligned)
+
+- Keep technical explanation compact but explicit: do not leave critical reasoning
+  jumps between modules/operations.
+- For each technical paragraph, explicitly cover (when supported by sources):
+  1) purpose of current step/module,
+  2) input to this step,
+  3) operation/transformation,
+  4) direct output,
+  5) handoff to next step/module.
+- Use local bridge clauses to show continuity (e.g., "based on the encoded input",
+  "the resulting features are then fed to ..."), without tutorial-like expansion.
+- Avoid module listing without functional linkage. If a module is named, also state
+  its role in the pipeline and its produced artifact/state.
+- For fusion/weighting/loss/constraint components, state pipeline purpose first
+  (what behavior is enforced or what signal is combined) before equations/details.
+- Keep explanation style precise, technical, and compact; avoid generic AI-style
+  exposition, motivational filler, or over-smoothed transitions.
 
 ## 3. Voice and Tense
 
