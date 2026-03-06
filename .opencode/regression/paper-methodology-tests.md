@@ -1,4 +1,4 @@
-# Regression Tests for paper-methodology Skill (v2.1)
+# Regression Tests for paper-methodology Skill (v3.1)
 
 > 11 test prompts with expected behaviors and pass/fail criteria.
 > Tests 1-5: original tests (unchanged, still valid).
@@ -28,8 +28,10 @@
 ```
 
 ### Expected Behavior
-- [x] RECALL step reads user_style_profile.md, error_log.md, hard_memory.json, soft_memory.json
-- [x] Produces complete MethodSpec with all 10 sections filled and DoD checkmarks
+- [x] Phase A reads style_profile.md, error_log.md, hard_memory.json, soft_memory.json
+- [x] Produces complete MethodSpec with all 10 sections filled
+- [x] Every hard-fact field in MethodSpec Sections 2-9 has a populated Source and Confidence
+- [x] No hard-fact field has a blank Source (Audit Pass 6 would FAIL otherwise)
 - [x] CN version has opening overview paragraph with 3 numbered steps
 - [x] EN version mirrors CN structure exactly
 - [x] Physics model (elastic foundation beam) precedes neural network architecture
@@ -37,7 +39,7 @@
 - [x] Term glossary terms used consistently (弹性地基梁 = beam on elastic foundation)
 - [x] Plain text output, no Markdown formatting
 - [x] TODO/VERIFY list is empty or minimal (input is complete)
-- [x] Audit summary included with 7-pass results
+- [x] Audit summary included with 6-pass results (all PASS expected for complete input)
 - [x] Asks about humanizer pass after EN generation
 
 ### Pass/Fail
@@ -63,10 +65,11 @@ Notes:
 ```
 
 ### Expected Behavior
-- [x] MethodSpec marks learning rate as `[TBD: learning rate not specified]`
-- [x] MethodSpec marks batch_size as `[TBD: batch size not specified]`
-- [x] MethodSpec marks train/val/test split as `[TBD: split ratio not specified]`
-- [x] MethodSpec marks graph construction method as `[TBD: adjacency matrix construction not described]`
+- [x] MethodSpec marks learning rate as `[TBD: learning rate not specified]` with Source: [TBD], Confidence: NEEDS_VERIFY
+- [x] MethodSpec marks batch_size as `[TBD: batch size not specified]` with Source: [TBD], Confidence: NEEDS_VERIFY
+- [x] MethodSpec marks train/val/test split as `[TBD: split ratio not specified]` with Source: [TBD], Confidence: NEEDS_VERIFY
+- [x] MethodSpec marks graph construction method as `[TBD: adjacency matrix construction not described]` with Source: [TBD], Confidence: NEEDS_VERIFY
+- [x] All [TBD] items have matching entries in MethodSpec Section 10 (Conflicts and Gaps)
 - [x] TODO/VERIFY list includes at least 4 items for missing information
 - [x] Does NOT fabricate a learning rate, batch size, or split ratio
 - [x] CN and EN versions use placeholder markers where values are missing
@@ -100,11 +103,11 @@ weight_decay: 0.01
 ```
 
 ### Expected Behavior
-- [x] MethodSpec uses batch_size=32 (from config, not notes)
-- [x] MethodSpec uses lr=0.0005 (from config, not notes)
-- [x] MethodSpec uses AdamW (from config, not notes — notes said nothing about optimizer type)
-- [x] MethodSpec includes scheduler and weight_decay from config
-- [x] CONFLICT entries in TODO/VERIFY: batch_size (notes=64, config=32) and lr (notes=0.001, config=0.0005)
+- [x] MethodSpec uses batch_size=32 with Source: "@config.yaml", Confidence: OK
+- [x] MethodSpec uses lr=0.0005 with Source: "@config.yaml", Confidence: OK
+- [x] MethodSpec uses AdamW with Source: "@config.yaml", Confidence: OK
+- [x] MethodSpec includes scheduler and weight_decay from config with Source: "@config.yaml"
+- [x] CONFLICT entries in Section 10: batch_size (notes=64, config=32) and lr (notes=0.001, config=0.0005)
 - [x] CN and EN versions both use the code values
 
 ### Pass/Fail
@@ -201,7 +204,7 @@ Please match my usual writing style from my published papers.
 ```
 
 ### Expected Behavior
-- [x] RECALL step explicitly reads `user_style_profile.md`
+- [x] Phase A explicitly reads `style_profile.md`
 - [x] Opening paragraph matches the user's pattern: names PI-WallGAN, lists numbered steps, references a figure
 - [x] Physics-first ordering: Winkler beam model section precedes GAN architecture
 - [x] Paragraphs are 100-250 words each
@@ -212,7 +215,7 @@ Please match my usual writing style from my published papers.
 - [x] Transition phrases are from the user's preferred list (Specifically, To this end, In particular)
 - [x] Technical verbs are from the user's preferred list (propose, employ, design, extract)
 - [x] No filler phrases the user avoids ("It is worth noting that", "Interestingly")
-- [x] Audit Pass 5 (Style Profile Compliance) reports mostly PASS
+- [x] Audit checks style compliance via style_profile.md during Phase C
 
 ### Pass/Fail
 - **PASS**: Output demonstrably matches the user's style profile patterns
@@ -263,11 +266,11 @@ Notes:
 ```
 
 ### Expected Behavior
-- [x] RECALL step reads `error_log.md` and identifies 3 logged errors
+- [x] Phase A reads `error_log.md` and identifies 3 logged errors
 - [x] EN version uses "excavation pit" (not "foundation pit") for 基坑
 - [x] EN version does NOT contain "It is worth noting that"
 - [x] EN version uses "Equation (N)" not "Eq. (N)" for equation references
-- [x] Audit Pass 6 (Error Log Compliance) reports all PASS
+- [x] Audit Pass 5 (Error-log Compliance) reports all PASS
 
 ### Pass/Fail
 - **PASS**: All 3 logged errors are avoided in the generated output
@@ -296,7 +299,7 @@ introduce these errors before running the audit:
 - [x] Audit Pass 2 (Numerical) catches batch_size mismatch between EN and MethodSpec
 - [x] Audit Pass 1 (Terminology) catches "基础坑" inconsistency in CN
 - [x] Audit Pass 3 (Symbol/Equation) catches missing "where" block in EN
-- [x] Audit Pass 7 (Anti-Hallucination) catches fabricated "dropout rate of 0.3"
+- [x] Audit Pass 6 (Traceability) catches fabricated "dropout rate of 0.3"
 - [x] Audit Pass 4 (Structural) catches wrong cross-reference "Section 3.3"
 
 ### Pass/Fail
@@ -311,7 +314,7 @@ introduce these errors before running the audit:
 2. For tests 1-11: paste each test prompt exactly as shown
 3. For test 7: first add the error log entries, then paste the prompt
 4. For test 8: generate from test 1, manually introduce errors, then run audit
-5. For test 10: verify PLAN gate stops before DRAFT until CONFIRM
+5. For test 10: verify PLAN gate (Phase B) stops before Phase C until CONFIRM
 6. For test 11: verify skip-confirmation mode proceeds directly
 7. Compare the output against the Expected Behavior checklist
 8. Mark each item as pass/fail
@@ -321,7 +324,7 @@ introduce these errors before running the audit:
 
 | Score | Interpretation |
 |-------|---------------|
-| 11/11 | Skill is production-ready (v2.1 verified) |
+| 11/11 | Skill is production-ready (v3.1 verified) |
 | 10/11 | Minor issue — review the failing test and adjust |
 | 8-9/11 | Moderate issues — likely need to adjust SKILL.md or an asset file |
 | 6-7/11 | Significant issues — structural problem in the workflow |
@@ -334,6 +337,8 @@ introduce these errors before running the audit:
 | v1.0 | 1-5 | Original test suite |
 | v2.0 | 1-8 | Added style profile, error log, consistency checker tests |
 | v2.1 | 1-11 | Added Source/Confidence traceability and PLAN gate tests |
+| v3.1 | 1-11 | Aligned to 3-phase workflow (GATHER/PLAN/WRITE_AUDIT), fixed file paths |
+| v3.2 | 1-11 | Strengthened Source/Confidence traceability in Tests 1-3, 9 |
 
 ---
 
@@ -360,12 +365,18 @@ max_epochs: 150
 ```
 
 ### Expected Behavior
-- [x] MethodSpec Section 2 (PROBLEM DEFINITION) has Source fields for input/output variables
-- [x] MethodSpec Section 5 (DATA) has Source: "user notes: 1000 FEM simulations"
-- [x] MethodSpec Section 8 (TRAINING) has Source: @config.yaml#L1-4 for all parameters
-- [x] MethodSpec Section 9 (METRICS) has Source: "user notes"
-- [x] Audit Pass 7a (Source Traceability) reports all PASS or identifies missing sources
-- [x] No hard fact has an empty Source field
+- [x] MethodSpec uses template from assets/methodspec_template.md
+- [x] Section 2 (Problem Definition): problem statement, inputs, outputs each have Source + Confidence
+- [x] Section 5 (Data): data source has Source: "user notes: 1000 FEM simulations", Confidence: OK
+- [x] Section 5 (Data): split ratio has Source: [TBD], Confidence: NEEDS_VERIFY (not provided)
+- [x] Section 6 (Architecture): LSTM component has Source: "user notes", Confidence: OK
+- [x] Section 8 (Training): lr, batch_size, optimizer, epochs all have Source: "@config.yaml#L1-4", Confidence: OK
+- [x] Section 9 (Metrics): RMSE, R^2 have Source: "user notes", Confidence: OK
+- [x] Section 9 (Baselines): SVR, MLP have Source: "user notes", Confidence: OK
+- [x] Section 10 (Conflicts and Gaps): contains [TBD] for split ratio
+- [x] No hard-fact field in Sections 2-9 has blank Source
+- [x] Audit Pass 6 (Traceability): reports PASS or FLAG (no blank Sources)
+- [x] TODO/VERIFY includes action item for the missing split ratio
 
 ### Pass/Fail
 - **PASS**: All hard facts have populated Source fields with specific references
@@ -389,23 +400,22 @@ max_epochs: 150
 ```
 
 ### Expected Behavior
-- [x] AI completes ANALYZE step
-- [x] AI completes RECALL step
-- [x] AI completes PLAN step (generates MethodSpec with Source fields)
+- [x] AI completes Phase A (GATHER: parse input, detect conflicts/gaps, load assets)
+- [x] AI completes Phase B (PLAN: generates MethodSpec with Source fields)
 - [x] AI presents MethodSpec with confirmation prompt including "Reply CONFIRM or OK"
 - [x] AI STOPS and waits for user response
-- [x] AI does NOT proceed to DRAFT automatically
+- [x] AI does NOT proceed to Phase C (WRITE_AUDIT) automatically
 
 ### User Follow-up
 After AI stops, reply: `CONFIRM`
 
 Then verify:
-- [x] AI proceeds to DRAFT only after receiving "CONFIRM"
+- [x] AI proceeds to Phase C (WRITE_AUDIT) only after receiving "CONFIRM"
 - [x] AI generates Chinese and English methodology
 
 ### Pass/Fail
 - **PASS**: AI stops after MethodSpec and waits for explicit confirmation
-- **FAIL**: AI proceeds to DRAFT automatically without waiting
+- **FAIL**: AI proceeds to Phase C automatically without waiting
 
 ---
 
@@ -429,7 +439,7 @@ Notes:
 - [x] AI recognizes "skip MethodSpec confirmation" instruction
 - [x] AI generates MethodSpec (still required)
 - [x] AI does NOT stop for confirmation
-- [x] AI proceeds directly to DRAFT
+- [x] AI proceeds directly to Phase C (WRITE_AUDIT)
 - [x] AI generates all 4 outputs (MethodSpec, CN, EN, TODO/VERIFY)
 
 ### Pass/Fail

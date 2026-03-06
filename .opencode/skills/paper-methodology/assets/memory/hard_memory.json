@@ -7,12 +7,27 @@
   },
 
   "critical_terms": {
-    "_note": "CN-EN term pairs that the user has explicitly confirmed or that appear consistently in published papers. These override alternative translations.",
-    "基坑": "excavation pit",
-    "围护结构": "retaining structure",
+    "_note": "CN-EN term pairs that the user has explicitly confirmed or that appear consistently in published papers. These override alternative translations. Terms marked 'context-dependent' have multiple valid renderings — see term_glossary.yml for context rules.",
+    "基坑": {
+      "preferred": "deep excavation",
+      "alternatives": ["excavation", "foundation pit"],
+      "note": "Context-dependent. 'deep excavation' or 'excavation' used in Papers 02-04. 'foundation pit' used in Papers 01, 05. NEVER 'excavation pit' (not found in any own paper). Follow the target paper's convention.",
+      "hard_constraint": false
+    },
+    "围护结构": {
+      "preferred": "retaining wall",
+      "alternatives": ["retaining structure", "retaining system", "diaphragm wall"],
+      "note": "Context-dependent. 'retaining wall' in Papers 02-03. 'retaining structure/system' in Paper 01. Use specific component name (e.g., 'diaphragm wall') when referring to a specific structural element.",
+      "hard_constraint": false
+    },
     "地下连续墙": "diaphragm wall",
     "盾构隧道": "shield tunnel",
-    "地表沉降": "ground surface settlement",
+    "地表沉降": {
+      "preferred": "ground settlement",
+      "alternatives": ["surface settlement"],
+      "note": "Papers consistently use 'ground settlement' (not 'ground surface settlement'). The full 3-word form was never used in own papers.",
+      "hard_constraint": true
+    },
     "弹性地基梁": "beam on elastic foundation",
     "代理模型": "surrogate model",
     "生成对抗网络": "generative adversarial network (GAN)",
@@ -21,7 +36,12 @@
     "时空图卷积网络": "spatiotemporal graph convolutional network (STGCN)",
     "注意力机制": "attention mechanism",
     "物理信息神经网络": "physics-informed neural network (PINN)",
-    "物理约束": "physics constraint",
+    "物理约束": {
+      "preferred": "physics-informed constraint",
+      "alternatives": ["physical constraint", "mechanical prior", "physics-informed regularization"],
+      "note": "Context-dependent. 'physics constraint' (bare form) never used verbatim. Paper 02 uses all four variants depending on context.",
+      "hard_constraint": false
+    },
     "数据驱动": "data-driven",
     "邻接矩阵": "adjacency matrix",
     "消融实验": "ablation study",
@@ -44,7 +64,12 @@
     "格兰杰因果": "Granger Causality",
     "时间注意力": "temporal attention",
     "风险评估": "risk assessment",
-    "风险等级": "risk grade",
+    "风险等级": {
+      "preferred": "risk level",
+      "alternatives": ["risk grade"],
+      "note": "Paper 05 uses 'risk level' (5x), never 'risk grade'. Default to 'risk level'.",
+      "hard_constraint": true
+    },
     "云模型": "Cloud Model",
     "贝叶斯推断": "Bayesian inference",
     "分位数预测": "quantile prediction",

@@ -10,12 +10,15 @@
 geotechnical_engineering:
   # --- Excavation & Foundation ---
   - cn: 基坑
-    en: excavation pit
+    en: deep excavation
     abbr: null
-    note: not "foundation pit" in modern usage
+    alt: ["excavation", "foundation pit"]
+    note: "Context-dependent. 'deep excavation' or 'excavation' in Papers 02-04; 'foundation pit' in Papers 01, 05. NEVER 'excavation pit' (not found in any own paper). Follow the convention of the paper being written."
   - cn: 围护结构
-    en: retaining structure
+    en: retaining wall
     abbr: null
+    alt: ["retaining structure", "retaining system"]
+    note: "'retaining wall' in Papers 02-03; 'retaining structure/system' in Paper 01. Use specific component name (e.g., 'diaphragm wall') when referring to a specific element."
   - cn: 地下连续墙
     en: diaphragm wall
     abbr: null
@@ -67,8 +70,9 @@ geotechnical_engineering:
     en: grouting pressure
     abbr: null
   - cn: 地表沉降
-    en: ground surface settlement
+    en: ground settlement
     abbr: null
+    note: "Own papers consistently use 'ground settlement', not 'ground surface settlement'."
   - cn: 隧道收敛
     en: tunnel convergence
     abbr: null
@@ -169,8 +173,10 @@ geotechnical_engineering:
     en: risk assessment
     abbr: null
   - cn: 风险等级
-    en: risk grade / risk level
+    en: risk level
     abbr: null
+    alt: ["risk grade"]
+    note: "Paper 05 uses 'risk level' exclusively. Default to 'risk level'."
   - cn: 指标体系
     en: indicator system
     abbr: null
@@ -684,8 +690,10 @@ physics_informed:
     en: physics-informed neural network
     abbr: PINN
   - cn: 物理约束
-    en: physics constraint
+    en: physics-informed constraint
     abbr: null
+    alt: ["physical constraint", "mechanical prior", "physics-informed regularization"]
+    note: "Context-dependent. 'physics constraint' (bare form) never used verbatim in own papers."
   - cn: 物理引导
     en: physics-guided
     abbr: null
@@ -973,8 +981,10 @@ risk_assessment:
     en: risk assessment
     abbr: null
   - cn: 风险等级
-    en: risk grade / risk level
+    en: risk level
     abbr: null
+    alt: ["risk grade"]
+    note: "Paper 05 uses 'risk level' exclusively."
   - cn: 风险概率
     en: risk probability
     abbr: null

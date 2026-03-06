@@ -47,11 +47,12 @@ Core principle: one source of truth (MethodSpec), then render CN/EN from it.
 
 Always read:
 - assets/style_profile.md
-- assets/memory/error_log.md
+- assets/error_log.md
 - assets/memory/hard_memory.json
 - assets/memory/soft_memory.json
 
 Read on-demand:
+- assets/methodspec_template.md (MethodSpec skeleton with traceability fields)
 - assets/term_glossary.yml (term checks / CN-EN mapping)
 - assets/notation.md (symbol/notation checks)
 - assets/reference_papers/*.txt (only top relevant files)
@@ -117,9 +118,11 @@ B1. Produce MethodSpec with these sections:
 9. Evaluation metrics
 10. Conflicts and gaps
 
-B2. For each hard fact include:
-- Source: specific location if available
+B2. For each hard-fact field in Sections 2-9 of the MethodSpec, include:
+- Source: specific origin (e.g. "user notes", "@train.py#L42",
+  "@config.yaml#L3", "hard_memory.json"). Use [TBD] if unknown.
 - Confidence: OK or NEEDS_VERIFY
+See assets/methodspec_template.md for the full field-by-field layout.
 
 B3. Present MethodSpec and enforce confirmation gate.
 Proceed only if user replies equivalent to CONFIRM/OK/proceed.
@@ -166,7 +169,12 @@ C4. Compact 6-pass audit (must run before delivery)
 3. Equation/symbol consistency (notation + where blocks)
 4. Structural alignment (CN vs EN)
 5. Error-log compliance (no repeated mistakes)
-6. Traceability (every hard fact has source or [TBD])
+6. Traceability — for every hard-fact field in MethodSpec Sections 2-9:
+   a. Source is populated (not blank). Blank Source = FAIL.
+   b. Confidence is populated (OK or NEEDS_VERIFY). Blank = FAIL.
+   c. Every Source: [TBD] has a matching entry in Section 10 and TODO/VERIFY.
+   d. Every value in CN/EN prose is traceable back to the MethodSpec field
+      that sourced it. Unsourced value in prose = FAIL.
 
 Fix FAIL items before delivery. Put unresolved items in TODO/VERIFY.
 
@@ -179,56 +187,22 @@ C5. Pre-delivery gate checklist (mandatory):
 
 If any gate is false, stop and repair before final output.
 
-## 4) MethodSpec Template (compact)
+## 4) MethodSpec Template
 
-Use this exact plain-text skeleton:
+Use the full template in: assets/methodspec_template.md
 
-METHODSPEC v3.0
-===============
-1. Metadata
-- Title (working): ...
-- Venue: ...
-- Model name: ...
-- Paper type: ...
-
-2. Problem Definition
-- Problem statement: ...  Source: ...  Confidence: ...
-- Inputs/outputs (symbols + units): ...
-
-3. Framework Overview
-- Components/stages: ...
-- Data flow: ...
-- Figure ref: Figure ...
-
-4. Physical/Mechanical Model
-- Type: ... / N/A
-- Governing equations: ...
-- Assumptions: ...
-
-5. Data
-- Source + generation: ...
-- Samples + split: ...
-- Preprocessing: ...
-
-6. Architecture
-- Component list + function of each component
-
-7. Loss Function
-- Total loss + sub-terms + symbol definitions
-
-8. Training Configuration
-- Default: [MOVED TO CASE STUDY]
-- If user requests methodology-level details, fill explicitly
-
-9. Evaluation Metrics
-- Metrics + formulas
-- Baselines (user-provided only)
-
-10. Conflicts and Gaps
-- [CONFLICT] ...
-- [TBD] ...
-- [VERIFY] ...
-- [CITATION NEEDED] ...
+Key structural rules (also embedded in the template file):
+- 10 sections: Metadata, Problem Definition, Framework Overview,
+  Physical/Mechanical Model, Data, Architecture, Loss Function,
+  Training Configuration, Evaluation Metrics, Conflicts and Gaps.
+- Every hard-fact field in Sections 2-9 MUST carry:
+    Source:      origin of the fact (e.g. "user notes", "@config.yaml#L3", "[TBD]")
+    Confidence:  OK | NEEDS_VERIFY
+- If Source cannot be determined, write Source: [TBD], Confidence: NEEDS_VERIFY,
+  and add a matching entry in Section 10.
+- Blank Source on any hard-fact field = Audit Pass 6 (Traceability) FAIL.
+- Section 8 (Training Config) defaults to [MOVED TO CASE STUDY] unless user
+  explicitly requests methodology-level detail.
 
 ## 5) Output Contract
 

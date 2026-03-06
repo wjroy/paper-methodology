@@ -12,11 +12,14 @@ Priority rule:
 
 ## 1. Structural Preferences
 
-- Opening paragraph: one paragraph, names method, gives 3-4 numbered steps,
-  references framework figure.
-- Preferred section order: Overview -> Physics/Mechanics (if any) -> Data ->
-  Architecture -> Loss/Training -> Metrics.
-- Subsection flow: Motivation -> Formulation -> Definition.
+- Opening paragraph: names method/framework; typically references framework figure
+  (e.g., "As shown in Fig. X, this study develops..."); may enumerate key modules
+  but does NOT always give numbered steps (only 1/5 own papers does).
+- Preferred section order: Framework overview first, then module-by-module in
+  pipeline order. When a physics/mechanics module exists (3/5 own papers), it
+  precedes the neural architecture. This is NOT a universal invariant.
+- Subsection flow: Purpose/context -> Method/approach -> Technical detail/formulation.
+  This is a loose 3-beat rhythm, NOT a rigid "Motivation->Formulation->Definition".
 - Typical subsection density: 2-4 paragraphs for technical components.
 
 ## 2. Equation Integration
@@ -32,23 +35,34 @@ Priority rule:
 - Method descriptions: present tense.
 - Prior published work: past tense allowed.
 - English voice target: about 60/40 active/passive.
-- English first-person: moderate and controlled (e.g., 5-10 uses in long method).
+- English first-person: **NONE**. All 5 own papers use zero instances of "we/our/us".
+  Use "this study", "this paper", or "the proposed [model/framework]" instead.
 - Chinese first-person preference: use "本文" / "本研究", avoid "我们".
 
 ## 4. Vocabulary Preferences
 
-Preferred transitions:
-- Specifically
-- To this end
-- In particular
-- Accordingly
-- As illustrated in Figure X
+Dominant transition patterns (from 5 own paper statistics):
+- "To [verb]..." purpose clauses (54+ instances across all papers — most frequent)
+- "As shown/illustrated in Fig./Figure X" back-references (34+ instances)
+- Specifically (10 instances)
+- Subsequently (13 instances)
+- Additionally/Moreover (11 instances, mainly Papers 01-02)
+- Therefore/Thus (11 instances)
+- thereby (12 instances, concentrated in Paper 04)
 
-Preferred technical verbs:
-- propose / present
-- employ / adopt
-- design
-- extract
+Low-frequency (use sparingly):
+- To this end (1 instance across all 5 papers)
+- In particular (1 instance across all 5 papers)
+- Accordingly (2 instances across all 5 papers)
+
+Dominant technical verbs (ranked by cross-paper frequency):
+- represent, capture, model, construct, generate, compute, denote, predict,
+  define, obtain, embed, integrate, adopt, employ, propose, extract, derive
+
+Acceptable but less common:
+- utilize (appears in Papers 04, 05)
+- leverage (appears in Paper 04)
+- design, develop, process
 
 Avoid filler/promotional language:
 - It is worth noting that
@@ -56,7 +70,7 @@ Avoid filler/promotional language:
 - groundbreaking / revolutionary / unprecedented
 
 Avoid AI-flavored words unless necessary:
-- leverage, delve, tapestry, elucidate, underscore, unveil, pivotal,
+- delve, tapestry, elucidate, underscore, unveil, pivotal,
   intricate, nuanced, foster, bolster, endeavor, paramount, seamless.
 
 ## 5. CN Writing Conventions
@@ -80,9 +94,10 @@ CN->EN rendering rule (upstream-aligned):
 
 ## 7. Cross-Reference Style
 
-- Equation: "as defined in Equation (N)"
+- Equation: "as defined in Equation (N)" or "as defined in Eq. (N)" (journal-dependent)
 - Section: "as described in Section X.Y"
-- Figure: "as illustrated in Figure X" / "as shown in Figure X"
+- Figure: "as illustrated in Fig. X" or "as shown in Figure X" (journal-dependent)
+  Note: Papers 03-05 use "Fig. X"; Papers 01-02 use "Figure X". Follow target journal.
 - Table: "as summarized in Table X"
 
 Chinese equivalents:
