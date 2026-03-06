@@ -8,7 +8,7 @@ description: >
   Related Work, Discussion, or Abstract).
 ---
 
-# paper-methodology v3.4 (pattern-library + inlined constraints)
+# paper-methodology v3.6 (stable local-refine + logic-enrichment)
 
 Purpose: produce publication-ready bilingual Methodology sections with strict
 anti-hallucination controls and minimal context overhead.
@@ -55,6 +55,21 @@ This skill supports two execution scopes under the same 3-phase workflow:
 
 ## 2) Runtime Assets (Read only what is needed)
 
+### 2.0 Calibration scope (explicit phase split)
+
+This skill uses two different evidence scopes:
+
+- Rule-refinement / skill-update phase (maintainer workflow):
+  MUST calibrate style/pattern/logic rules using all own papers:
+  `01-own-*.txt` + `02-own-*.txt` + `03-own-*.txt` + `04-own-*.txt` +
+  `05-own-*.txt`.
+- Runtime generation phase (user request handling):
+  MUST stay lightweight and retrieve only the most relevant own papers (default
+  top 2-3; expand to top 5 only when architecture is hybrid/ambiguous).
+
+Hard rule: do not infer global style/pattern rules from only 2-3 own papers
+during rule-refinement. Lightweight retrieval is runtime-only behavior.
+
 Always read:
 - assets/style_profile.md
 - assets/error_log.md
@@ -69,7 +84,8 @@ Read on-demand:
 - assets/methodology_outline.md (base skeleton + pattern overlays)
 - assets/reference_papers/*.txt (only top relevant files)
 
-Do not load all reference papers by default. Use selective retrieval.
+Do not load all reference papers by default in runtime generation. Use selective
+retrieval (top 2-3 by default).
 
 ## 3) 3-Phase Workflow
 
@@ -99,7 +115,8 @@ Clarification Block before moving to PLAN.
 
 A3. Build a lightweight Methodology Map:
 - Detect keywords from user content (open extraction, no rigid dictionary needed)
-- Retrieve only top 3-5 relevant reference papers
+- Retrieve only top 2-3 relevant own papers by default (expand to top 5 only
+  when architecture/pattern ambiguity is high)
 - Learn structure logic only (never copy values/content)
 
 A4. Trigger user-question node when needed:
@@ -148,6 +165,12 @@ B3. For each hard-fact field in Sections 2-9 of the MethodSpec, include:
 - Confidence: OK or NEEDS_VERIFY
 See assets/methodspec_template.md for the full field-by-field layout.
 
+B3.1 Section-level refinement MethodSpec delta rule:
+- In local mode, explicitly mark `UNCHANGED` vs `UPDATED` for each target-linked
+  MethodSpec field.
+- Provide a compact MethodSpec delta block before updated prose.
+- Non-target fields remain unchanged unless minimal linked repair is required.
+
 B4. Present MethodSpec and enforce confirmation gate.
 Proceed only if user replies equivalent to CONFIRM/OK/proceed.
 
@@ -186,9 +209,9 @@ C3. Ask humanizer question (do not auto-apply)
   4) Keep text if already natural (return pass verdict)
 
 C3.1 Optional refinement operations (ask-first, never auto-apply):
-- Expand: +5 to +15 words, add only logic-explicit details implied by source.
+- Expand: +5 to +15 words, add only source-supported implicit logic.
 - Compress: -5 to -15 words, keep all technical facts unchanged.
-- Polish: improve clarity/grammar/formality, keep terminology and references fixed.
+- Polish: improve clarity/coherence/grammar, keep terminology/references fixed.
 
 All refinement operations require explicit user confirmation before execution.
 
@@ -250,6 +273,8 @@ R3. Phase B behavior in local mode (MethodSpec-first still mandatory):
 R4. Phase C behavior in local mode:
 - Rewrite/expand only the target CN/EN section/subsection.
 - Keep all other sections unchanged by default.
+- When operation is `bilingual-sync`, align only target CN/EN without adding new
+  technical content.
 
 R5. Allowed linked edits outside target scope (minimal only):
 - Term normalization required by glossary mapping

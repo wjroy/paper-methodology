@@ -1,7 +1,13 @@
 # Term Glossary: CN-EN Mapping
 # Domain: Geotechnical Engineering + AI/ML/DL/LLM
 # Usage: Ensure consistent terminology across Chinese and English methodology sections.
-# Rule: Once a term pair is established, use it consistently throughout the paper.
+# Rule: Use context-sensitive variants when needed, but keep one chosen variant
+#       consistent within a local section/subsection unless context changes.
+
+# Variant policy:
+# - Do not hard-lock context-dependent CN terms to one EN rendering globally.
+# - Enforce anti-mistranslation first (e.g., 基坑 must not be translated as tunnel).
+# - Prefer subsection-level consistency, then chapter-level coherence.
 
 # =============================================================================
 # GEOTECHNICAL ENGINEERING

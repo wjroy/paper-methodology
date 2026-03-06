@@ -1,22 +1,21 @@
 {
   "_meta": {
-    "description": "Hard memory stores exact facts that must never be altered during generation. These are domain-specific constants, confirmed term mappings, and verified values.",
-    "usage": "This file is loaded in Phase A (GATHER) as a runtime asset. Every entry here is treated as ground truth. If user notes conflict with hard_memory, flag the conflict but present the hard_memory value as the established standard.",
+    "description": "Hard memory stores only exact facts that should not drift during generation. Context-dependent style/term preferences should be handled in glossary/style_profile, not hard-locked here.",
+    "usage": "This file is loaded in Phase A (GATHER). Treat entries as non-negotiable facts only when they are context-invariant. If a term is context-sensitive, enforce anti-mistranslation rules instead of single-variant forcing.",
     "maintenance": "Entries are added when a fact is confirmed. Entries are never modified without explicit user approval.",
     "last_updated": "initial-seed"
   },
 
   "critical_terms": {
-    "_note": "CN-EN term rules confirmed from own papers. For context-dependent terms, keep approved variants and avoid mistranslations rather than forcing a single fixed rendering.",
+    "_note": "Contains only non-drifting terminology constraints and anti-mistranslation rules. Variant preference is handled by term_glossary.yml + style_profile.md.",
     "基坑": {
-      "default": "excavation pit",
-      "alternatives": ["deep excavation", "excavation", "foundation pit"],
-      "note": "Context-dependent. 'deep excavation' and 'excavation' are preferred in Papers 02-04; 'foundation pit' appears in Papers 01, 05. See term_glossary.yml."
+      "allowed_variants": ["deep excavation", "excavation", "foundation pit", "excavation pit"],
+      "forbidden_mistranslations": ["tunnel", "shield tunnel"],
+      "note": "Context-dependent term. Choose variant by local engineering context and keep subsection consistency."
     },
     "围护结构": {
-      "default": "retaining structure",
-      "alternatives": ["retaining wall", "retaining system"],
-      "note": "Context-dependent. 'retaining wall' is preferred in Papers 02-03 when referring to diaphragm walls specifically."
+      "allowed_variants": ["retaining wall", "retaining structure", "retaining system"],
+      "note": "Context-dependent term. Use component-specific wording where needed."
     },
     "地下连续墙": "diaphragm wall",
     "盾构隧道": "shield tunnel",
@@ -30,9 +29,8 @@
     "注意力机制": "attention mechanism",
     "物理信息神经网络": "physics-informed neural network (PINN)",
     "物理约束": {
-      "default": "physics constraint",
-      "alternatives": ["physics-informed constraint", "physical constraint", "mechanical prior"],
-      "note": "Context-dependent. Prefer 'physics-informed constraint' when used with loss terms or regularization."
+      "allowed_variants": ["physics-informed constraint", "physical constraint", "mechanical prior", "physics constraint"],
+      "note": "Context-dependent term. Select by usage context (loss regularization vs prior mechanism)."
     },
     "数据驱动": "data-driven",
     "邻接矩阵": "adjacency matrix",

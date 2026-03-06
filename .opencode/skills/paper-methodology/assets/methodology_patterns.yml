@@ -1,5 +1,9 @@
-version: "1.0"
+version: "1.1"
 scope: "own papers (01-05) pattern library"
+calibration:
+  rule_refinement_scope: "all own papers 01-05"
+  runtime_scope: "top 2-3 relevant own papers by default; expand to top 5 only if hybrid/ambiguous"
+  note: "Pattern rules are calibrated globally from 01-05 and selected adaptively at runtime."
 selection_rule:
   - "Select one primary pattern in PLAN; do not force a single invariant order."
   - "Allow 1-2 fallback patterns when a method is hybrid."
@@ -18,6 +22,7 @@ patterns:
       - "Objective/loss and metrics"
     preferred_opening_style: "Name the method, state objective, point to framework figure, briefly list modules."
     preferred_subject_style: "Use objective subjects: this study / this paper / the proposed framework."
+    technical_explanation_style: "overview -> module role -> input/output handoff; avoid disconnected module listing"
     representative_own_papers:
       - "01-own-PitGAN"
       - "02-own-PI-ETGCN"
@@ -41,6 +46,7 @@ patterns:
       - "Physics-informed objective"
     preferred_opening_style: "State engineering mechanism and explain why model learning must respect it."
     preferred_subject_style: "Use mechanism-led subjects: the mechanical model, the analytical solution, the coupling formulation."
+    technical_explanation_style: "mechanism assumption -> computable formulation -> integration path to graph/network/loss"
     representative_own_papers:
       - "01-own-PitGAN"
       - "02-own-PI-ETGCN"
@@ -62,6 +68,7 @@ patterns:
       - "Objective and evaluation"
     preferred_opening_style: "Frame the method as a data-to-representation pipeline and then model learning."
     preferred_subject_style: "Use process subjects: the dataset, the preprocessing module, the feature pipeline."
+    technical_explanation_style: "data source -> transformation rationale -> produced representation -> downstream module"
     representative_own_papers:
       - "01-own-PitGAN"
       - "03-own-THGAN"
@@ -83,6 +90,7 @@ patterns:
       - "Objective and uncertainty/evaluation"
     preferred_opening_style: "Highlight why single-modality modeling is insufficient and why fusion is required."
     preferred_subject_style: "Use module subjects: the fusion module, the attention mechanism, the graph representation."
+    technical_explanation_style: "per-modality encoding -> alignment -> fusion rule -> fused representation handoff"
     representative_own_papers:
       - "02-own-PI-ETGCN"
       - "03-own-THGAN"
@@ -105,6 +113,7 @@ patterns:
       - "Risk-level decision output"
     preferred_opening_style: "State decision objective, monitored entities, and stage-wise assessment target."
     preferred_subject_style: "Use decision subjects: risk level, score, weight, ranking criterion."
+    technical_explanation_style: "indicator/weight construction -> scoring/centrality mapping -> decision output"
     representative_own_papers:
       - "05-own-TSFRA"
     what_not_to_force:
@@ -124,6 +133,7 @@ patterns:
       - "Evaluation metrics tied to objective"
     preferred_opening_style: "Emphasize what failure mode the constraint prevents and why it is needed."
     preferred_subject_style: "Use objective subjects: the loss term, the regularizer, the quantile objective."
+    technical_explanation_style: "failure mode -> constraint/loss definition -> optimization effect -> expected behavior"
     representative_own_papers:
       - "01-own-PitGAN"
       - "02-own-PI-ETGCN"

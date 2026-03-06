@@ -10,10 +10,32 @@ Priority rule:
 3) This style profile
 4) Generic academic defaults
 
+## 0. Calibration status (all own papers 01-05)
+
+Rule-refinement evidence scope:
+- Calibrated from all own papers: `01-own-PitGAN`, `02-own-PI-ETGCN`,
+  `03-own-THGAN`, `04-own-LLM-GNN`, `05-own-TSFRA`.
+- Runtime retrieval remains lightweight (top 2-3 most relevant papers), but
+  global style rules below are maintained from full-scope calibration.
+
+Major rule decisions:
+- KEEP: objective subject style (`this study` / method name), present-tense
+  method narration, opening framework paragraph with figure anchor, equation-role
+  linkage, compact technical register, context-sensitive terminology variants.
+- REVISE: opening paragraph enumeration is common but not mandatory; connector
+  usage is flexible by subsection function; passive voice target should be
+  preference (not hard quota).
+- REMOVE: any assumption of one invariant section order or single fixed
+  CN->EN term mapping across all tasks.
+- UNCERTAIN: exact passive/active ratio and connector frequency distribution,
+  especially because `05-own-TSFRA.txt` is line-compressed extraction and should
+  not be over-interpreted as a strict style template.
+
 ## 1. Structural Preferences
 
 - Opening paragraph: one paragraph, names method, references framework figure,
-  typically enumerates 3-4 main steps/components with numbers (1)(2)(3) or letters (a)(b)(c).
+  often enumerates major steps/components with numbers (1)(2)(3) or letters
+  (a)(b)(c), but this is not mandatory for every architecture.
 - Section planning rule: use base skeleton + selected pattern overlay from
   methodology pattern library (do not force one invariant order).
 - Subsection flow: Purpose/context -> method/approach -> technical detail/formula.
@@ -52,7 +74,8 @@ Priority rule:
 
 - Method descriptions: present tense.
 - Prior published work: past tense allowed.
-- English voice target: passive-dominant (60-80% passive voice for technical descriptions).
+- English voice target: passive-leaning technical prose; do not enforce rigid
+  percentage quotas.
 - English subject choice: Passive voice is dominant. When active voice is needed,
   prefer "this study" / "the proposed [method]" / method name as subject.
   Avoid first-person "we" entirely.
@@ -116,6 +139,8 @@ CN->EN rendering rule (upstream-aligned):
   - 地表沉降 -> ground settlement
   - 风险等级 -> risk level
   - 物理约束 -> physics-informed constraint / physical constraint / mechanical prior
+- Keep one variant consistent within the same subsection unless context shift
+  requires another approved variant.
 
 Chinese equivalents:
 - 如公式 (N) 所示
@@ -128,6 +153,17 @@ Chinese equivalents:
 - Do not invent technical details for stylistic completeness.
 - If hard facts are missing, mark [TBD]/[VERIFY] instead of guessing.
 - For standard theory expansions, state basis explicitly when needed.
+
+## 8.1 Logic-enrichment style constraints (explicit)
+
+- Enrichment targets only supportable implicit logic gaps; it is not a generic
+  verbosity increase.
+- For each enriched step, prioritize this order: purpose -> transformation ->
+  produced artifact/state -> handoff.
+- For module/loss/fusion/constraint mentions, explain pipeline function in one
+  compact sentence before or after formula reference.
+- Keep own-paper style: dense technical prose, minimal rhetorical flourish,
+  no tutorial-style pedagogy.
 
 ## 9. Runtime Use Checklist
 

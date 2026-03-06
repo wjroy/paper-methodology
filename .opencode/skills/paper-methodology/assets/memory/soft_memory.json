@@ -3,7 +3,9 @@
     "description": "Soft memory stores user preferences that influence writing style but are not hard constraints. These are learned patterns that can be overridden by explicit user instructions.",
     "usage": "This file is loaded in Phase A (GATHER) as a runtime asset. Preferences here guide style choices (e.g., voice, connectors, equation format) but do not override explicit user instructions in the current session.",
     "maintenance": "Entries are updated when consistent user preferences are observed across sessions. Changes are additive; old preferences are kept but can be marked as deprecated.",
-    "last_updated": "initial-seed"
+    "last_updated": "2026-03-06-calibration-01-05",
+    "calibration_scope": "rule-refinement uses all own papers 01-05; runtime retrieves top 2-3 relevant papers by default",
+    "calibration_note": "Style preferences are calibrated from full own-paper coverage, while runtime context remains lightweight."
   },
 
   "paragraph_preferences": {
@@ -25,7 +27,7 @@
     "first_person_en": {
       "frequency": "none",
       "count_per_section": "0",
-      "note": "All 5 own papers use zero instances of 'we'. Use 'this study' / 'this paper' instead."
+      "note": "No reliable first-person 'we' usage is observed in available methodology excerpts of own papers 01-05. Prefer objective subjects unless user requests otherwise."
     },
     "first_person_cn": {
       "frequency": "rare",
@@ -104,7 +106,7 @@
     "processing_data": ["process"],
     "extracting_features": ["extract"],
     "avoid_verbs": ["put forward", "craft", "architect", "harvest", "glean", "garner", "attain"],
-    "note": "utilize and leverage appear in own papers (Papers 04-05), so they are acceptable."
+      "note": "Accept flexible technical verbs by context; avoid locking to a single verb list."
   },
 
   "cn_formatting": {

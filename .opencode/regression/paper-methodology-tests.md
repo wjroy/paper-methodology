@@ -1,12 +1,13 @@
-# Regression Tests for paper-methodology Skill (v3.5)
+# Regression Tests for paper-methodology Skill (v3.6)
 
-> 17 test prompts with expected behaviors and pass/fail criteria.
+> 18 test prompts with expected behaviors and pass/fail criteria.
 > Tests 1-5: core workflow tests (updated for v3.3 where needed).
 > Tests 6-8: style profile, error log, and consistency checker tests.
 > Tests 9-11: Source/Confidence traceability and PLAN gate behavior tests.
 > Tests 12-13: pattern library selection and inlined prompt-pack capability tests.
 > Tests 14-15: section-level refinement scope-lock and MethodSpec sync tests.
 > Tests 16-17: logic-enrichment continuity and anti-hallucination guard tests.
+> Test 18: calibration-scope split test (rule-refinement full own papers vs runtime lightweight retrieval).
 > Use these to verify the skill produces correct output under different conditions.
 
 ---
@@ -315,7 +316,7 @@ introduce these errors before running the audit:
 ## Running These Tests
 
 1. Start a new conversation with the paper-methodology skill loaded
-2. For tests 1-17: paste each test prompt exactly as shown
+2. For tests 1-18: paste each test prompt exactly as shown
 3. For test 7: first add the error log entries, then paste the prompt
 4. For test 8: generate from test 1, manually introduce errors, then run audit
 5. For test 10: verify PLAN gate (Phase B) stops before Phase C until CONFIRM
@@ -326,19 +327,20 @@ introduce these errors before running the audit:
 10. For test 15: verify MethodSpec + CN/EN sync under local code-based update
 11. For test 16: verify logic-enrichment makes implicit chain explicit
 12. For test 17: verify logic-enrichment does not invent unsupported facts
-13. Compare the output against the Expected Behavior checklist
-14. Mark each item as pass/fail
-15. A test passes only if ALL expected behaviors are satisfied
+13. For test 18: verify calibration-scope behavior in the explanation output
+14. Compare the output against the Expected Behavior checklist
+15. Mark each item as pass/fail
+16. A test passes only if ALL expected behaviors are satisfied
 
 ## Scoring
 
 | Score | Interpretation |
 |-------|---------------|
-| 17/17 | Skill is production-ready (v3.5 verified) |
-| 16/17 | Minor issue — review the failing test and adjust |
-| 13-15/17 | Moderate issues — likely need to adjust SKILL.md or an asset file |
-| 10-12/17 | Significant issues — structural problem in the workflow |
-| <=9/17 | Major revision needed |
+| 18/18 | Skill is production-ready (v3.6 verified) |
+| 17/18 | Minor issue — review the failing test and adjust |
+| 14-16/18 | Moderate issues — likely need to adjust SKILL.md or an asset file |
+| 11-13/18 | Significant issues — structural problem in the workflow |
+| <=10/18 | Major revision needed |
 
 ## Version History
 
@@ -352,6 +354,7 @@ introduce these errors before running the audit:
 | v3.3 | 1-13 | Added pattern-library selection tests and removed prompt-pack dependency |
 | v3.4 | 1-15 | Added section-level refinement tests (scope lock + MethodSpec/CN-EN sync) |
 | v3.5 | 1-17 | Added logic-enrichment tests (reasoning continuity + no unsupported facts) |
+| v3.6 | 1-18 | Added calibration-scope split test and strengthened local MethodSpec delta expectations |
 
 ---
 
@@ -549,9 +552,11 @@ added_code_or_config_paths:
 ### Expected Behavior
 - [x] Runs section-level refinement mode (local scope lock)
 - [x] MethodSpec updates only fields linked to Section 3.2 (feature extraction/fusion)
+- [x] MethodSpec output includes explicit delta tags (`UPDATED`/`UNCHANGED`) for target-linked fields
 - [x] CN and EN both update Section 3.2 with aligned technical details
 - [x] Sections outside 3.2 are unchanged, except minimal allowed consistency fixes
 - [x] No unsourced values are introduced; all new details are traceable to notes/code/config
+- [x] Source/Confidence fields are refreshed for every newly added target fact
 - [x] Style remains consistent with existing chapter tone
 
 ### Pass/Fail
@@ -586,6 +591,7 @@ added_code_or_config_paths:
 ### Expected Behavior
 - [x] Uses code/config value (`lambda_phys: 0.25`) over note text
 - [x] Updates target MethodSpec loss-related entries and Source/Confidence fields
+- [x] MethodSpec delta clearly marks non-target fields as unchanged
 - [x] Corrects both CN and EN subsection 3.4 to the same value (0.25)
 - [x] Keeps other subsections unchanged unless minimal numbering/term repair is required
 - [x] Audit flags PASS for terminology/symbol/numbering/CN-EN alignment in updated scope
@@ -619,6 +625,7 @@ Use compact technical style.
 - [x] Loss/constraint is described with pipeline purpose (what behavior it enforces)
 - [x] Formula/module mentions are connected to role and not isolated
 - [x] Tone remains compact and technical (not tutorial-like)
+- [x] Enrichment style remains own-paper aligned (no generic motivational filler)
 
 ### Pass/Fail
 - **PASS**: Reasoning continuity is visibly improved (purpose, transformation, and handoff are explicit) while style remains concise
@@ -653,6 +660,41 @@ Do not ask for extra info; proceed with placeholders if needed.
 ### Pass/Fail
 - **PASS**: Logic becomes clearer without adding unsupported facts; traceability remains valid
 - **FAIL**: Any new unsupported value/module/citation/result appears in enriched text
+
+---
+
+## Test 18: Calibration Scope Split — Full Own-Paper Rules vs Lightweight Runtime
+
+### Prompt
+```
+Before generating, explain your retrieval strategy for style/pattern calibration.
+
+Then write only subsection 3.2 (rewrite mode) for a multimodal excavation model.
+
+target_section_or_subsection: 3.2
+operation_type: rewrite
+existing_section_text_en:
+3.2 The module extracts text and time-series features and fuses them.
+added_notes:
+- text branch uses domain vocabulary filtering
+- time-series branch uses temporal convolution
+- fusion uses attention weighting
+
+Keep runtime lightweight.
+```
+
+### Expected Behavior
+- [x] Explanation explicitly distinguishes:
+  - rule-refinement phase uses all own papers 01-05
+  - runtime generation uses only top relevant own papers (2-3 by default)
+- [x] Runs section-level refinement instead of full-chapter generation
+- [x] Updates only target-linked MethodSpec entries and returns MethodSpec delta
+- [x] Applies logic-enrichment in rewritten subsection without unsupported additions
+- [x] Keeps non-target sections untouched except minimal linked consistency edits
+
+### Pass/Fail
+- **PASS**: Phase split is explicit and local rewrite remains scoped, traceable, and lightweight
+- **FAIL**: Claims runtime must read all own papers every time, or performs broad chapter rewrite
 
 ---
 

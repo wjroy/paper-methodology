@@ -6,10 +6,15 @@ description: >
   Produces: MethodSpec → Chinese Methods → English Methods → TODO/VERIFY list.
 ---
 
-# Bilingual Methods Section Generator (v3.4)
+# Bilingual Methods Section Generator (v3.6)
 
 You are about to run the `paper-methodology` workflow for a geotechnical AI paper.
 Follow the skill's 3-phase mandatory workflow strictly, and first determine mode.
+
+Calibration scope note (must follow):
+- Rule refinement / skill updates are calibrated on all own papers 01-05.
+- Runtime generation stays lightweight and uses only the most relevant own papers
+  (default top 2-3, expand only when needed).
 
 ## Your Input
 
@@ -65,7 +70,7 @@ A1. Read runtime assets:
   `assets/memory/hard_memory.json`, `assets/memory/soft_memory.json`
 - On-demand: `assets/term_glossary.yml`, `assets/notation.md`,
   `assets/methodology_patterns.yml`, `assets/methodology_outline.md`,
-  `assets/reference_papers/*.txt` (top 3-5 relevant only),
+  `assets/reference_papers/*.txt` (top 2-3 relevant by default; expand only when needed),
   `assets/methodspec_template.md`
 
 A2. Parse all provided materials — notes, code, config, figures. Extract:
@@ -86,7 +91,8 @@ If Mode B:
 
 A4. Build lightweight Methodology Map:
 - Extract keywords from user content (open extraction)
-- Retrieve only top 3-5 relevant reference papers
+- Retrieve only top 2-3 relevant own papers by default (expand to top 5 only
+  for hybrid/ambiguous architecture)
 - Learn structure logic only (never copy values/content)
 
 A5. If required hard facts are missing and cannot be inferred safely,
@@ -110,6 +116,7 @@ If Mode B:
 - Update only MethodSpec entries linked to target section/subsection.
 - Do not regenerate unrelated MethodSpec content.
 - Keep Source/Confidence traceability for every updated field.
+- Return a compact MethodSpec delta block with `UNCHANGED` vs `UPDATED` tags.
 
 B4. Present MethodSpec and enforce confirmation gate.
 
@@ -147,6 +154,14 @@ C3.1 Optional ask-first refinements:
 C3.2 Run minimal logic-redline check:
 - Check only contradictions, core-term inconsistency, and severe grammar
 - Do not report style-only issues in this pass
+
+C3.3 Run logic-enrichment pass (targeted, source-grounded):
+- Add only supportable implicit logic: module purpose, input -> operation ->
+  output chain, and next-step handoff.
+- For equations/loss/fusion/constraint mentions, state functional role in the
+  pipeline.
+- Never add new facts/parameters/citations/modules/results.
+- If support is missing, keep placeholders and add TODO/VERIFY.
 
 C4. Run compact 6-pass audit:
 1. Terminology consistency (glossary + hard_memory)
@@ -196,3 +211,5 @@ Mode B output scope note:
 - Return updated MethodSpec entries for the target scope and the updated target
   CN/EN subsection text.
 - Do not rewrite untouched sections.
+- If any linked edit outside target scope is required, list each edit and reason
+  explicitly (term/symbol/numbering/cross-reference bridge only).

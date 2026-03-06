@@ -93,3 +93,10 @@ When the user corrects your output, append a new entry using this format:
 - Correct: Use context-dependent variants (deep excavation / excavation / foundation pit / excavation pit)
 - Context: own papers 01-05 use multiple valid variants
 - Rule: For context-dependent terms, enforce "no mistranslation" instead of single-variant lock.
+
+### STRUCTURAL — Generalizing global style rules from partial own-paper samples
+- Date: 2026-03-06
+- Wrong: Calibrating style/pattern/logic rules from only 2-3 own papers
+- Correct: Rule-refinement must use all own papers 01-05; runtime generation may retrieve only top 2-3 relevant papers for efficiency
+- Context: skill maintenance and pattern/style updates
+- Rule: Separate calibration scope from runtime scope. Full own-paper coverage is required for rule updates; selective retrieval is runtime-only.

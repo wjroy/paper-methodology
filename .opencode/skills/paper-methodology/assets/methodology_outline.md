@@ -63,3 +63,15 @@ Apply exactly one primary overlay (allow 1-2 fallback overlays when hybrid).
 - Do not force a physics module when method has no explicit physical prior.
 - Do not force deep-learning architecture detail for decision-centric methods.
 - If required hard facts are missing, keep placeholders and register TODO/VERIFY.
+
+## D. Section-Level Refinement Overlay
+
+Use this overlay when user locks scope to a target section/subsection.
+
+1) Keep global chapter structure unchanged by default.
+2) Update only target-linked MethodSpec entries.
+3) Allow only minimal linked edits outside target scope:
+- terminology normalization,
+- symbol/equation numbering repair,
+- one-hop context bridge for continuity.
+4) Preserve CN/EN alignment and traceability for updated scope.
