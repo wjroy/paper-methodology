@@ -1,8 +1,8 @@
 {
   "_meta": {
     "description": "Hard memory stores exact facts that must never be altered during generation. These are domain-specific constants, confirmed term mappings, and verified values.",
-    "usage": "The AI reads this file during the RECALL step. Every entry here is treated as ground truth. If a user's notes conflict with hard_memory, flag the conflict but present the hard_memory value as the established standard.",
-    "maintenance": "The AI or user adds entries when a fact is confirmed. Entries are never modified without explicit user approval.",
+    "usage": "This file is loaded in Phase A (GATHER) as a runtime asset. Every entry here is treated as ground truth. If user notes conflict with hard_memory, flag the conflict but present the hard_memory value as the established standard.",
+    "maintenance": "Entries are added when a fact is confirmed. Entries are never modified without explicit user approval.",
     "last_updated": "initial-seed"
   },
 

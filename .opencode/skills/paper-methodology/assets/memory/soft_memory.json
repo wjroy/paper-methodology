@@ -1,8 +1,8 @@
 {
   "_meta": {
     "description": "Soft memory stores user preferences that influence writing style but are not hard constraints. These are learned patterns that can be overridden by explicit user instructions.",
-    "usage": "The AI reads this file during the RECALL step. Preferences here guide style choices but do not override explicit user instructions in the current session.",
-    "maintenance": "The AI updates this file when it observes consistent user preferences across sessions. Changes are additive; old preferences are kept but can be marked as deprecated.",
+    "usage": "This file is loaded in Phase A (GATHER) as a runtime asset. Preferences here guide style choices (e.g., voice, connectors, equation format) but do not override explicit user instructions in the current session.",
+    "maintenance": "Entries are updated when consistent user preferences are observed across sessions. Changes are additive; old preferences are kept but can be marked as deprecated.",
     "last_updated": "initial-seed"
   },
 
