@@ -43,6 +43,8 @@ NN-{own|other}-ShortName.txt
 | `17-other-LLIAM.txt` | LLIAM | LLaMA + LoRA for time series forecasting |
 | `18-other-SOH-FM.txt` | SOH-FM | TimeGPT fine-tuning for battery state of health estimation |
 
+Total: 18 papers (5 own + 13 other).
+
 ## Adding New Papers
 
 1. Use the next available sequence number

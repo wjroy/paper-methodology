@@ -10,7 +10,7 @@
     "target_word_count": {
       "min": 100,
       "max": 250,
-      "note": "Dense paragraphs, one core idea each. Extracted from 3 papers."
+      "note": "Dense paragraphs, one core idea each. Extracted from own paper set."
     },
     "opening_sentence_style": "topic_sentence",
     "opening_sentence_note": "Each paragraph opens with a sentence stating its purpose, e.g., 'The [COMPONENT] module is designed to [PURPOSE].'",
@@ -95,7 +95,7 @@
       "Loss Function and Training",
       "Evaluation Metrics"
     ],
-    "note": "Physics model always precedes neural architecture. This is the invariant pattern across all 3 papers."
+    "note": "Physics model always precedes neural architecture. This is the invariant pattern across the own paper set."
   },
 
   "humanizer_preference": {

@@ -7,7 +7,7 @@
   },
 
   "critical_terms": {
-    "_note": "CN-EN term pairs that the user has explicitly confirmed or that appear consistently in all 3 published papers. These override any alternative translations.",
+    "_note": "CN-EN term pairs that the user has explicitly confirmed or that appear consistently in published papers. These override alternative translations.",
     "基坑": "excavation pit",
     "围护结构": "retaining structure",
     "地下连续墙": "diaphragm wall",
@@ -108,7 +108,9 @@
     "_note": "User's own model names. Always capitalize and format exactly as listed.",
     "Paper_01": "PitGAN",
     "Paper_02": "PI-ETGCN",
-    "Paper_03": "THGAN"
+    "Paper_03": "THGAN",
+    "Paper_04": "GTAF",
+    "Paper_05": "TSFRA"
   },
 
   "journal_formatting": {
