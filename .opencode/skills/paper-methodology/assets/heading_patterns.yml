@@ -1,19 +1,25 @@
 version: "1.0"
-scope: "heading naming patterns calibrated from own papers (01-05) + other papers (06-18)"
+scope: >-
+  heading naming patterns calibrated from own papers (01-05) +
+  other papers (06-18)
+
 calibration:
   rule_refinement_scope: "all own papers 01-05 + all other papers 06-18"
   runtime_scope: "2-3 own + 2-3 other papers most relevant to current task"
-  note: >
+  note: >-
     Heading naming rules are calibrated globally but applied with lightweight
     runtime retrieval. Pattern selection drives heading style adaptation.
 
 patterns:
 
   - id: framework-first
-    applies_to: "Multi-module pipelines with a clear top-level architecture figure"
+    applies_to: >-
+      Multi-module pipelines with a clear top-level architecture figure
     preferred_forms:
       overview: "[Overall] framework of [Method]"
-      modules: "Short component names or '[Component] module for [purpose]'"
+      modules: >-
+        Short component names or
+        '[Component] module for [purpose]'
       data: "Data [generation|collection|representation] [for purpose]"
       objective: "Loss function and evaluation metrics"
       evaluation: "Model evaluation"
@@ -27,19 +33,32 @@ patterns:
       - "Forcing all module headings into identical 'Architecture of X' form"
       - "Using the method name in every subsection heading"
     representative_refs:
-      own: ["01-own-PitGAN", "02-own-PI-ETGCN", "03-own-THGAN"]
-      other: ["06-other-AC-GGN", "09-other-MS-STGCN", "13-other-F2P-Net"]
+      own:
+        - "01-own-PitGAN"
+        - "02-own-PI-ETGCN"
+        - "03-own-THGAN"
+      other:
+        - "06-other-AC-GGN"
+        - "09-other-MS-STGCN"
+        - "13-other-F2P-Net"
     what_not_to_force:
       - "Do not force a 'physics' heading if no physics prior exists"
-      - "Module count in headings should match actual architecture, not a fixed template"
+      - >-
+        Module count in headings should match actual architecture,
+        not a fixed template
 
   - id: physics-mechanism-first
-    applies_to: "Methods with explicit mechanical/physical priors as core constraints"
+    applies_to: >-
+      Methods with explicit mechanical/physical priors as core constraints
     preferred_forms:
       overview: "Overall framework of [Method]"
       mechanics: "Mechanical/physical modeling of [target phenomenon]"
-      data_mechanics: "[Feature|edge|constraint] [generation|construction] [derived from|based on] [mechanical model]"
-      architecture: "[Method/Module] for [spatiotemporal|prediction|classification] modeling"
+      data_mechanics: >-
+        [Feature|edge|constraint] [generation|construction]
+        [derived from|based on] [mechanical model]
+      architecture: >-
+        [Method/Module] for [spatiotemporal|prediction|classification]
+        modeling
       objective: "Hybrid loss function with physics-informed constraint"
     preferred_keywords:
       - mechanical modeling
@@ -52,18 +71,29 @@ patterns:
       - "Overloading headings with derivation details"
       - "Putting 'physics' in every heading when only one module uses it"
     representative_refs:
-      own: ["01-own-PitGAN", "02-own-PI-ETGCN", "03-own-THGAN"]
-      other: ["08-other-TwoStageSVM"]
+      own:
+        - "01-own-PitGAN"
+        - "02-own-PI-ETGCN"
+        - "03-own-THGAN"
+      other:
+        - "08-other-TwoStageSVM"
     what_not_to_force:
-      - "Do not force a mechanics subsection when the physics module is a simple loss term"
-      - "Do not create separate derivation headings for standard textbook models"
+      - >-
+        Do not force a mechanics subsection when the physics module
+        is a simple loss term
+      - >-
+        Do not create separate derivation headings for standard
+        textbook models
 
   - id: data-transformation-first
-    applies_to: "Methods where data representation/encoding is a major novelty"
+    applies_to: >-
+      Methods where data representation/encoding is a major novelty
     preferred_forms:
       overview: "Framework of [Method]"
       data_source: "[Data source] collection and preprocessing"
-      transformation: "[Feature|representation] [generation|construction|transformation]"
+      transformation: >-
+        [Feature|representation]
+        [generation|construction|transformation]
       architecture: "[Model] architecture"
       objective: "Objective and evaluation"
     preferred_keywords:
@@ -74,22 +104,34 @@ patterns:
       - transformation
       - encoding
     avoid:
-      - "Burying the key data transformation under a generic 'Data' heading"
+      - >-
+        Burying the key data transformation under a generic
+        'Data' heading
       - "Using 'Feature engineering' (too informal for SCI papers)"
     representative_refs:
-      own: ["01-own-PitGAN", "03-own-THGAN", "04-own-LLM-GNN"]
-      other: ["06-other-AC-GGN", "10-other-NLP-CMS"]
+      own:
+        - "01-own-PitGAN"
+        - "03-own-THGAN"
+        - "04-own-LLM-GNN"
+      other:
+        - "06-other-AC-GGN"
+        - "10-other-NLP-CMS"
     what_not_to_force:
       - "Do not expand trivial preprocessing into its own major section"
-      - "Data heading should reflect actual transformation, not just 'Data description'"
+      - >-
+        Data heading should reflect actual transformation,
+        not just 'Data description'
 
   - id: fusion-pattern
-    applies_to: "Multi-modal or multi-source methods with explicit fusion logic"
+    applies_to: >-
+      Multi-modal or multi-source methods with explicit fusion logic
     preferred_forms:
       overview: "[Overall] framework of [Method]"
       branch_a: "[Modality A] [encoding|feature extraction|branch]"
       branch_b: "[Modality B] [encoding|feature extraction|branch]"
-      fusion: "[Attention-based|cross-modal|heterogeneous] fusion [mechanism|module]"
+      fusion: >-
+        [Attention-based|cross-modal|heterogeneous] fusion
+        [mechanism|module]
       downstream: "[Prediction|decision|assessment] module"
       objective: "Objective function and evaluation"
     preferred_keywords:
@@ -101,17 +143,29 @@ patterns:
       - heterogeneous
       - multi-source
     avoid:
-      - "Using a generic 'Model Architecture' heading for the fusion section"
+      - >-
+        Using a generic 'Model Architecture' heading for the
+        fusion section
       - "Forcing equal heading weight on auxiliary modalities"
     representative_refs:
-      own: ["02-own-PI-ETGCN", "03-own-THGAN", "04-own-LLM-GNN"]
-      other: ["09-other-MS-STGCN", "14-other-SolarFM"]
+      own:
+        - "02-own-PI-ETGCN"
+        - "03-own-THGAN"
+        - "04-own-LLM-GNN"
+      other:
+        - "09-other-MS-STGCN"
+        - "14-other-SolarFM"
     what_not_to_force:
-      - "Do not force symmetry between encoder headings when modalities differ greatly in complexity"
-      - "Do not create a separate fusion heading if fusion is a single attention layer (embed in downstream heading instead)"
+      - >-
+        Do not force symmetry between encoder headings when
+        modalities differ greatly in complexity
+      - >-
+        Do not create a separate fusion heading if fusion is a
+        single attention layer (embed in downstream heading instead)
 
   - id: weighting-scoring-decision
-    applies_to: "Risk assessment, ranking, decision support systems"
+    applies_to: >-
+      Risk assessment, ranking, decision support systems
     preferred_forms:
       overview: "Framework of the proposed [Method]"
       problem: "Problem definition [and decision target]"
@@ -128,17 +182,25 @@ patterns:
       - decision
       - step
     avoid:
-      - "Forcing deep-learning architecture headings when the method is math-based"
+      - >-
+        Forcing deep-learning architecture headings when
+        the method is math-based
       - "Using 'Model Architecture' for a weighting-scoring pipeline"
     representative_refs:
-      own: ["05-own-TSFRA"]
-      other: ["11-other-BPL-LLM", "12-other-CM-risk"]
+      own:
+        - "05-own-TSFRA"
+      other:
+        - "11-other-BPL-LLM"
+        - "12-other-CM-risk"
     what_not_to_force:
-      - "Do not force 'Architecture' or 'Network' headings for non-neural methods"
+      - >-
+        Do not force 'Architecture' or 'Network' headings
+        for non-neural methods
       - "Step-style headings ('Step X: ...') are acceptable for this pattern"
 
   - id: constraint-loss-first
-    applies_to: "Methods where loss/constraint design is the core contribution"
+    applies_to: >-
+      Methods where loss/constraint design is the core contribution
     preferred_forms:
       overview: "Framework of [Method]"
       constraint: "[Constraint type] formulation [for purpose]"
@@ -155,17 +217,27 @@ patterns:
       - quantile
       - optimization
     avoid:
-      - "Burying the key constraint under a generic 'Loss Function' heading"
+      - >-
+        Burying the key constraint under a generic
+        'Loss Function' heading
       - "Inventing constraint terms not present in user sources"
     representative_refs:
-      own: ["01-own-PitGAN", "02-own-PI-ETGCN", "04-own-LLM-GNN"]
-      other: ["08-other-TwoStageSVM"]
+      own:
+        - "01-own-PitGAN"
+        - "02-own-PI-ETGCN"
+        - "04-own-LLM-GNN"
+      other:
+        - "08-other-TwoStageSVM"
     what_not_to_force:
       - "Do not elevate a standard MSE loss to its own constraint heading"
-      - "Constraint heading should appear only when the constraint is novel or non-trivial"
+      - >-
+        Constraint heading should appear only when the constraint
+        is novel or non-trivial
 
   - id: foundation-model-adaptation
-    applies_to: "Methods adapting pre-trained foundation models via fine-tuning or prompting"
+    applies_to: >-
+      Methods adapting pre-trained foundation models via
+      fine-tuning or prompting
     preferred_forms:
       overview: "Framework overview"
       base_model: "[Foundation model name] [architecture|description]"
@@ -180,11 +252,24 @@ patterns:
       - pre-trained
       - transfer
     avoid:
-      - "Repeating the full model architecture description when using a well-known FM"
-      - "Using 'Novel Architecture' when the contribution is adaptation, not architecture"
+      - >-
+        Repeating the full model architecture description
+        when using a well-known FM
+      - >-
+        Using 'Novel Architecture' when the contribution is
+        adaptation, not architecture
     representative_refs:
       own: []
-      other: ["14-other-SolarFM", "15-other-Wind-FM", "16-other-TSFMs", "17-other-LLIAM", "18-other-SOH-FM"]
+      other:
+        - "14-other-SolarFM"
+        - "15-other-Wind-FM"
+        - "16-other-TSFMs"
+        - "17-other-LLIAM"
+        - "18-other-SOH-FM"
     what_not_to_force:
-      - "Do not force detailed architecture headings when the FM is used as-is"
-      - "Adaptation strategy heading should be proportional to actual contribution"
+      - >-
+        Do not force detailed architecture headings when
+        the FM is used as-is
+      - >-
+        Adaptation strategy heading should be proportional
+        to actual contribution

@@ -1,7 +1,7 @@
 # Regression Tests for paper-methodology Skill (v3.7)
 
 > 23 test prompts with expected behaviors and pass/fail criteria.
-> Tests 1-5: core workflow tests (updated for v3.3 where needed).
+> Tests 1-5: core workflow tests (updated for v3.7 where needed).
 > Tests 6-8: style profile, error log, and consistency checker tests.
 > Tests 9-11: Source/Confidence traceability and PLAN gate behavior tests.
 > Tests 12-13: pattern library selection and inlined prompt-pack capability tests.
@@ -47,7 +47,7 @@
 - [x] Term glossary terms used consistently (弹性地基梁 = beam on elastic foundation)
 - [x] Plain text output, no Markdown formatting
 - [x] TODO/VERIFY list is empty or minimal (input is complete)
-- [x] Audit summary included with 6-pass results (all PASS expected for complete input)
+- [x] Audit summary included with 7-pass results (all PASS expected for complete input)
 - [x] Asks about humanizer pass after EN generation
 
 ### Pass/Fail
@@ -240,7 +240,7 @@ Before running this test, add the following entry to `error_log.md`:
 ### TERMINOLOGY — Mistranslated "基坑" as "tunnel"
 - Date: 2025-01-15
 - Wrong: "The tunnel deformation is predicted by..."
-- Correct: "The excavation pit deformation is predicted by..."
+- Correct: "The deep excavation deformation is predicted by..."
 - Context: English methodology, Section 3.1
 - Rule: Never mistranslate 基坑 as "tunnel" or "shield tunnel". 
         Use context-appropriate variant: "deep excavation", "excavation", 

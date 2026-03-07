@@ -263,7 +263,8 @@ both gates.
 
 ### Phase C: WRITE_AUDIT
 
-Goal: draft CN and EN from MethodSpec, then run compact audit.
+Goal: draft CN and EN from the confirmed MethodSpec, under the confirmed
+Heading Plan, then run compact audit.
 
 C1. Draft Chinese Methodology
 - Follow style_profile
@@ -271,12 +272,19 @@ C1. Draft Chinese Methodology
 - Full-width Chinese punctuation
 - Keep standard technical terms in English where appropriate (GAN, GCN, etc.)
 - Equation placeholders: [公式 (N): ...]
+- Body text must follow the locked heading hierarchy exactly. Do not rename,
+  reorder, or silently drop approved headings. If a heading becomes technically
+  inappropriate during drafting, flag it as HEADING MISMATCH in TODO/VERIFY
+  instead of changing it.
 
 C2. Draft English Methodology
 - Mirror CN structure exactly
 - Present tense for method description
 - Prefer objective subject style from style_profile (typically "this study" / "this paper")
 - Equation placeholders: [Equation (N): ...]
+- Same heading-hierarchy constraint as C1: body text must follow the locked
+  heading plan. Do not drift from approved headings unless the user explicitly
+  requests heading revision.
 
 C3. Ask humanizer question (do not auto-apply)
 - "English version is ready. Apply de-AI humanizer pass?"
@@ -408,7 +416,7 @@ H4. User inputs for heading modes:
 - style_preference: [optional — concise / framework-oriented / mechanism-oriented
   / engineering-style / decision-step / more academic / etc.]
 
-C4. Compact 6-pass audit (must run before delivery)
+C4. Compact 7-pass audit (must run before delivery)
 1. Terminology consistency (glossary + hard_memory)
 2. Numerical consistency (MethodSpec vs CN vs EN)
 3. Equation/symbol consistency (notation + where blocks)
@@ -420,6 +428,12 @@ C4. Compact 6-pass audit (must run before delivery)
    c. Every Source: [TBD] has a matching entry in Section 10 and TODO/VERIFY.
    d. Every value in CN/EN prose is traceable back to the MethodSpec field
         that sourced it. Unsourced value in prose = FAIL.
+7. Heading-body alignment — verify that every approved heading from the
+   Heading Plan appears in the drafted CN and EN text, in the same order,
+   with no silent additions, removals, or renames. If mismatch is found,
+   report as FLAG or FAIL with specific heading reference.
+   (Skip this pass when no Heading Plan was produced, e.g., Mode B local
+   refinement targeting a single subsection.)
 
 C4.2 Lightweight logic continuity check (post-enrichment, mandatory):
 - Verify no unresolved step jumps remain in key pipeline descriptions.
@@ -443,7 +457,7 @@ C5. Pre-delivery gate checklist (mandatory):
 - Gate G3: MethodSpec confirmation satisfied OR explicit skip-gate instruction found
 - Gate G3.1: Heading Plan produced and confirmed OR explicit skip-heading instruction found
 - Gate G4: CN and EN drafted from the same MethodSpec under approved headings
-- Gate G5: 6-pass audit executed
+- Gate G5: 7-pass audit executed
 
 If any gate is false, stop and repair before final output.
 
@@ -492,6 +506,7 @@ Equation/Symbol: PASS/FLAG/FAIL
 Structure: PASS/FLAG/FAIL
 Error-log: PASS/FLAG/FAIL
 Traceability: PASS/FLAG/FAIL
+Heading-body: PASS/FLAG/FAIL (or N/A if no Heading Plan)
 
 ## 6) Revision Policy
 

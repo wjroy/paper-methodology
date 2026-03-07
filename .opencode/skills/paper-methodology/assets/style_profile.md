@@ -138,7 +138,7 @@ CN->EN rendering rule (upstream-aligned):
 
 - Do not force a single EN variant when own papers use multiple valid forms.
 - Prefer context-dependent rendering for key terms:
-  - 基坑 -> deep excavation / excavation / foundation pit / excavation pit
+  - 基坑 -> deep excavation / excavation / foundation pit
   - 围护结构 -> retaining wall / retaining structure / retaining system
   - 地表沉降 -> ground settlement
   - 风险等级 -> risk level

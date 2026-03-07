@@ -191,7 +191,7 @@ added_code_or_config_paths:
 
 ## 版本信息
 
-- Skill Version: v3.4
+- Skill Version: v3.7
 - 新增功能: Section-level refinement mode
 - 测试覆盖: Test 14-15 (regression tests)
 

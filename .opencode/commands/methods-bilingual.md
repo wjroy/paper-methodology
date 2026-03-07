@@ -209,13 +209,17 @@ as the heading skeleton. Skip B5-B7 and proceed to Phase C.
 
 ### Phase C: WRITE_AUDIT
 
-Goal: draft CN and EN from MethodSpec under approved headings, then run compact audit.
+Goal: draft CN and EN from the confirmed MethodSpec under the confirmed
+Heading Plan, then run compact audit.
 
 C1. Draft Chinese Methodology (plain text, full-width punctuation, no Markdown).
 Use the approved Heading Plan as the structural skeleton. Do not rename or
 reorder headings unless flagged as HEADING MISMATCH in TODO/VERIFY.
 
 C2. Draft English Methodology (present tense, mirrors CN structure exactly).
+Body text must follow the locked heading hierarchy. Do not rename, reorder,
+or silently drop approved headings. If a heading becomes inappropriate during
+drafting, flag as HEADING MISMATCH in TODO/VERIFY.
 
 If Mode B:
 - Rewrite/expand/correct only the target CN/EN subsection.
@@ -244,7 +248,7 @@ C3.3 Run logic-enrichment pass (targeted, source-grounded):
 - Never add new facts/parameters/citations/modules/results.
 - If support is missing, keep placeholders and add TODO/VERIFY.
 
-C4. Run compact 6-pass audit:
+C4. Run compact 7-pass audit:
 1. Terminology consistency (glossary + hard_memory)
 2. Numerical consistency (MethodSpec vs CN vs EN)
 3. Equation/symbol consistency (notation + where blocks)
@@ -253,6 +257,9 @@ C4. Run compact 6-pass audit:
 6. Traceability — every hard-fact field in MethodSpec Sections 2-9 must have
    populated Source and Confidence. Blank Source = FAIL. Every [TBD] Source
    must have a matching entry in Section 10 and TODO/VERIFY.
+7. Heading-body alignment — every approved heading appears in CN and EN in
+   correct order, with no silent additions/removals/renames. (N/A for Mode B
+   local refinement of a single subsection.)
 
 If Mode B, add local checks:
 - Scope integrity: no unintended edits outside target scope
@@ -268,7 +275,7 @@ C5. Pre-delivery gate checklist:
 - G3: MethodSpec confirmation satisfied OR explicit skip-gate instruction found
 - G3.1: Heading Plan produced and confirmed OR explicit skip-heading instruction found
 - G4: CN and EN drafted from the same MethodSpec under approved headings
-- G5: 6-pass audit executed
+- G5: 7-pass audit executed
 
 If any gate is false, stop and repair before final output.
 

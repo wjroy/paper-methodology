@@ -9,31 +9,44 @@ Given user notes plus real code/config, the skill runs a lightweight,
 gate-controlled workflow and outputs:
 
 1. MethodSpec (single source of truth)
-2. Chinese Methodology (plain text)
-3. English Methodology (plain text)
-4. TODO/VERIFY + audit summary
+2. Heading Plan (confirmed before drafting)
+3. Chinese Methodology (plain text)
+4. English Methodology (plain text)
+5. TODO/VERIFY + audit summary
 
 ## Core Guarantees
 
 - MethodSpec-first (no prose before MethodSpec)
+- Heading Plan confirmed before body drafting
 - code/config > notes on conflicts
 - no fabrication of parameters, results, baselines, or citations
 - strict CN-EN structural/value alignment
 - compact runtime context (targeted asset loading only)
 
-## Workflow (v3.3)
+## Workflow (v3.7)
 
 The main workflow is fixed as three phases:
 
 GATHER -> PLAN -> WRITE_AUDIT
 
 - GATHER: extract hard facts, detect conflicts/gaps
-- PLAN: choose methodology pattern, build section plan, generate MethodSpec
-- WRITE_AUDIT: draft CN+EN and run compact 6-pass audit
+- PLAN: choose methodology pattern, build section plan, generate MethodSpec,
+  then generate Heading Plan (both require user confirmation before drafting)
+- WRITE_AUDIT: draft CN+EN under confirmed headings and run compact 7-pass audit
 
-Confirmation gate:
-- By default, Phase C runs only after user confirms MethodSpec.
-- Skip is allowed only with explicit instructions (e.g., "skip confirmation").
+Confirmation gates:
+- By default, Phase C runs only after user confirms both MethodSpec and
+  Heading Plan.
+- Skip is allowed only with explicit instructions (e.g., "skip confirmation",
+  "skip heading confirmation").
+
+## Execution Modes
+
+- **Mode A**: Full-chapter generation (MethodSpec + Heading Plan + CN/EN + audit)
+- **Mode B**: Section-level refinement (local scope lock, MethodSpec delta)
+- **Mode C**: Heading-plan only (MethodSpec + Heading Plan, no body text)
+- **Mode D**: Heading-refinement (update existing headings with annotations)
+- **Mode E**: Lock-headings-and-draft (body text under pre-approved headings)
 
 ## Pattern Library and Outline
 
@@ -46,6 +59,14 @@ Pattern library is used in PLAN to avoid a one-size-fits-all template:
   - fusion-pattern
   - weighting-scoring-decision
   - constraint-loss-first
+
+Heading naming patterns (pattern-specific heading templates):
+
+- `assets/heading_patterns.yml`
+
+Heading style conventions (naming tone, phrase type, length, symmetry):
+
+- `assets/heading_style_profile.md`
 
 Outline file provides only base skeleton + overlay linkage:
 
@@ -81,6 +102,8 @@ Read on-demand:
 - `assets/notation.md`
 - `assets/methodology_patterns.yml`
 - `assets/methodology_outline.md`
+- `assets/heading_style_profile.md`
+- `assets/heading_patterns.yml`
 - `assets/reference_papers/*.txt` (top relevant subset only)
 
 ## Repository Structure (Current)
@@ -97,6 +120,8 @@ Read on-demand:
 │       ├── methodology_patterns.yml
 │       ├── methodology_outline.md
 │       ├── methodspec_template.md
+│       ├── heading_style_profile.md
+│       ├── heading_patterns.yml
 │       ├── style_profile.md
 │       ├── term_glossary.yml
 │       ├── notation.md
@@ -113,14 +138,17 @@ Regression tests are maintained in:
 
 - `.opencode/regression/paper-methodology-tests.md`
 
-Current suite size: 13 tests, covering:
+Current suite size: 23 tests, covering:
 
-- core workflow behavior
-- style/error-log consistency
-- MethodSpec Source/Confidence traceability
-- PLAN confirmation gate and skip-gate behavior
-- pattern library selection
-- inlined humanizer/polish/redline behavior (without prompt-pack dependency)
+- core workflow behavior (Tests 1-5)
+- style/error-log consistency (Tests 6-8)
+- MethodSpec Source/Confidence traceability and PLAN gate behavior (Tests 9-11)
+- pattern library selection and inlined humanizer/polish/redline (Tests 12-13)
+- section-level refinement scope-lock and MethodSpec sync (Tests 14-15)
+- logic-enrichment continuity and anti-hallucination guard (Tests 16-17)
+- calibration-scope split (Test 18)
+- heading plan gate, multiple candidates, refinement isolation,
+  pattern-awareness, and skip-heading behavior (Tests 19-23)
 
 ## Usage
 
