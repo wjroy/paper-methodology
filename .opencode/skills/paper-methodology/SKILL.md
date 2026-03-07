@@ -8,7 +8,7 @@ description: >
   Related Work, Discussion, or Abstract).
 ---
 
-# paper-methodology v3.6 (stable local-refine + logic-enrichment)
+# paper-methodology v3.7 (heading-plan + local-refine + logic-enrichment)
 
 Purpose: produce publication-ready bilingual Methodology sections with strict
 anti-hallucination controls and minimal context overhead.
@@ -20,9 +20,11 @@ GATHER -> PLAN -> WRITE_AUDIT
 
 Core principle: one source of truth (MethodSpec), then render CN/EN from it.
 
-This skill supports two execution scopes under the same 3-phase workflow:
+This skill supports multiple execution scopes under the same 3-phase workflow:
 - Full-generation mode: generate a complete Methodology chapter.
 - Section-level refinement mode: update only a specified section/subsection.
+- Heading-plan mode: generate/refine headings without drafting body text.
+- Lock-headings-and-draft mode: draft body under user-approved headings.
 
 ## 1) Non-Negotiable Rules
 
@@ -63,9 +65,14 @@ This skill uses two different evidence scopes:
   MUST calibrate style/pattern/logic rules using all own papers:
   `01-own-*.txt` + `02-own-*.txt` + `03-own-*.txt` + `04-own-*.txt` +
   `05-own-*.txt`.
+  MUST calibrate heading naming rules using all own papers AND all other
+  reference papers (own papers define stylistic boundary; other papers
+  provide additional mature heading naming patterns in the field).
 - Runtime generation phase (user request handling):
   MUST stay lightweight and retrieve only the most relevant own papers (default
   top 2-3; expand to top 5 only when architecture is hybrid/ambiguous).
+  For heading generation, retrieve 2-3 own papers + 2-3 other papers that are
+  most relevant to the current task's methodology pattern and technical domain.
 
 Hard rule: do not infer global style/pattern rules from only 2-3 own papers
 during rule-refinement. Lightweight retrieval is runtime-only behavior.
@@ -82,6 +89,8 @@ Read on-demand:
 - assets/notation.md (symbol/notation checks)
 - assets/methodology_patterns.yml (pattern library for PLAN selection)
 - assets/methodology_outline.md (base skeleton + pattern overlays)
+- assets/heading_style_profile.md (heading naming conventions and tone rules)
+- assets/heading_patterns.yml (pattern-specific heading templates and keywords)
 - assets/reference_papers/*.txt (only top relevant files)
 
 Do not load all reference papers by default in runtime generation. Use selective
@@ -171,16 +180,86 @@ B3.1 Section-level refinement MethodSpec delta rule:
 - Provide a compact MethodSpec delta block before updated prose.
 - Non-target fields remain unchanged unless minimal linked repair is required.
 
-B4. Present MethodSpec and enforce confirmation gate.
-Proceed only if user replies equivalent to CONFIRM/OK/proceed.
+B4. Present MethodSpec and enforce MethodSpec confirmation gate.
+Proceed to Heading Plan only if user replies equivalent to CONFIRM/OK/proceed.
 
-Hard rule: No CN/EN drafting is allowed before this gate is satisfied, except
-when explicit skip-gate exception is present in user instruction.
+Hard rule: No Heading Plan or CN/EN drafting is allowed before this gate is
+satisfied, except when explicit skip-gate exception is present in user
+instruction.
 
-Skip-gate exception only when user explicitly says:
-- skip confirmation / 跳过确认
+### Phase B2: PLAN-B — Heading Plan (after MethodSpec confirmation)
+
+Goal: produce a concrete, reviewable set of section/subsection headings before
+any body text is drafted.
+
+B5. Load heading naming assets (on-demand):
+- assets/heading_style_profile.md (naming conventions and tone rules)
+- assets/heading_patterns.yml (pattern-specific heading templates)
+- Retrieve 2-3 own papers + 2-3 other papers most relevant to the current
+  task's methodology pattern and technical domain (lightweight runtime retrieval).
+
+B6. Generate Heading Plan:
+- Use MethodSpec (Sections 2-9) + selected methodology pattern + heading naming
+  rules from heading assets.
+- Produce a numbered list of proposed section and subsection titles.
+- For each heading, briefly note the heading style tendency when useful (e.g.,
+  concise / framework-oriented / mechanism-oriented / engineering-style /
+  decision-step style).
+- For key sections where ambiguity is high (e.g., the main architecture section,
+  the fusion/interaction section, the objective section), provide 2-3 alternative
+  heading candidates with a brief rationale for each.
+- Heading naming must adapt to the selected methodology pattern. Do not collapse
+  into a single invariant naming style across all papers.
+
+B6.1 Heading Plan format:
+
+HEADING PLAN
+============
+Selected pattern: [pattern id]
+Heading style tendency: [concise / framework-oriented / mechanism-oriented /
+  engineering-style / decision-step / hybrid]
+
+Section headings:
+  [N]. [Proposed heading]
+       - Style note: [brief explanation if useful]
+       - Alt A: [alternative] — [rationale]
+       - Alt B: [alternative] — [rationale]
+  [N.M]. [Proposed subheading]
+         ...
+
+B6.2 Heading naming hard rules:
+- All headings must be noun phrases (own-paper convention; verb-phrase headings
+  are allowed only when the selected pattern explicitly uses step-style markers
+  like "Step X:").
+- Do not copy heading text verbatim from any reference paper.
+- Keep heading length consistent with own-paper range (short: 2-4 words for
+  terse component headings; medium: 5-8 words for standard subsections; long:
+  9+ words only for complex pipeline steps).
+- Maintain sibling-heading symmetry: sibling subsections at the same level should
+  use a consistent phrase structure (e.g., all "X of Y" or all "X-based Y", not
+  a random mix).
+- The method/model name should appear in at least the framework overview heading
+  and optionally in one core architecture heading.
+- Loss function / evaluation metrics should appear as a recognizable heading
+  (not buried implicitly).
+
+B7. Present Heading Plan and enforce heading confirmation gate.
+Proceed to Phase C (WRITE_AUDIT) only if user replies equivalent to
+CONFIRM/OK/proceed.
+
+Hard rule: No CN/EN body drafting is allowed before heading confirmation is
+satisfied, except when explicit skip-heading exception is present in user
+instruction.
+
+Skip-heading exception only when user explicitly says:
+- skip heading confirmation / 跳过标题确认
 - generate directly / 直接生成
-- no review needed / 无需审核
+- use default headings / 使用默认标题
+- no heading review needed / 标题无需审核
+
+Note: "skip confirmation / 跳过确认" without qualifier applies to BOTH
+MethodSpec and Heading Plan gates. "generate directly / 直接生成" also skips
+both gates.
 
 ### Phase C: WRITE_AUDIT
 
@@ -292,6 +371,43 @@ R7. Explicit prohibitions in local mode:
 - No unsourced detail injection when added sources do not support it.
 - No local edit that leaves global numbering/notation/cross-references broken.
 
+### Heading-only and heading-refinement modes (overlay; keep 3-phase workflow)
+
+These modes allow heading operations without triggering full body drafting.
+
+H1. Heading-plan mode:
+Trigger: user explicitly requests heading plan / heading generation without body.
+- Run Phase A (GATHER) and Phase B through B7 (Heading Plan).
+- Stop after Heading Plan delivery. Do not enter Phase C.
+- Output: MethodSpec + Heading Plan only.
+
+H2. Heading-refinement mode:
+Trigger: user requests heading changes on an existing Heading Plan.
+- Accept user's existing headings and requested changes.
+- Re-evaluate headings against MethodSpec, selected pattern, and heading naming
+  rules.
+- Produce updated Heading Plan with change annotations (KEPT / RENAMED / ADDED /
+  REMOVED / REORDERED).
+- Do NOT rewrite body text. If body text exists, it remains unchanged.
+- If heading changes create structural misalignment with existing body text,
+  flag this in a HEADING-BODY SYNC NOTE but do not auto-rewrite.
+
+H3. Lock-headings-and-draft mode:
+Trigger: user explicitly approves headings and requests body drafting.
+- Use the locked (approved) headings as the structural skeleton for Phase C.
+- Body text must follow the locked heading structure exactly.
+- Do not rename or reorder headings during drafting.
+- If a locked heading becomes technically inappropriate during drafting (e.g.,
+  content does not fit), flag it as a HEADING MISMATCH in TODO/VERIFY instead
+  of silently changing the heading.
+
+H4. User inputs for heading modes:
+- target_section_or_subsection: [optional — for partial heading refinement]
+- existing_headings: [list of current headings, if any]
+- operation_type: heading-plan | heading-refinement | lock-headings-and-draft
+- style_preference: [optional — concise / framework-oriented / mechanism-oriented
+  / engineering-style / decision-step / more academic / etc.]
+
 C4. Compact 6-pass audit (must run before delivery)
 1. Terminology consistency (glossary + hard_memory)
 2. Numerical consistency (MethodSpec vs CN vs EN)
@@ -324,8 +440,9 @@ Fix FAIL items before delivery. Put unresolved items in TODO/VERIFY.
 C5. Pre-delivery gate checklist (mandatory):
 - Gate G1: Phase A completed (facts, gaps, conflict scan)
 - Gate G2: MethodSpec produced
-- Gate G3: Confirmation satisfied OR explicit skip-gate instruction found
-- Gate G4: CN and EN drafted from the same MethodSpec
+- Gate G3: MethodSpec confirmation satisfied OR explicit skip-gate instruction found
+- Gate G3.1: Heading Plan produced and confirmed OR explicit skip-heading instruction found
+- Gate G4: CN and EN drafted from the same MethodSpec under approved headings
 - Gate G5: 6-pass audit executed
 
 If any gate is false, stop and repair before final output.
@@ -349,11 +466,18 @@ Key structural rules (also embedded in the template file):
 
 ## 5) Output Contract
 
-Deliver in this order:
+Deliver in this order (full-generation mode):
 1. MethodSpec
-2. Chinese Methodology
-3. English Methodology
-4. TODO/VERIFY + Audit summary
+2. Heading Plan
+3. Chinese Methodology (under approved headings)
+4. English Methodology (under approved headings)
+5. TODO/VERIFY + Audit summary
+
+Heading-plan mode: deliver items 1-2 only.
+Heading-refinement mode: deliver updated Heading Plan with change annotations only.
+Lock-headings-and-draft mode: deliver items 1, 3-5 (headings are pre-approved).
+Section-level refinement mode: deliver updated MethodSpec delta + updated target
+CN/EN subsection only.
 
 If placeholders are used, TODO/VERIFY must explicitly list user actions needed
 to replace each placeholder.

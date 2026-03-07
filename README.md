@@ -83,12 +83,6 @@ Read on-demand:
 - `assets/methodology_outline.md`
 - `assets/reference_papers/*.txt` (top relevant subset only)
 
-Note:
-
-- `assets/upstream_prompt_pack.md` is no longer used at runtime.
-- Required minimum rendering/humanizer/redline rules are inlined in
-  `SKILL.md` and `methods-bilingual.md`.
-
 ## Repository Structure (Current)
 
 ```

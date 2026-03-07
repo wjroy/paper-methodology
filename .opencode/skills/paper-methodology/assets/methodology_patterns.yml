@@ -4,6 +4,8 @@ calibration:
   rule_refinement_scope: "all own papers 01-05"
   runtime_scope: "top 2-3 relevant own papers by default; expand to top 5 only if hybrid/ambiguous"
   note: "Pattern rules are calibrated globally from 01-05 and selected adaptively at runtime."
+heading_naming:
+  note: "Pattern-specific heading naming rules are in assets/heading_patterns.yml. Use selected pattern id to look up heading templates."
 selection_rule:
   - "Select one primary pattern in PLAN; do not force a single invariant order."
   - "Allow 1-2 fallback patterns when a method is hybrid."

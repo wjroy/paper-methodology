@@ -1,12 +1,12 @@
 ---
 description: >
   Generate or refine bilingual (CN + EN) Methodology for a geotechnical AI paper.
-  Uses the 3-phase workflow: GATHER → PLAN → WRITE_AUDIT.
-  Supports full-chapter generation and section-level refinement.
-  Produces: MethodSpec → Chinese Methods → English Methods → TODO/VERIFY list.
+  Uses the 3-phase workflow: GATHER → PLAN (MethodSpec + Heading Plan) → WRITE_AUDIT.
+  Supports full-chapter generation, section-level refinement, and heading-only modes.
+  Produces: MethodSpec → Heading Plan → Chinese Methods → English Methods → TODO/VERIFY list.
 ---
 
-# Bilingual Methods Section Generator (v3.6)
+# Bilingual Methods Section Generator (v3.7)
 
 You are about to run the `paper-methodology` workflow for a geotechnical AI paper.
 Follow the skill's 3-phase mandatory workflow strictly, and first determine mode.
@@ -35,7 +35,7 @@ $ARGUMENTS
 **3. Target journal/conference** (optional):
 [e.g., Tunnelling and Underground Space Technology, Computers and Geotechnics]
 
-### Mode B: Section-level refinement (new)
+### Mode B: Section-level refinement (existing behavior)
 
 Use this template:
 
@@ -53,13 +53,59 @@ Local-mode directive:
 - Keep other sections unchanged unless minimal linked edits are required for
   term/symbol/numbering/cross-reference consistency.
 
+### Mode C: Heading-plan (generate headings without body text)
+
+Use this template:
+
+- operation_type: heading-plan
+- research_notes: [paste notes or reference file paths]
+- code_or_config_paths: [list paths; optional but preferred]
+- style_preference: [optional — concise / framework-oriented / mechanism-oriented
+  / engineering-style / decision-step / more academic / etc.]
+- target_journal: [optional]
+
+This mode runs Phase A (GATHER) and Phase B through Heading Plan, then stops.
+Output: MethodSpec + Heading Plan. No body text is drafted.
+
+### Mode D: Heading-refinement (refine existing headings without body rewrite)
+
+Use this template:
+
+- operation_type: heading-refinement
+- existing_headings: [paste current heading list]
+- target_section_or_subsection: [optional — for partial heading refinement]
+- requested_changes: [describe desired changes, e.g., "make Section 3.3 more
+  mechanism-oriented", "shorten all subsection headings", "add fusion semantics"]
+- style_preference: [optional — concise / framework-oriented / mechanism-oriented
+  / engineering-style / decision-step / more academic / etc.]
+
+This mode re-evaluates headings against MethodSpec, selected pattern, and heading
+naming rules. Output: updated Heading Plan with change annotations. No body text
+is rewritten.
+
+### Mode E: Lock-headings-and-draft (draft body under approved headings)
+
+Use this template:
+
+- operation_type: lock-headings-and-draft
+- approved_headings: [paste confirmed heading list]
+- research_notes: [paste notes or reference file paths]
+- code_or_config_paths: [list paths; optional but preferred]
+- existing_methodspec: [optional — paste if already generated]
+
+This mode uses the locked heading structure as skeleton for Phase C drafting.
+Headings are not renamed or reordered during drafting.
+
 ## Workflow
 
 Execute the paper-methodology skill's 3-phase mandatory workflow.
 
 Mode routing:
 - If user provides full notes without target subsection lock, run Mode A.
-- If user provides `target_section_or_subsection`, run Mode B (local scope lock).
+- If user provides `target_section_or_subsection` with operation_type expand/rewrite/correct/bilingual-sync, run Mode B (local scope lock).
+- If user provides `operation_type: heading-plan`, run Mode C (heading-only).
+- If user provides `operation_type: heading-refinement`, run Mode D (heading refinement).
+- If user provides `operation_type: lock-headings-and-draft`, run Mode E (locked drafting).
 
 ### Phase A: GATHER
 
@@ -98,9 +144,9 @@ A4. Build lightweight Methodology Map:
 A5. If required hard facts are missing and cannot be inferred safely,
 ask one compact Clarification Block before proceeding to Phase B.
 
-### Phase B: PLAN (MethodSpec gate)
+### Phase B: PLAN (MethodSpec gate + Heading Plan gate)
 
-Goal: create a single source of truth for CN and EN drafting.
+Goal: create a single source of truth for CN and EN drafting, then plan headings.
 
 B1. Select one primary methodology pattern from `assets/methodology_patterns.yml`
 with brief rationale; include 1-2 fallback patterns.
@@ -118,21 +164,56 @@ If Mode B:
 - Keep Source/Confidence traceability for every updated field.
 - Return a compact MethodSpec delta block with `UNCHANGED` vs `UPDATED` tags.
 
-B4. Present MethodSpec and enforce confirmation gate.
+B4. Present MethodSpec and enforce MethodSpec confirmation gate.
 
-**MANDATORY GATE**: Do NOT proceed to Phase C until the user explicitly confirms
-with "CONFIRM", "OK", "proceed", or equivalent.
+**MANDATORY GATE**: Do NOT proceed to Heading Plan or Phase C until the user
+explicitly confirms with "CONFIRM", "OK", "proceed", or equivalent.
 
 Skip-gate exception only when user explicitly says:
 - "skip confirmation" / "跳过确认"
 - "generate directly" / "直接生成"
 - "no review needed" / "无需审核"
 
+#### Phase B2: Heading Plan (after MethodSpec confirmation)
+
+B5. Load heading naming assets (on-demand):
+- `assets/heading_style_profile.md` (naming conventions)
+- `assets/heading_patterns.yml` (pattern-specific heading templates)
+- Retrieve 2-3 own papers + 2-3 other papers most relevant to the current
+  task's methodology pattern (lightweight runtime retrieval).
+
+B6. Generate Heading Plan:
+- Use MethodSpec + selected pattern + heading naming rules.
+- Produce numbered list of proposed section/subsection titles.
+- For key sections with high ambiguity, provide 2-3 alternative candidates.
+- Note heading style tendency when useful (concise / framework-oriented /
+  mechanism-oriented / engineering-style / decision-step).
+
+If Mode C (heading-plan): deliver Heading Plan and stop. Do not enter Phase C.
+If Mode D (heading-refinement): re-evaluate existing headings against rules,
+produce updated Heading Plan with change annotations, and stop.
+
+B7. Present Heading Plan and enforce heading confirmation gate.
+
+**MANDATORY GATE**: Do NOT proceed to Phase C until the user explicitly confirms
+headings with "CONFIRM", "OK", "proceed", or equivalent.
+
+Skip-heading exception only when user explicitly says:
+- "skip heading confirmation" / "跳过标题确认"
+- "generate directly" / "直接生成"
+- "use default headings" / "使用默认标题"
+- "no heading review needed" / "标题无需审核"
+
+If Mode E (lock-headings-and-draft): use user's approved_headings directly
+as the heading skeleton. Skip B5-B7 and proceed to Phase C.
+
 ### Phase C: WRITE_AUDIT
 
-Goal: draft CN and EN from MethodSpec, then run compact audit.
+Goal: draft CN and EN from MethodSpec under approved headings, then run compact audit.
 
 C1. Draft Chinese Methodology (plain text, full-width punctuation, no Markdown).
+Use the approved Heading Plan as the structural skeleton. Do not rename or
+reorder headings unless flagged as HEADING MISMATCH in TODO/VERIFY.
 
 C2. Draft English Methodology (present tense, mirrors CN structure exactly).
 
@@ -184,8 +265,9 @@ Fix FAIL items before delivery. Put unresolved items in TODO/VERIFY.
 C5. Pre-delivery gate checklist:
 - G1: Phase A completed
 - G2: MethodSpec produced
-- G3: Confirmation satisfied OR explicit skip-gate instruction found
-- G4: CN and EN drafted from the same MethodSpec
+- G3: MethodSpec confirmation satisfied OR explicit skip-gate instruction found
+- G3.1: Heading Plan produced and confirmed OR explicit skip-heading instruction found
+- G4: CN and EN drafted from the same MethodSpec under approved headings
 - G5: 6-pass audit executed
 
 If any gate is false, stop and repair before final output.
@@ -201,15 +283,33 @@ If any gate is false, stop and repair before final output.
 
 ## Output Format
 
-Produce all 4 outputs in sequence:
-1. MethodSpec (structured, with Source and Confidence fields)
-2. Chinese Methodology (plain text)
-3. English Methodology (plain text)
-4. TODO/VERIFY List + Audit Summary
+Produce outputs in sequence (scope depends on mode):
 
-Mode B output scope note:
-- Return updated MethodSpec entries for the target scope and the updated target
-  CN/EN subsection text.
+Mode A (full-chapter):
+1. MethodSpec (structured, with Source and Confidence fields)
+2. Heading Plan (with alternatives for ambiguous sections)
+3. Chinese Methodology (plain text, under approved headings)
+4. English Methodology (plain text, under approved headings)
+5. TODO/VERIFY List + Audit Summary
+
+Mode B (section-level refinement):
+- Updated MethodSpec entries for the target scope + updated target CN/EN subsection.
 - Do not rewrite untouched sections.
 - If any linked edit outside target scope is required, list each edit and reason
   explicitly (term/symbol/numbering/cross-reference bridge only).
+
+Mode C (heading-plan):
+1. MethodSpec (structured)
+2. Heading Plan
+- No body text output.
+
+Mode D (heading-refinement):
+1. Updated Heading Plan with change annotations (KEPT / RENAMED / ADDED /
+   REMOVED / REORDERED)
+- No body text output.
+
+Mode E (lock-headings-and-draft):
+1. MethodSpec (if not already provided)
+2. Chinese Methodology (plain text, under locked headings)
+3. English Methodology (plain text, under locked headings)
+4. TODO/VERIFY List + Audit Summary

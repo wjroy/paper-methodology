@@ -1,6 +1,6 @@
-# Regression Tests for paper-methodology Skill (v3.6)
+# Regression Tests for paper-methodology Skill (v3.7)
 
-> 18 test prompts with expected behaviors and pass/fail criteria.
+> 23 test prompts with expected behaviors and pass/fail criteria.
 > Tests 1-5: core workflow tests (updated for v3.3 where needed).
 > Tests 6-8: style profile, error log, and consistency checker tests.
 > Tests 9-11: Source/Confidence traceability and PLAN gate behavior tests.
@@ -8,6 +8,7 @@
 > Tests 14-15: section-level refinement scope-lock and MethodSpec sync tests.
 > Tests 16-17: logic-enrichment continuity and anti-hallucination guard tests.
 > Test 18: calibration-scope split test (rule-refinement full own papers vs runtime lightweight retrieval).
+> Tests 19-23: heading plan gate, multiple candidates, refinement isolation, pattern-awareness, and skip-heading tests.
 > Use these to verify the skill produces correct output under different conditions.
 
 ---
@@ -37,9 +38,11 @@
 - [x] Every hard-fact field in MethodSpec Sections 2-9 has a populated Source and Confidence
 - [x] No hard-fact field has a blank Source (Audit Pass 6 would FAIL otherwise)
 - [x] PLAN selects a primary methodology pattern before drafting (no single invariant template)
+- [x] PLAN produces a Heading Plan after MethodSpec confirmation and before body drafting
 - [x] CN version has opening overview paragraph with method name + figure anchor (numbered steps optional)
 - [x] EN version mirrors CN structure exactly
 - [x] Section order follows selected pattern overlay and input logic (not forced universal order)
+- [x] Body text follows the approved heading structure from the Heading Plan
 - [x] All numerical values match input (lr=0.0002, batch_size=64, 200 epochs, 3000 samples, 7:1.5:1.5)
 - [x] Term glossary terms used consistently (弹性地基梁 = beam on elastic foundation)
 - [x] Plain text output, no Markdown formatting
@@ -234,12 +237,23 @@ Please match my usual writing style from my published papers.
 Before running this test, add the following entry to `error_log.md`:
 
 ```
-### TERMINOLOGY — Used "foundation pit" instead of "excavation pit"
+### TERMINOLOGY — Mistranslated "基坑" as "tunnel"
 - Date: 2025-01-15
-- Wrong: "The foundation pit deformation is predicted by..."
+- Wrong: "The tunnel deformation is predicted by..."
 - Correct: "The excavation pit deformation is predicted by..."
 - Context: English methodology, Section 3.1
-- Rule: Always use "deep excavation" (not "excavation pit") for 基坑.
+- Rule: Never mistranslate 基坑 as "tunnel" or "shield tunnel". 
+        Use context-appropriate variant: "deep excavation", "excavation", 
+        or "foundation pit", keeping consistency within each subsection.
+
+### TERMINOLOGY — Inconsistent term variants within same section
+- Date: 2025-01-15
+- Wrong: "The foundation pit deformation... The deep excavation stability..."
+- Correct: "The foundation pit deformation... The foundation pit stability..."
+- Context: English methodology, Section 3.1
+- Rule: Once a term variant is chosen (e.g., "foundation pit"), keep it 
+        consistent throughout the subsection. Do not alternate between 
+        "foundation pit" and "deep excavation" without context shift.
 
 ### STYLE — Used "It is worth noting that" filler phrase
 - Date: 2025-01-16
@@ -272,14 +286,15 @@ Notes:
 
 ### Expected Behavior
 - [x] Phase A reads `error_log.md` and identifies 3 logged errors
-- [x] EN version uses "excavation pit" (not "foundation pit") for 基坑
+- [x] EN version does NOT contain mistranslations: "tunnel" or "shield tunnel" for 基坑
+- [x] EN version maintains local term consistency (does not alternate between "foundation pit" and "deep excavation" within the same subsection without context shift)
 - [x] EN version does NOT contain "It is worth noting that"
 - [x] EN version does NOT contain Markdown formatting (bold/italic/bullets)
 - [x] Audit Pass 5 (Error-log Compliance) reports all PASS
 
 ### Pass/Fail
-- **PASS**: All 3 logged errors are avoided in the generated output
-- **FAIL**: Any of the 3 logged error patterns appear in the output
+- **PASS**: All 3 logged error patterns are avoided in the generated output, and term consistency is maintained locally
+- **FAIL**: Any of the 3 logged error patterns appear in the output, or term variants are inconsistent within a subsection
 
 ---
 
@@ -316,7 +331,7 @@ introduce these errors before running the audit:
 ## Running These Tests
 
 1. Start a new conversation with the paper-methodology skill loaded
-2. For tests 1-18: paste each test prompt exactly as shown
+2. For tests 1-23: paste each test prompt exactly as shown
 3. For test 7: first add the error log entries, then paste the prompt
 4. For test 8: generate from test 1, manually introduce errors, then run audit
 5. For test 10: verify PLAN gate (Phase B) stops before Phase C until CONFIRM
@@ -328,19 +343,24 @@ introduce these errors before running the audit:
 11. For test 16: verify logic-enrichment makes implicit chain explicit
 12. For test 17: verify logic-enrichment does not invent unsupported facts
 13. For test 18: verify calibration-scope behavior in the explanation output
-14. Compare the output against the Expected Behavior checklist
-15. Mark each item as pass/fail
-16. A test passes only if ALL expected behaviors are satisfied
+14. For test 19: verify Heading Plan appears after MethodSpec, before body drafting
+15. For test 20: verify multiple heading candidates for ambiguous sections
+16. For test 21: verify heading refinement does not rewrite body text
+17. For test 22: verify different patterns produce different heading styles
+18. For test 23: verify skip-heading-confirmation proceeds to drafting
+19. Compare the output against the Expected Behavior checklist
+20. Mark each item as pass/fail
+21. A test passes only if ALL expected behaviors are satisfied
 
 ## Scoring
 
 | Score | Interpretation |
 |-------|---------------|
-| 18/18 | Skill is production-ready (v3.6 verified) |
-| 17/18 | Minor issue — review the failing test and adjust |
-| 14-16/18 | Moderate issues — likely need to adjust SKILL.md or an asset file |
-| 11-13/18 | Significant issues — structural problem in the workflow |
-| <=10/18 | Major revision needed |
+| 23/23 | Skill is production-ready (v3.7 verified) |
+| 22/23 | Minor issue — review the failing test and adjust |
+| 19-21/23 | Moderate issues — likely need to adjust SKILL.md or an asset file |
+| 15-18/23 | Significant issues — structural problem in the workflow |
+| <=14/23 | Major revision needed |
 
 ## Version History
 
@@ -355,6 +375,7 @@ introduce these errors before running the audit:
 | v3.4 | 1-15 | Added section-level refinement tests (scope lock + MethodSpec/CN-EN sync) |
 | v3.5 | 1-17 | Added logic-enrichment tests (reasoning continuity + no unsupported facts) |
 | v3.6 | 1-18 | Added calibration-scope split test and strengthened local MethodSpec delta expectations |
+| v3.7 | 1-23 | Added heading plan tests (gate, multiple candidates, refinement isolation, pattern-awareness, skip-heading) |
 
 ---
 
@@ -514,7 +535,6 @@ Also run a logic redline check.
 - [x] Humanizer keeps all technical facts unchanged (model, loss, metrics)
 - [x] Section-limited polish is applied only to requested subsection
 - [x] Logic redline check reports only critical issues (contradictions/term inconsistency/blocking grammar)
-- [x] No dependency on `assets/upstream_prompt_pack.md`
 
 ### Pass/Fail
 - **PASS**: Inlined constraints fully cover humanizer/polish/logic-check behavior
@@ -701,3 +721,207 @@ Keep runtime lightweight.
 ## Version History Update
 
 See "Version History" section above.
+
+---
+
+## Test 19: Heading Plan Appears Before Body Drafting
+
+### Prompt
+```
+帮我写一篇关于基坑变形预测代理模型的方法学章节。
+
+研究笔记：
+- 提出一个基于 cGAN 的代理模型（PitGAN），用弹性地基梁模型生成训练数据
+- 输入：开挖深度 H、土体弹性模量 E_s、支撑刚度 k
+- 输出：围护结构侧向位移曲线 delta_w(z)
+- 数据集：3000 组 FEM 模拟数据，按 7:1.5:1.5 划分
+- 训练配置：Adam optimizer, lr=0.0002, batch_size=64, 200 epochs
+- 评价指标：RMSE, MAE, R^2
+- 对比基线：MLP, LSTM, standard GAN
+- 框架分三阶段：力学建模 -> 数据生成 -> cGAN 训练与预测
+
+目标期刊：Computers and Geotechnics
+```
+
+### Expected Behavior
+- [x] Phase A (GATHER) completes and extracts all facts
+- [x] Phase B produces MethodSpec and presents it for confirmation
+- [x] After MethodSpec confirmation, a Heading Plan is presented BEFORE any body text
+- [x] Heading Plan contains numbered section/subsection titles
+- [x] Heading Plan notes the selected methodology pattern
+- [x] Heading Plan notes heading style tendency
+- [x] AI STOPS and waits for user heading confirmation before drafting body text
+- [x] AI does NOT generate CN/EN body text before heading confirmation
+- [x] Pre-delivery gate G3.1 is checked (Heading Plan confirmed)
+
+### User Follow-up
+After AI stops at Heading Plan, reply: `CONFIRM`
+
+Then verify:
+- [x] AI proceeds to Phase C (WRITE_AUDIT) and generates CN/EN body text
+- [x] Body text follows the confirmed heading structure
+
+### Pass/Fail
+- **PASS**: Heading Plan appears after MethodSpec confirmation and before body drafting; AI waits for heading confirmation
+- **FAIL**: Body text is generated without presenting a Heading Plan, or heading confirmation is skipped without explicit user instruction
+
+---
+
+## Test 20: Multiple Heading Candidates for Ambiguous Sections
+
+### Prompt
+```
+Write methodology for a multimodal fusion model combining text and time-series
+for excavation risk assessment.
+
+Notes:
+- Text source: construction logs (Chinese NLP)
+- Time-series source: multi-point settlement monitoring
+- Text branch: tokenization + domain embedding + text encoder
+- Time-series branch: graph structure + spatiotemporal GCN
+- Fusion: attention-based cross-modal interaction
+- Output: risk level prediction (4 grades)
+- Loss: weighted cross-entropy
+- Metrics: accuracy, macro-F1, PICP
+
+Skip MethodSpec confirmation.
+```
+
+### Expected Behavior
+- [x] Heading Plan is generated after MethodSpec
+- [x] At least one subsection heading (e.g., the fusion section or the architecture
+  overview section) provides 2-3 alternative heading candidates
+- [x] Each alternative includes a brief rationale (e.g., "concise", "emphasizes
+  fusion semantics", "more mechanism-oriented")
+- [x] The Heading Plan adapts to the multimodal/fusion nature of the method
+  (headings reflect fusion semantics, not generic "Model Architecture")
+- [x] Sibling encoder headings have consistent phrase structure (symmetry rule)
+
+### Pass/Fail
+- **PASS**: Multiple heading candidates are provided for at least one key section with brief rationales
+- **FAIL**: All sections have exactly one heading with no alternatives, or headings ignore fusion semantics
+
+---
+
+## Test 21: Heading Refinement Does Not Rewrite Body Text
+
+### Prompt
+```
+Refine my headings without changing the body text.
+
+operation_type: heading-refinement
+
+existing_headings:
+  3.1 Overall Framework
+  3.2 Data Preprocessing
+  3.3 Model Architecture
+  3.4 Loss Function
+  3.5 Evaluation Metrics
+
+requested_changes:
+- Make 3.3 more specific to the actual architecture (GCN + attention fusion)
+- Make 3.2 reflect that this is graph construction, not just preprocessing
+- Keep 3.1, 3.4, 3.5 as they are
+
+style_preference: framework-oriented
+```
+
+### Expected Behavior
+- [x] AI produces an updated Heading Plan with change annotations
+  (KEPT / RENAMED / ADDED / REMOVED / REORDERED)
+- [x] Section 3.3 is renamed to something specific (e.g., "GCN-attention fusion
+  architecture" or "Spatiotemporal graph modeling with attention fusion")
+- [x] Section 3.2 is renamed to reflect graph construction (e.g., "Heterogeneous
+  graph construction" or "Monitoring graph generation")
+- [x] Sections 3.1, 3.4, 3.5 are annotated as KEPT
+- [x] No body text is generated or rewritten
+- [x] If heading changes would cause structural misalignment with existing body,
+  a HEADING-BODY SYNC NOTE is provided
+
+### Pass/Fail
+- **PASS**: Headings are refined with change annotations; no body text is generated
+- **FAIL**: Body text is generated, or heading changes are made without annotations
+
+---
+
+## Test 22: Pattern-Aware Heading Generation (Different Patterns Produce Different Headings)
+
+### Setup
+Run two prompts with different methodology patterns and compare heading output.
+
+### Prompt A (fusion-pattern)
+```
+写方法学标题：文本+时序融合用于多风险等级预测。
+
+operation_type: heading-plan
+research_notes:
+- 文本分支和时序分支分别编码
+- 注意力融合机制
+- 多风险等级输出
+style_preference: framework-oriented
+
+Skip MethodSpec confirmation.
+```
+
+### Prompt B (weighting-scoring-decision)
+```
+写方法学标题：基于指标权重和因果评分的隧道施工风险评估。
+
+operation_type: heading-plan
+research_notes:
+- FAHP 确定指标权重
+- DEMATEL 分析因果关系
+- 拓扑排序输出风险等级
+style_preference: decision-step
+
+Skip MethodSpec confirmation.
+```
+
+### Expected Behavior
+- [x] Prompt A produces headings reflecting fusion semantics (e.g., per-modality
+  encoding headings, fusion/interaction heading, prediction heading)
+- [x] Prompt B produces headings reflecting decision/assessment semantics (e.g.,
+  weighting heading, causal analysis heading, risk-level determination heading)
+- [x] Headings from A and B are NOT identical or near-identical
+- [x] Prompt A does NOT use "Step X:" style headings (unless the user explicitly
+  requests it)
+- [x] Prompt B MAY use "Step X:" style headings (consistent with weighting-scoring-
+  decision pattern and 05-own-TSFRA convention)
+- [x] Neither set of headings collapses into a generic "Model Architecture" /
+  "Data" / "Training" invariant structure
+
+### Pass/Fail
+- **PASS**: Two prompts produce distinctly different heading styles adapted to their patterns
+- **FAIL**: Both prompts produce essentially the same heading structure, or headings ignore the selected pattern
+
+---
+
+## Test 23: Skip-Heading-Confirmation Behavior
+
+### Prompt
+```
+Write methodology for my GCN settlement prediction model. Skip heading confirmation.
+
+Notes:
+- Model: 3-layer GCN with spatial attention
+- Input: 15 monitoring points, settlement + tilt
+- Output: 1-step ahead settlement
+- Data: 800 field records, 70/15/15 split
+- Training: Adam, lr=0.001, batch=32, 100 epochs
+- Metrics: RMSE, MAE
+- Baselines: MLP, LSTM
+
+Skip MethodSpec confirmation.
+```
+
+### Expected Behavior
+- [x] AI recognizes "skip heading confirmation" instruction
+- [x] AI still generates a Heading Plan (it is still produced, just not gated)
+- [x] AI does NOT stop for heading confirmation
+- [x] AI proceeds directly to Phase C (WRITE_AUDIT) after Heading Plan
+- [x] AI generates all outputs: MethodSpec, Heading Plan, CN, EN, TODO/VERIFY
+- [x] Pre-delivery gate G3.1 is satisfied by the explicit skip instruction
+
+### Pass/Fail
+- **PASS**: AI recognizes skip instruction, generates Heading Plan, and proceeds without stopping
+- **FAIL**: AI ignores skip instruction and stops for heading confirmation, or skips Heading Plan generation entirely

@@ -6,6 +6,13 @@ invariant order for all papers.
 Scope boundary: this file defines only structure skeleton + pattern overlay
 hooks. It does not own terminology mapping, style tuning, or memory rules.
 
+Heading naming: this file defines abstract structural slots (e.g., "Framework
+overview", "Core modeling modules"). Concrete heading text is generated using:
+- `heading_style_profile.md` (naming conventions, tone, length, symmetry)
+- `heading_patterns.yml` (pattern-specific heading templates and keywords)
+The PLAN phase must transform abstract slots into concrete, reviewable headings
+before body drafting begins.
+
 ## A. Base Skeleton
 
 Use this as the default scaffold in PLAN, then apply one selected overlay from
